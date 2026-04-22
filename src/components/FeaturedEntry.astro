@@ -1,0 +1,21 @@
+---
+export interface Props {
+  headline: string;
+  summary: string;
+  slug: string;
+  date: Date;
+}
+
+const { headline, summary, slug, date } = Astro.props;
+
+const formatted = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+---
+
+<section class="py-12">
+  <p class="text-xs uppercase tracking-wider text-stone-400 mb-4">Latest entry · {formatted}</p>
+  <h2 class="text-3xl font-medium tracking-tight text-stone-900 mb-4 leading-tight">{headline}</h2>
+  <p class="text-base text-stone-500 leading-relaxed max-w-2xl mb-6">{summary}</p>
+  <a href={`/journal/${slug}`} class="text-sm text-teal-600 hover:underline font-medium">
+    Read entry →
+  </a>
+</section>

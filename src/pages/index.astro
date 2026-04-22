@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroPlaceholder from '../components/HeroPlaceholder.astro';
+import FeaturedEntry from '../components/FeaturedEntry.astro';
+import JournalCard from '../components/JournalCard.astro';
+import { getCollection } from 'astro:content';
+
+const allJournalEntries = await getCollection('journal', ({ data }) => data.status === 'published');
+const sortedEntries = allJournalEntries.sort((a, b) => b.data.week - a.data.week);
+
+const featured = sortedEntries[0];
+const recentEntries = sortedEntries.slice(1, 4);
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sortOrder).slice(0, 3);
+
+const deployedBadge: Record<string, string> = {
+  deployed: 'live',
+  built: 'built',
+  planning: 'planning',
+};
+const deployedBadgeClasses: Record<string, string> = {
+  deployed: 'bg-teal-50 text-teal-600',
+  built: 'bg-stone-100 text-stone-500',
+  planning: 'bg-stone-50 text-stone-400',
+};
+---
+
+<BaseLayout>
+  <Header />
+  <main class="max-w-5xl mx-auto px-6">
+    <HeroPlaceholder />
+
+    {featured && (
+      <FeaturedEntry
+        headline={featured.data.headline}
+        summary={featured.data.summary}
+        slug={featured.id}
+        date={featured.data.date}
+      />
+    )}
+
+    <hr class="border-stone-200" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 py-12">
+      <!-- Journal column -->
+      <div>
+        <h2 class="text-xs uppercase tracking-wider text-stone-400 mb-6">Journal</h2>
+        <div class="divide-y divide-stone-100">
+          {recentEntries.map(entry => (
+            <JournalCard
+              headline={entry.data.headline}
+              summary={entry.data.summary}
+              week={entry.data.week}
+              slug={entry.id}
+            />
+          ))}
+        </div>
+        <div class="mt-6">
+          <a href="/journal" class="text-sm text-teal-600 hover:underline font-medium">All entries →</a>
+        </div>
+      </div>
+
+      <!-- Projects column -->
+      <div>
+        <h2 class="text-xs uppercase tracking-wider text-stone-400 mb-6">Shipped</h2>
+        <div class="flex flex-col gap-4">
+          {sortedProjects.map(project => (
+            <div class="py-3">
+              <div class="flex items-center gap-2 mb-1">
+                <a href={`/projects/${project.id}`} class="text-base font-medium text-stone-900 hover:text-teal-600 transition-colors no-underline">
+                  {project.data.title}
+                </a>
+                <span class={`text-xs px-2 py-0.5 rounded-full font-medium ${deployedBadgeClasses[project.data.status]}`}>
+                  {deployedBadge[project.data.status]}
+                </span>
+              </div>
+              <p class="text-sm text-stone-500">{project.data.description}</p>
+            </div>
+          ))}
+        </div>
+        <div class="mt-6">
+          <a href="/projects" class="text-sm text-teal-600 hover:underline font-medium">All projects →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

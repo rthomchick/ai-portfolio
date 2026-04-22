@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(project => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+const badgeClasses: Record<string, string> = {
+  deployed: 'bg-teal-50 text-teal-600',
+  built: 'bg-stone-100 text-stone-500',
+  planning: 'bg-stone-50 text-stone-400',
+};
+const badgeLabel: Record<string, string> = {
+  deployed: 'live',
+  built: 'built',
+  planning: 'planning',
+};
+---
+
+<BaseLayout title={project.data.title}>
+  <Header />
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <a href="/projects" class="text-sm text-stone-500 hover:text-stone-900 transition-colors no-underline mb-8 block">← Projects</a>
+
+    <div class="flex items-center gap-3 mb-4">
+      <h1 class="text-3xl font-medium tracking-tight text-stone-900">{project.data.title}</h1>
+      <span class={`text-xs px-2.5 py-1 rounded-full font-medium ${badgeClasses[project.data.status]}`}>
+        {badgeLabel[project.data.status]}
+      </span>
+    </div>
+
+    <p class="text-base text-stone-500 leading-relaxed max-w-2xl mb-10">{project.data.description}</p>
+
+    <!-- Details section -->
+    <div class="bg-stone-50 rounded-lg p-6 mb-10 max-w-2xl">
+      <dl class="flex flex-col gap-4">
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-stone-400 mb-1">Problem solved</dt>
+          <dd class="text-sm text-stone-700 leading-relaxed">{project.data.problemSolved}</dd>
+        </div>
+
+        {project.data.architecturePattern && (
+          <div>
+            <dt class="text-xs uppercase tracking-wider text-stone-400 mb-1">Architecture</dt>
+            <dd class="text-sm text-stone-700">{project.data.architecturePattern}</dd>
+          </div>
+        )}
+
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-stone-400 mb-2">Tech stack</dt>
+          <dd class="flex flex-wrap gap-1.5">
+            {project.data.techStack.map(tech => (
+              <span class="text-xs bg-white border border-stone-200 text-stone-600 px-2.5 py-1 rounded-full">{tech}</span>
+            ))}
+          </dd>
+        </div>
+
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-stone-400 mb-1">Week built</dt>
+          <dd>
+            <a href={`/journal`} class="text-sm text-teal-600 hover:underline">Week {project.data.weekBuilt}</a>
+          </dd>
+        </div>
+
+        {(project.data.deployUrl || project.data.repoUrl) && (
+          <div>
+            <dt class="text-xs uppercase tracking-wider text-stone-400 mb-2">Links</dt>
+            <dd class="flex flex-wrap gap-4">
+              {project.data.deployUrl && (
+                <a href={project.data.deployUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:underline">
+                  Live app ↗
+                </a>
+              )}
+              {project.data.repoUrl && (
+                <a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:underline">
+                  GitHub ↗
+                </a>
+              )}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </div>
+
+    <!-- Body -->
+    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline">
+      <Content />
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

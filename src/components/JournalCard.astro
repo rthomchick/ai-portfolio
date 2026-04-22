@@ -1,0 +1,18 @@
+---
+export interface Props {
+  headline: string;
+  summary: string;
+  week: number;
+  slug: string;
+}
+
+const { headline, summary, week, slug } = Astro.props;
+---
+
+<article class="py-4">
+  <a href={`/journal/${slug}`} class="text-base font-medium text-stone-900 hover:text-teal-600 transition-colors block mb-1 no-underline">
+    {headline}
+  </a>
+  <p class="text-sm text-stone-500 leading-relaxed mb-2">{summary}</p>
+  <span class="text-xs text-stone-400">Week {week}</span>
+</article>

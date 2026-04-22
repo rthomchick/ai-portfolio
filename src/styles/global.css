@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+}
+
+html {
+  font-family: 'DM Sans', sans-serif;
+  background-color: #FFFFFF;
+  color: #1C1917;
+}

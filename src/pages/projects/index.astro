@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const sorted = allProjects.sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+---
+
+<BaseLayout title="Projects">
+  <Header />
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <h1 class="text-3xl font-medium tracking-tight text-stone-900 mb-3">Projects</h1>
+    <p class="text-base text-stone-500 leading-relaxed mb-12">AI-powered tools built and deployed during the program.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {sorted.map(project => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          status={project.data.status}
+          slug={project.id}
+        />
+      ))}
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

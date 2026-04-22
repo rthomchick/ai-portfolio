@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('journal');
+  return entries.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const formattedDate = entry.data.date.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+
+<BaseLayout title={entry.data.headline}>
+  <Header />
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <a href="/journal" class="text-sm text-stone-500 hover:text-stone-900 transition-colors no-underline mb-8 block">← Journal</a>
+
+    <p class="text-xs uppercase tracking-wider text-stone-400 mb-4">{formattedDate}</p>
+    <h1 class="text-3xl font-medium tracking-tight text-stone-900 mb-4 max-w-2xl leading-tight">{entry.data.headline}</h1>
+
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      {entry.data.tags.map(tag => (
+        <span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">{tag}</span>
+      ))}
+    </div>
+
+    <!-- Body -->
+    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline">
+      <Content />
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
