@@ -1,10 +1,137 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.1.5"><meta name="description" content="AI product development portfolio and learning journal."><title>When smart generalists aren&#39;t enough — Richard Thomchick</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/Footer.7Ogbt9V6.css"></head> <body class="bg-white text-stone-900 font-sans antialiased">  <header class="border-b border-stone-200"> <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between"> <a href="/" class="text-stone-900 font-medium text-base no-underline hover:text-teal-600 transition-colors">
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.1.5"><meta name="description" content="AI product development portfolio and learning journal."><title>Week 6 Journal: RAG Time — Richard Thomchick</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/Footer.CUr7yjn_.css"></head> <body class="bg-white text-stone-900 font-sans antialiased">  <header class="border-b border-stone-200"> <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between"> <a href="/" class="text-stone-900 font-medium text-base no-underline hover:text-teal-600 transition-colors">
 Richard Thomchick
-</a> <nav class="flex items-center gap-6"> <a href="/journal" class="text-sm transition-colors no-underline text-stone-900 font-medium"> Journal </a><a href="/projects" class="text-sm transition-colors no-underline text-stone-500 hover:text-stone-900"> Projects </a><a href="/about" class="text-sm transition-colors no-underline text-stone-500 hover:text-stone-900"> About </a> </nav> </div> </header> <main class="max-w-5xl mx-auto px-6 py-12"> <a href="/journal" class="text-sm text-stone-500 hover:text-stone-900 transition-colors no-underline mb-8 block">← Journal</a> <p class="text-xs uppercase tracking-wider text-stone-400 mb-4">February 13, 2026</p> <h1 class="text-3xl font-medium tracking-tight text-stone-900 mb-4 max-w-2xl leading-tight">When smart generalists aren&#39;t enough</h1> <!-- Tags --> <div class="flex flex-wrap gap-2 mb-8"> <span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">rag</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">embeddings</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">chromadb</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">deployment</span> </div> <!-- Body --> <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline"> <p>This week was about answering a fundamental question: what happens when your AI tool needs to know things that aren’t in its training data?</p>
-<p>The answer is RAG — Retrieval-Augmented Generation. Instead of hoping Claude knows about your team’s specific processes, you give it access to your actual documents and let it ground its responses in real data.</p>
-<h2 id="the-grounding-test">The grounding test</h2>
-<p>The moment RAG clicked for me was the grounding test. I asked the same question twice — once with RAG, once without. Without RAG, Claude gave me generic industry benchmarks. With RAG, it cited the specific 2.3% conversion rate from our team’s data. Same model, same prompt, completely different value.</p>
-<h2 id="from-embeddings-to-deployment">From embeddings to deployment</h2>
-<p>The week progressed through a natural pipeline: embeddings (turning text into vectors), vector storage (ChromaDB), retrieval (finding relevant chunks), and generation (grounding Claude’s response in what we found). Each day built on the previous one, and by Friday I had a deployed Knowledge Assistant on Streamlit Cloud.</p>
-<h2 id="key-technical-decision">Key technical decision</h2>
-<p>I spent time exploring hybrid search — combining keyword matching with semantic search. The theory is sound, but the implementation complexity wasn’t justified at my current scale. Pure semantic search with good chunking and overlap handles the use cases I care about. This is a pattern I keep seeing: the sophisticated approach isn’t always the right one for where you are today.</p> </div> </main> <footer class="border-t border-stone-200 mt-24"> <div class="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between"> <span class="text-sm text-stone-400">Built by Richard Thomchick</span> <span class="text-sm text-stone-400">Powered by Astro</span> </div> </footer>  </body></html>
+</a> <nav class="flex items-center gap-6"> <a href="/journal" class="text-sm transition-colors no-underline text-stone-900 font-medium"> Journal </a><a href="/projects" class="text-sm transition-colors no-underline text-stone-500 hover:text-stone-900"> Projects </a><a href="/about" class="text-sm transition-colors no-underline text-stone-500 hover:text-stone-900"> About </a> </nav> </div> </header> <main class="max-w-5xl mx-auto px-6 py-12"> <a href="/journal" class="text-sm text-stone-500 hover:text-stone-900 transition-colors no-underline mb-8 block">← Journal</a> <p class="text-xs uppercase tracking-wider text-stone-400 mb-4">February 9, 2026</p> <h1 class="text-3xl font-medium tracking-tight text-stone-900 mb-4 max-w-2xl leading-tight">Week 6 Journal: RAG Time</h1> <!-- Tags --> <div class="flex flex-wrap gap-2 mb-8"> <span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">rag</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">embeddings</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">chromadb</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">vector-store</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">hybrid-search</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">re-ranking</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">metadata-filtering</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">streamlit</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">evaluation</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">llm-as-judge</span><span class="text-xs bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">openai</span> </div> <!-- Body --> <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline"> <p><strong>Goal</strong>: Build a RAG pipeline. Deploy more apps to Streamlit. Start evaluating output quality.</p>
+<hr>
+<h1 id="what-i-built">What I Built</h1>
+<p>I am a big geek about information retrieval and I’ve been eagerly awaiting this lesson. I finally get to build the thing! I built a very simple app with Claude and ChromaDB, learned a lot along with way, AND compiled my first golden set to set baseline metrics for my Feature Spec Generator.</p>
+<h2 id="day-1-embeddings">Day 1: Embeddings</h2>
+<p>The first step was to turn meaning into math. Wait. Sigh.</p>
+<p>No, apparently the first step is to solve this Python 3.14 + ChromaDB (ChromaDB’s Pydantic v1, to be precise) incompatibility. Had to create another environment, <code>venv-rag</code>, with Python 3.12. Caught Claude throwing shade at me while it was thinking. “He’s not super CLI-savvy…”</p>
+<p>Ok, NOW it was time to turn meaning into math. <code>embeddings_intro.py</code> was my first embedding script, using OpenAI’s <code>text-embedding-3-small</code> to get embedding vectors for selected text inputs and measure their similarity:</p>
+<ul>
+<li>text_a = “How do I configure Adobe Target for A/B testing?”</li>
+<li>text_b = “Setting up experiments in our personalization platform”</li>
+<li>text_c = “What’s our Q3 revenue forecast?”</li>
+</ul>
+<p>The cosine similarity results for A vs B were nearly 3x higher than A vs C:</p>
+<ul>
+<li>A vs B: 0.4120 (similar topics)</li>
+<li>A vs C: 0.1437 (different topics)</li>
+<li>Difference: 0.2684</li>
+</ul>
+<p>The system made a semantic match with zero keyword overlap. My library science colleagues would salivate if they saw this.</p>
+<h2 id="day-2-vector-store">Day 2: Vector Store</h2>
+<p>Oh, crap. Another database technology. Here we go. Vectors, chunks, embeddings. It was a lot to digest (ingest?). Yet somehow intuitive.</p>
+<p>Today’s build was a document ingestion pipeline <code>(rag_pipeline.py)</code> with ChromaDB that performed the following operations:</p>
+<ol>
+<li>Connects to a local ChromaDB instance and creates (or opens) a persistent collection</li>
+<li>Reads source documents (in this case, a 5 long text snippets about B2B personalization)</li>
+<li>Splits each document into chunks with configurable size and overlap</li>
+<li>Generates embeddings for each chunk using OpenAI’s <code>text-embedding-3-small</code> model</li>
+<li>Upserts the embedded chunks into ChromaDB with metadata (source filename, chunk index)</li>
+<li>Accepts a natural language query, embeds it, and runs a similarity search against collection</li>
+<li>Returns the top-K matching chunks ranked by cosine distance score</li>
+</ol>
+<p>Two things I looked for: does each query find the right documents, and do the distance scores make sense (lower = more relevant)? The answer to both: yes. So far, so good.</p>
+<p>Then I tried searched for something (Salesforce integration) that was NOT in the documents. ChromaDB still returned its best-match chunks. The distance scores were higher, but it still returned chunks. It doesn’t have a “no match found” threshold built in. However, Claude looked at the retrieved chunks, recognized none of them were about Salesforce, and said it didn’t have that information instead of making something up. A grounded answer. Yay!</p>
+<p>BUT … that’s only because my Python script explicitly instructed Claude to only answer from the provided context.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">Answer questions based </span><span style="color:#79B8FF">ONLY</span><span style="color:#E1E4E8"> on the provided context documents.</span></span>
+<span class="line"><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">. If the context doesn</span><span style="color:#9ECBFF">'t contain enough information to answer, say so clearly.</span></span>
+<span class="line"><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">. Always cite which source document(s) you drew </span><span style="color:#F97583">from</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">. Never make up information that isn</span><span style="color:#9ECBFF">'t in the context.</span></span>
+<span class="line"><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">. If asked something outside the provided context, acknowledge this </span><span style="color:#F97583">and</span><span style="color:#E1E4E8"> offer</span></span>
+<span class="line"><span style="color:#E1E4E8">   to </span><span style="color:#79B8FF">help</span><span style="color:#F97583"> with</span><span style="color:#E1E4E8"> what you do have context </span><span style="color:#F97583">for</span><span style="color:#E1E4E8">.</span></span></code></pre>
+<p>Without that system prompt guardrail, Claude would have happily invented an answer to my Salesforce question.</p>
+<h2 id="day-3-rag-pipeline">Day 3: RAG Pipeline</h2>
+<p>Yesterday showed me how retrieval works and that my guardrails kept Claude from hallucinating. Today was the day the whole week clicked. I connected ChromaDB retrieval to Claude generation and built the full RAG retrieve → generate pipeline in <code>rag_assistant.py</code>.</p>
+<p>This time, I ingested five (AI-generated) documents to simulate the following:</p>
+<ul>
+<li>Account-based marketing strategy</li>
+<li>Personalization platform details (Adobe Target)</li>
+<li>Data signal definition framework</li>
+<li>Quarterly performance metrics</li>
+<li>A personalization roadmap</li>
+</ul>
+<p>These are the kinds of documents a PM might need to sift through page by page for hours on end with the midnight oil burning.</p>
+<p>The architecture was straightforward: embed the question, pull the top 3 chunks from ChromaDB, inject them as context, let Claude generate. Same five grounding rules from Day 2, same belt-and-suspenders constraint in the user prompt. Then I ran four tests to answer the question of the week: does RAG actually improve output quality?</p>
+<h4 id="grounding-test"><strong>Grounding Test</strong></h4>
+<p>I asked “What was our conversion lift from personalization?” twice: once with the RAG pipeline, once with the same model and prompt but no retrieved context. With RAG, Claude cited the specific 2.3% from our Q3 data. Without RAG, it gave me generic industry benchmarks about personalization typically driving 5-15% lift. Same model. Same prompt. Completely different answers. One is useful to my team. The other is a Google search.</p>
+<h4 id="cross-document-synthesis-test"><strong>Cross-Document Synthesis Test</strong></h4>
+<p>I asked “what’s working in our personalization program?”… Claude pulled from both the quarterly metric and the signal definitions, connected the behavioral targeting 3:1 ratio to the signal-first architecture in our scoring framework, and drew a novel insight: “the behavioral signal-first approach is validated by the data.” I didn’t tell it to connect those documents. The retrieval surfaced relevant chunks from both, and Claude reasoned across the evidence on its own.</p>
+<h4 id="out-of-context-behavior">Out-of-Context Behavior</h4>
+<p>I asked about our Salesforce integration strategy, which isn’t in any of the documents I ingested. ChromaDB still returned its top 3 chunks (it always does; there’s no “no match found” threshold). But Claude read the retrieved chunks, recognized none of them were about Salesforce, and said it didn’t have that information. Then it listed what it <em>did</em> have context for. No hallucination. No confident-sounding nonsense borrowed from training data.</p>
+<h2 id="day-4-rag-quality-deep-dive">Day 4: RAG Quality Deep Dive</h2>
+<p>Thursday was a full deep dive into three retrieval quality techniques: hybrid search, re-ranking, and metadata filtering. The pipeline works. The grounding test proved it. But “it finds the right documents” is a low bar. The goal for today was to see if I could make retrieval “smarter”: returning better chunks, filtering out noise, and handling queries where the top results by distance score aren’t actually the most relevant.</p>
+<h4 id="hybrid-search"><strong>Hybrid Search</strong></h4>
+<p>This one was a letdown. It was supposed to combine semantic search (meaning) with keyword search (exact terms) for better recall. But keyword matching never fired. ChromaDB’s <code>$contains</code> filter is case-sensitive and only matches exact substrings. Semantic search still found the right docs, just without the boost layer. Claude explained later Chrome DB is not good at this. A real implementation needs a dedicated keyword engine like Elasticsearch alongside the vector store. Which is obviously overkill for a five-document collection.</p>
+<h4 id="re-ranking-with-claude-haiku"><strong>Re-Ranking (With Claude Haiku)</strong></h4>
+<p>This one quietly did real work. The idea: after ChromaDB returns the top chunks by distance score, send them to Claude Haiku for a second pass. Haiku reads each chunk and scores its actual relevance to the query, not just its vector proximity. This technique caught things that distance scores alone couldn’t. Claude correctly pruned irrelevant chunks. It dropped Adobe Target config from a user persona query, but kept it for an integration query. Same chunk, different queries, correct judgment both times. This seems like the technique that would matter most at scale with hundreds of documents that contain a mix of relevance and noise.</p>
+<h4 id="metadata-filtering"><strong>Metadata filtering</strong></h4>
+<p>This technique is a no-brainer. Each chunk carries metadata tags from ingestion (source file, category). Filtering by category before the similarity search narrows the result set to the right domain. I tested with a performance-related query: the <code>performance</code> filter returned Q3 results at distance 0.662, while the <code>technical</code> filter returned signal definitions at 0.590. The distance scores alone would have preferred the wrong document. The filter fixed it. This maps directly to my real work: strategy docs shouldn’t surface for technical queries and vice versa.</p>
+<h2 id="day-5-knowledge-assistant-deployed">Day 5: Knowledge Assistant Deployed</h2>
+<p>Four days of building pipelines in Python scripts. Time to put it in front of people.</p>
+<p>I converted <code>rag_assistant.py</code> into a Streamlit app, reusing the patterns from the Week 5 Feature Spec Generator deployment: session state for multi-step flow, secrets management for API keys, spinners for the long embedding and generation calls. The conversion was straightforward because the RAG pipeline has a clean two-step architecture (retrieve, then generate) that maps naturally to Streamlit’s rerun model.</p>
+<p>The app added a few things the CLI script didn’t have. A file upload widget lets users ingest their own documents into the vector store without touching the command line. Source citations display below each answer so the user can see which chunks Claude drew from and verify the grounding. The vector store persists across sessions, so documents ingested once stay available.</p>
+<p>Deployment to Streamlit Cloud followed the same workflow as Week 5: push to a dedicated GitHub repo, connect in the Streamlit Cloud dashboard, configure secrets, deploy. No surprises this time. The muscle memory from the Feature Spec Generator deployment made this one feel routine.</p>
+<p>Two deployed tools now live: Feature Spec Generator and Knowledge Assistant. The first is a single-agent prompt wrapper. The second has an entire retrieval pipeline underneath it. From the user’s perspective, both are just a text box and a response. The complexity is invisible, which is exactly where it should be.</p>
+<h2 id="day-6-evaluation-foundations">Day 6: Evaluation Foundations</h2>
+<p>Bonus day! Now that I have real users for my Feature Spec Generator, I’m getting questions about consistency and quality, and I need to know: “Is my AI product actually good?”</p>
+<p>Claude presented me with an “extra credit” assignment to build a golden set of 10 test cases for my Feature Spec Generator. I built <code>evaluation.py</code> with 5 test cases and two evaluation layers:</p>
+<ol>
+<li>A set of rule-based checks (are the required sections present? is the output long enough?)</li>
+<li>An LLM-as-judge scorer that rates overall quality on a 5-point scale</li>
+</ol>
+<p>The results from the first run were weird. The rule-based checks passed at 94%, which seemed right. But the LLM judge scored 4.2/5.0, docking points for missing acceptance criteria and incomplete technical requirements. I looked at the specs. The acceptance criteria were there. So were the technical requirements. Then I discovered a truncation bug: the judge was evaluating only the first 3,000 chars and docking points for sections it couldn’t see. So I bumped the limit to 6,000 characters and ran it again. 94% rule-based, 4.6/5.0 LLM judge. Baseline recorded.</p>
+<h1 id="what-i-learned">What I Learned</h1>
+<h2 id="the-economics-of-embeddings"><strong>The Economics of Embeddings</strong></h2>
+<p>AI economics have become a much more central topic than I anticipated at the outset of this learning path. What I learned this week is that embeddings have completely different economics than LLM calls:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Operation</th><th>Cost (approximate)</th><th>Speed</th></tr></thead><tbody><tr><td>Claude Sonnet response (500 tokens)</td><td>~$0.01</td><td>2-5 seconds</td></tr><tr><td>Embed one sentence</td><td>~$0.00001</td><td>&#x3C;100ms</td></tr><tr><td>Embed 1,000 documents</td><td>~$0.01</td><td>&#x3C;10 seconds</td></tr></tbody></table>
+<p>The key insight for me: Embedding is <em>cheap</em>. You can embed your entire document library for pennies. Add more documents, use smaller chunks, use overlapping chunks, re-embed when source docs change, maintain multiple collections for different use cases. None of that meaningfully moves the cost needle compared to the LLM call that reasons over the results.</p>
+<p>The architectural implication is about where to invest optimization effort. If RAG cost = embedding (negligible) + search (negligible) + LLM call (where the money is), then the cost lever is the generation step: how much context you stuff into the prompt, which model you use (Haiku, Sonnet, etc.), how long the response is. The retrieval side is basically free to experiment with.</p>
+<p>If I wanted to reduce LLM costs for a RAG application as the PM, I would probably focus on things like caching frequent queries (same question = same answer, skip the LLM call entirely), routing simple queries to cheaper models, or truncating retrieved context to only what’s needed. I would not worry about reducing embeddings, since there’s almost nothing to save there.</p>
+<h2 id="embeddings-turn-meaning-into-math">Embeddings Turn Meaning Into Math</h2>
+<p>I drank from the firehose this week to understand the nuances between vectors, embeddings, chunks, and dimensions, especially in relation to tokens. It was a lot to take in, but I feel like I can “see” the matrix of embeddings, almost like a social graph or the stick-and-ball molecular models I used to construct in Chemistry class, but with thousands of dimensions instead of 2-3.</p>
+<p>This is all very fascinating to me as former student of Structuralist literary theory and Saussure’s theory of the sign: meaning arises from the system of differences between signs, not from any intrinsic connection between a word and what it refers to. In this light, a word doesn’t have any inherent meaning. Instead, a word means what it means because of how it differs from every other word in the system. “Dog” isn’t defined by some essential dog-ness. It’s defined by the fact that it’s not “cat,” not “log,” not “dig.” This network of differences is what imbues meaning.</p>
+<p>Embeddings work on exactly this principle, just implemented mathematically. No single dimension in a 1,536-element vector has a fixed, interpretable meaning like “this dimension represents animals.” The meaning of an embedding is entirely determined by its position relative to every other embedding in the space. “Dog” means what it means because of its distance from “puppy” (close), “cat” (medium), and “derivative” (far). Move all the other embeddings and you change what “dog” means, even if its own vector stays the same.</p>
+<p>This parallel goes even deeper. Saussure distinguished between <em>langue</em> (the system of relationships) and <em>parole</em> (individual utterances). The embedding model is the <em>langue</em>: a trained system of relationships where every concept is defined by its position relative to every other concept. Any specific embedding you generate is <em>parole</em>: a single instance produced by that system. And just like Saussure argued you can’t understand an utterance without understanding the system, you can’t interpret a single embedding vector without the model that produced it. That’s why you can’t mix embeddings from different models. Each model learns its own <em>langue</em>, its own system of differences. A vector from one system is meaningless in another.</p>
+<p>Where embeddings actually go beyond Structuralism is that they are non-binary. “Dog” isn’t just “not cat.” It’s 0.15 cosine distance from “puppy,” 0.4 from “cat,” 0.85 from “derivative.” The relationships are graded, which means the system encodes not just <em>that</em> things differ but <em>how much</em> and <em>in what directions</em> they differ.</p>
+<h2 id="rag-grounds-information-retrieval-but-claude-still-hallucinates">RAG Grounds Information Retrieval, But Claude Still Hallucinates</h2>
+<p>The zero-keyword overlap match makes the entire case for semantic search over keyword search in contexts where users don’t know the exact terminology used in a collection. This is a fundamental problem that library and information science practitioners spend a lot of time trying to solve. Reference librarians are experts at it in practice, but humans don’t scale (or work tirelessly at digital speed…the turnaround time is more like 2-3 days for a research question). The grounding test would also appeal to your typical librarian, and it will certainly assuage the doubts that many practitioners have about the accuracy and authority of the answers people get from AI systems.</p>
+<p>BUT …. Claude STILL hallucinates without explicit instructions. It undermines the entire premise of using RAG to ground its response. I wish Anthropic would address this issue. Having a “don’t make shit up” setting is just as important to me as selecting a model.</p>
+<h2 id="evaluation-tools-need-debugging-too">Evaluation Tools Need Debugging Too</h2>
+<p>The LLM judge was scoring specs lower than they deserved because it was only seeing the first 3,000 characters. Acceptance criteria and technical requirements were getting cut off. The fix (bumping to 6,000 chars) immediately revealed the true quality.</p>
+<p>Meta-lesson: if your evaluation says quality is low, make sure the evaluation itself isn’t broken before you start “fixing” the product.</p>
+<p>In any case, the evaluation habit starts now. Any time I touch a system prompt, I will know to run the golden set and track performance against the baseline over time. This is the difference between maintaining a tool and hoping it stays good.</p>
+<h1 id="what-i-struggled-with">What I Struggled With</h1>
+<h2 id="python-314-and-chromadb-incompatibility">Python 3.14 and ChromaDB Incompatibility</h2>
+<p>ChromaDB’s Pydantic v1 dependency doesn’t support Python 3.14. The error was a wall of <code>ConfigError</code> traces from deep inside Pydantic internals. The fix: installed Python 3.12 via Homebrew, created a separate <code>venv-rag</code> environment. My original venv still works for non-RAG tools.</p>
+<p>The recurring venv activation lesson continued: every new terminal session requires <code>source ~/Dropbox/ai-projects/venv-rag/bin/activate</code>. I hit <code>ModuleNotFoundError</code> at least twice this week from forgetting. I need to memorize this routine (or automate it).</p>
+<h1 id="the-week-6-shift">The Week 6 Shift</h1>
+<p>RAG is a great technique, but the veil has been lifted. Behind the curtain, LLM reasoning still dictates the output. Vector DBs blow my mind, but RAG doesn’t require a vector database. It’s just a retrieval + generation pattern. The retrieval layer can be backed by whatever storage fits the data. And while Claude can draw on actual documents, cite real numbers, and retrieve information beyond its training data, grounding is NOT automatic. You STILL have to instruct Claude to tell you when it doesn’t have enough information instead of making something up.</p>
+<p>The evaluation tool and golden set I created on Saturday was possibly a bigger unlock. I now have a baseline (94% rule-based, 4.6/5.0 LLM judge) for my Feature Spec Generator. Any future prompt changes can be measured against that baseline. No more vibes-based quality assessment.</p>
+<p>Next week: hosted vector databases (Pinecone), agentic RAG, and MCP.</p> </div> </main> <footer class="border-t border-stone-200 mt-24"> <div class="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between"> <span class="text-sm text-stone-400">Built by Richard Thomchick</span> <span class="text-sm text-stone-400">Powered by Astro</span> </div> </footer>  </body></html>
