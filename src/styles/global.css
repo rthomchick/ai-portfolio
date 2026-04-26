@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'DM Sans', sans-serif;
 }
@@ -9,4 +11,34 @@ html {
   font-family: 'DM Sans', sans-serif;
   background-color: #FFFFFF;
   color: #1C1917;
+}
+
+/* Smooth theme transition — applied only after initial load to prevent flash */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+}
+
+/* Prose dark overrides */
+.dark .prose {
+  --tw-prose-body: #F5F5F4;
+  --tw-prose-headings: #F5F5F4;
+  --tw-prose-links: #2DD4BF;
+  --tw-prose-bold: #F5F5F4;
+  --tw-prose-counters: #A8A29E;
+  --tw-prose-bullets: #A8A29E;
+  --tw-prose-hr: #292524;
+  --tw-prose-quotes: #D6D3D1;
+  --tw-prose-quote-borders: #44403C;
+  --tw-prose-code: #E7E5E4;
+  --tw-prose-pre-code: #E7E5E4;
+  --tw-prose-pre-bg: #1C1917;
+  --tw-prose-th-borders: #44403C;
+  --tw-prose-td-borders: #292524;
+}
+
+.dark {
+  color-scheme: dark;
 }

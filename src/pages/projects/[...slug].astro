@@ -16,9 +16,9 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 const badgeClasses: Record<string, string> = {
-  deployed: 'bg-teal-50 text-teal-600',
-  built: 'bg-stone-100 text-stone-500',
-  planning: 'bg-stone-50 text-stone-400',
+  deployed: 'bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-400',
+  built: 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400',
+  planning: 'bg-stone-50 text-stone-400 dark:bg-stone-800 dark:text-stone-500',
 };
 const badgeLabel: Record<string, string> = {
   deployed: 'live',
@@ -30,59 +30,59 @@ const badgeLabel: Record<string, string> = {
 <BaseLayout title={project.data.title}>
   <Header />
   <main class="max-w-5xl mx-auto px-6 py-12">
-    <a href="/projects" class="text-sm text-stone-500 hover:text-stone-900 transition-colors no-underline mb-8 block">← Projects</a>
+    <a href="/projects" class="text-sm text-teal-600 dark:text-teal-400 hover:underline transition-colors no-underline mb-8 block">← Projects</a>
 
     <div class="flex items-center gap-3 mb-4">
-      <h1 class="text-3xl font-medium tracking-tight text-stone-900">{project.data.title}</h1>
+      <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100">{project.data.title}</h1>
       <span class={`text-xs px-2.5 py-1 rounded-full font-medium ${badgeClasses[project.data.status]}`}>
         {badgeLabel[project.data.status]}
       </span>
     </div>
 
-    <p class="text-base text-stone-500 leading-relaxed max-w-2xl mb-10">{project.data.description}</p>
+    <p class="text-base text-stone-500 dark:text-stone-400 leading-relaxed max-w-2xl mb-10">{project.data.description}</p>
 
     <!-- Details section -->
-    <div class="bg-stone-50 rounded-lg p-6 mb-10 max-w-2xl">
+    <div class="bg-stone-50 dark:bg-stone-900 rounded-lg p-6 mb-10 max-w-2xl">
       <dl class="flex flex-col gap-4">
         <div>
-          <dt class="text-xs uppercase tracking-wider text-stone-400 mb-1">Problem solved</dt>
-          <dd class="text-sm text-stone-700 leading-relaxed">{project.data.problemSolved}</dd>
+          <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1">Problem solved</dt>
+          <dd class="text-sm text-stone-700 dark:text-stone-300 leading-relaxed">{project.data.problemSolved}</dd>
         </div>
 
         {project.data.architecturePattern && (
           <div>
-            <dt class="text-xs uppercase tracking-wider text-stone-400 mb-1">Architecture</dt>
-            <dd class="text-sm text-stone-700">{project.data.architecturePattern}</dd>
+            <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1">Architecture</dt>
+            <dd class="text-sm text-stone-700 dark:text-stone-300">{project.data.architecturePattern}</dd>
           </div>
         )}
 
         <div>
-          <dt class="text-xs uppercase tracking-wider text-stone-400 mb-2">Tech stack</dt>
+          <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-2">Tech stack</dt>
           <dd class="flex flex-wrap gap-1.5">
             {project.data.techStack.map(tech => (
-              <span class="text-xs bg-white border border-stone-200 text-stone-600 px-2.5 py-1 rounded-full">{tech}</span>
+              <span class="text-xs bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-full">{tech}</span>
             ))}
           </dd>
         </div>
 
         <div>
-          <dt class="text-xs uppercase tracking-wider text-stone-400 mb-1">Week built</dt>
+          <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1">Week built</dt>
           <dd>
-            <a href={`/journal`} class="text-sm text-teal-600 hover:underline">Week {project.data.weekBuilt}</a>
+            <a href={`/journal`} class="text-sm text-teal-600 dark:text-teal-400 hover:underline">Week {project.data.weekBuilt}</a>
           </dd>
         </div>
 
         {(project.data.deployUrl || project.data.repoUrl) && (
           <div>
-            <dt class="text-xs uppercase tracking-wider text-stone-400 mb-2">Links</dt>
+            <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-2">Links</dt>
             <dd class="flex flex-wrap gap-4">
               {project.data.deployUrl && (
-                <a href={project.data.deployUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:underline">
+                <a href={project.data.deployUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 dark:text-teal-400 hover:underline">
                   Live app ↗
                 </a>
               )}
               {project.data.repoUrl && (
-                <a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:underline">
+                <a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 dark:text-teal-400 hover:underline">
                   GitHub ↗
                 </a>
               )}
@@ -93,7 +93,7 @@ const badgeLabel: Record<string, string> = {
     </div>
 
     <!-- Body -->
-    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline">
+    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert">
       <Content />
     </div>
   </main>

@@ -17,12 +17,23 @@ const { title = 'Richard Thomchick', description = 'AI product development portf
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
     <title>{title === 'Richard Thomchick' ? title : `${title} — Richard Thomchick`}</title>
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-white text-stone-900 font-sans antialiased">
+  <body class="bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans antialiased">
     <slot />
   </body>
 </html>

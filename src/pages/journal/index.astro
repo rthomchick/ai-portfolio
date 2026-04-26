@@ -11,22 +11,22 @@ const sorted = allEntries.sort((a, b) => b.data.week - a.data.week);
 <BaseLayout title="Journal">
   <Header />
   <main class="max-w-5xl mx-auto px-6 py-12">
-    <h1 class="text-3xl font-medium tracking-tight text-stone-900 mb-3">Journal</h1>
-    <p class="text-base text-stone-500 leading-relaxed mb-12">Weekly entries from a six-month AI product development program.</p>
+    <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-3">Journal</h1>
+    <p class="text-base text-stone-500 dark:text-stone-400 leading-relaxed mb-12">Weekly entries from a six-month AI product development program.</p>
 
-    <div class="divide-y divide-stone-200">
+    <div class="divide-y divide-stone-200 dark:divide-stone-800">
       {sorted.map(entry => (
         <article class="py-8">
           <div class="flex items-baseline gap-3 mb-2">
-            <time class="text-xs text-stone-400" datetime={entry.data.date.toISOString()}>
+            <time class="text-xs text-stone-400 dark:text-stone-500" datetime={entry.data.date.toISOString()}>
               {entry.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </time>
           </div>
-          <a href={`/journal/${entry.id}`} class="block text-lg font-medium text-stone-900 hover:text-teal-600 transition-colors mb-2 no-underline">
+          <a href={`/journal/${entry.id}`} class="block text-lg font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors mb-2 no-underline">
             {entry.data.headline}
           </a>
-          <p class="text-sm text-stone-500 leading-relaxed mb-3 max-w-2xl">{entry.data.summary}</p>
-          <p class="text-xs text-stone-400">{entry.data.tags.join(', ')}</p>
+          <p class="text-sm text-stone-500 dark:text-stone-400 leading-relaxed mb-3 max-w-2xl">{entry.data.summary}</p>
+          <p class="text-xs text-stone-400 dark:text-stone-500">{entry.data.tags.join(', ')}</p>
         </article>
       ))}
     </div>
