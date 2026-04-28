@@ -1,43 +1,71 @@
-# Astro Starter Kit: Minimal
+# AI Product Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
+A portfolio site and learning journal documenting a six-month AI product development program. Built with Astro and Tailwind CSS, deployed on Vercel.
+
+**Live site:** [richardthomchick.com](https://www.richardthomchick.com)
+
+## What this is
+
+A Senior Product Manager's hands-on journey from zero AI experience to shipping production AI tools. The site serves as both a portfolio of deployed tools and a weekly journal capturing the technical decisions, architecture patterns, and lessons learned along the way.
+
+## What's on the site
+
+**Journal** — Weekly entries covering topics from LLM fundamentals and API basics through multi-agent systems, RAG pipelines, evaluation infrastructure, and responsible AI governance. Each entry focuses on what was built, what broke, and what the fix taught.
+
+**Projects** — Deployed AI tools including a multi-agent SAFe feature spec system, a RAG-powered knowledge assistant, an ROI analyzer, and more. Each project page documents the problem solved, architecture pattern used, and key learnings.
+
+## Tech stack
+
+- [Astro](https://astro.build) 5.x — static site generator
+- [Tailwind CSS](https://tailwindcss.com) 4.x — utility-first CSS with `@tailwindcss/typography`
+- [Vercel](https://vercel.com) — hosting and deployment
+- [DM Sans](https://fonts.google.com/specimen/DM+Sans) — typography
+- Dark mode with class-based toggling and system preference detection
+
+## Project structure
+
+```
+src/
+├── content/
+│   ├── journal/        # Markdown journal entries (weekly)
+│   └── projects/       # Markdown project pages
+├── components/
+│   ├── Header.astro
+│   ├── Footer.astro
+│   ├── ThemeToggle.astro
+│   ├── FeaturedEntry.astro
+│   ├── JournalCard.astro
+│   └── ProjectCard.astro
+├── layouts/
+│   └── BaseLayout.astro
+├── pages/
+│   ├── index.astro
+│   ├── about.astro
+│   ├── journal/
+│   └── projects/
+└── styles/
+    └── global.css
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Local development
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm install
+npm run dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+The dev server runs at `localhost:4321`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Adding content
 
-Any static assets, like images, can be placed in the `public/` directory.
+Journal entries and project pages are Markdown files with YAML frontmatter in `src/content/journal/` and `src/content/projects/`. The site rebuilds automatically on push to `main` via Vercel.
 
-## 🧞 Commands
+A Claude Code command is available for publishing journal entries from Notion:
 
-All commands are run from the root of the project, from a terminal:
+```bash
+/project:publish-journal Week N
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Built with
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+The site itself, the journal content, and every tool documented on it were built using Claude (Anthropic). The development workflow uses Claude Code for file-level implementation and Claude.ai for architectural decisions and documentation.
