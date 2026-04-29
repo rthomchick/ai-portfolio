@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.1.5"><meta name="description" content="AI product development portfolio and learning journal."><meta name="color-scheme" content="light dark"><title>Week 9 Journal: AI Evaluation System — Richard Thomchick</title><script>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/Footer.CmClEGS5.css"></head> <body class="bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans antialiased">  <header class="border-b border-stone-200 dark:border-stone-800 dark:bg-stone-950"> <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between"> <a href="/" class="text-stone-900 dark:text-stone-100 font-medium text-base no-underline hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+Richard Thomchick
+</a> <nav class="flex items-center gap-6"> <a href="/journal" class="text-sm transition-colors no-underline text-stone-900 dark:text-stone-100 font-medium"> Journal </a><a href="/projects" class="text-sm transition-colors no-underline text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-teal-400"> Projects </a><a href="/about" class="text-sm transition-colors no-underline text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-teal-400"> About </a> <button id="theme-toggle" aria-label="Toggle theme" class="text-stone-500 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 dark:focus-visible:ring-teal-400 rounded-sm"> <!-- Sun icon (light mode active) --> <svg id="icon-light" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"> <circle cx="12" cy="12" r="4"></circle> <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path> </svg> <!-- Moon icon (dark mode active) --> <svg id="icon-dark" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"> <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path> </svg> <!-- Monitor icon (system preference active) --> <svg id="icon-system" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"> <rect width="20" height="14" x="2" y="3" rx="2"></rect> <path d="M8 21h8M12 17v4"></path> </svg> </button> <script>
+  (function() {
+    const btn = document.getElementById('theme-toggle');
+    const iconLight = document.getElementById('icon-light');
+    const iconDark = document.getElementById('icon-dark');
+    const iconSystem = document.getElementById('icon-system');
+
+    function getState() {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'light') return 'light';
+      if (stored === 'dark') return 'dark';
+      return 'system';
+    }
+
+    function showIcon(state) {
+      iconLight.classList.toggle('hidden', state !== 'light');
+      iconDark.classList.toggle('hidden', state !== 'dark');
+      iconSystem.classList.toggle('hidden', state !== 'system');
+    }
+
+    function applyTheme(state) {
+      const html = document.documentElement;
+      html.classList.add('theme-transition');
+      setTimeout(function() { html.classList.remove('theme-transition'); }, 300);
+
+      if (state === 'dark') {
+        html.classList.add('dark');
+      } else if (state === 'light') {
+        html.classList.remove('dark');
+      } else {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          html.classList.add('dark');
+        } else {
+          html.classList.remove('dark');
+        }
+      }
+    }
+
+    function nextState(current) {
+      if (current === 'light') return 'dark';
+      if (current === 'dark') return 'system';
+      return 'light';
+    }
+
+    showIcon(getState());
+
+    btn.addEventListener('click', function() {
+      const current = getState();
+      const next = nextState(current);
+
+      if (next === 'system') {
+        localStorage.removeItem('theme');
+      } else {
+        localStorage.setItem('theme', next);
+      }
+
+      applyTheme(next);
+      showIcon(next);
+    });
+  })();
+</script> </nav> </div> </header> <main class="max-w-5xl mx-auto px-6 py-12"> <a href="/journal" class="text-sm text-teal-600 dark:text-teal-400 hover:underline transition-colors no-underline mb-8 block">← Journal</a> <p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-4">February 23, 2026</p> <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-2xl leading-tight">Week 9 Journal: AI Evaluation System</h1> <!-- Tags --> <div class="flex flex-wrap gap-2 mb-8"> <span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">evaluation</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">llm-as-judge</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">sqlite</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">streamlit</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">prompt-engineering</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">a-b-testing</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">python</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">claude-code</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">safe</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">prompt-versioning</span> </div> <!-- Body --> <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert"> <p><em>Goal: Build evaluation infrastructure that turns prompt engineering from guesswork into measurement. Use the SAFe Feature Spec System as the test case.</em></p>
+<hr>
+<h1 id="what-i-built">What I Built</h1>
+<p>An evaluation pipeline, a prompt versioning system, a golden set, a five-tab Streamlit dashboard, and an AI-powered improvement suggester. Together, they form a closed loop: run tests automatically, store results in SQLite, compare prompt versions with real data, visualize trends, and get Claude’s suggestions for what to fix next.</p>
+<h2 id="day-1-sqlite-foundations--token-instrumentation">Day 1: SQLite Foundations + Token Instrumentation</h2>
+<p>Monday was all plumbing. Claude Code built four modules in <code>safe-feature-system/evaluation/</code>:</p>
+<p><strong><code>eval_db.py</code></strong> creates a SQLite database with three core tables: <code>prompts</code> (content-addressed via SHA-256 prefix), <code>eval_runs</code> (one row per pipeline execution), and <code>token_usage</code> (one row per LLM call). Content-addressed hashing was Claude Code’s design choice, not mine, and I was skeptical at first. But the idempotency argument won me over: registering the same prompt twice returns the same ID instead of creating a duplicate. Same principle as Pinecone’s idempotent upsert from Week 7, applied to prompt management.</p>
+<p><strong><code>token_tracker.py</code></strong> provides a shared <code>llm_call()</code> wrapper that intercepts every API call, records <code>response.usage.input_tokens</code> and <code>response.usage.output_tokens</code>, and passes through the result. The <code>tracker=None</code> default means existing code works without changes. No agent function signatures had to change their return types.</p>
+<p><strong><code>prompt_registry.py</code></strong> and <strong><code>result_store.py</code></strong> round out the storage layer: version control for prompts and structured persistence for evaluation results.</p>
+<p>In the evening block, I wired <code>llm_call()</code> into all six SAFe agents (Router, Clarifier, Generator, Reviewer, Improver, Polisher). Every agent now records its token usage, but the instrumentation is invisible unless you pass a tracker. Backward compatible by default.</p>
+<h2 id="day-2-eval-runner--golden-set--baseline">Day 2: Eval Runner + Golden Set + Baseline</h2>
+<p>The golden set was the hardest part of the week. Not technically, but in terms of the discipline required to write good test cases. Six cases covering all three feature types (CAPABILITY, EXPERIENCE, WEBPAGE), each in two variants:</p>
+<ul>
+<li><strong>Bare</strong>: minimal input notes, simulating the starting inputs a PM or stakeholder might use to initiate a feature request; contains intentional information gaps</li>
+<li><strong>Boosted</strong>: inputs added between Review and Improvement stages, simulating context and clarifications a PM might provide to improve feature readiness (e.g., KPI targets, technical constraints, compliance details)</li>
+</ul>
+<p>That bare/boosted pairing turned out to be one of the most useful design decisions of the week.</p>
+<p><code>eval_runner.py</code> feeds each test case through the full SAFe pipeline (classify → generate → review), stores the scorecard in SQLite with timestamps and prompt version IDs, and records token usage along the way. CLI flags let me run a single case (<code>--case cap_001_bare</code>) or the full set, with either Router version (<code>--router v1|v2</code>).</p>
+<h3 id="v1-baseline-results">V1 Baseline Results</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Case</th><th>Type</th><th>Score</th><th>Pass</th><th>Routing</th><th>Cost</th></tr></thead><tbody><tr><td>cap_001_bare</td><td>CAPABILITY</td><td>78</td><td>✅</td><td>✅</td><td>$0.23</td></tr><tr><td>cap_001_boosted</td><td>CAPABILITY</td><td>92</td><td>✅</td><td>✅</td><td>$0.26</td></tr><tr><td>web_001_bare</td><td>WEBPAGE</td><td>62</td><td>❌</td><td>✅</td><td>$0.26</td></tr><tr><td>web_001_boosted</td><td>WEBPAGE</td><td>87</td><td>✅</td><td>✅</td><td>$0.27</td></tr><tr><td>exp_001_bare</td><td>EXPERIENCE</td><td>78</td><td>✅</td><td>→CAPABILITY</td><td>$0.27</td></tr><tr><td>exp_001_boosted</td><td>EXPERIENCE</td><td>93</td><td>✅</td><td>→CAPABILITY</td><td>$0.27</td></tr></tbody></table>
+<p><strong>Total: 5/6 passed | $1.56 | ~20 min runtime</strong></p>
+<p>Two things jumped out immediately. First, both EXPERIENCE cases routed to CAPABILITY. This was the intermittent routing bug from Week 8, now visible in data instead of hidden behind a single manual test. Second, the bare→boosted spread was massive and consistent: +14 (CAP), +25 (WEB), +15 (EXP).</p>
+<h2 id="day-3-router-ab-test">Day 3: Router A/B Test</h2>
+<p>The EXPERIENCE misclassification gave me a clear target for my first A/B test. Claude Code built a v2 Router prompt with explicit signal words per feature type (“form component” + “Arc Design System” → EXPERIENCE) and removed a subtle CAPABILITY fallback bias from v1. I also got a lightweight routing-only A/B test script (<code>ab_test_router.py</code>) that runs all 6 classifications against both prompts: 12 Haiku calls, total cost about half a cent.</p>
+<p><strong>Run 1:</strong> v1 misfires on <code>exp_001_bare</code> (→CAPABILITY), v2 gets all 6 correct.<br>
+<strong>Run 2:</strong> Both v1 and v2 get 6/6 correct.</p>
+<p>This is the pattern that made the whole evaluation pipeline worth building. If I’d only tested once and gotten the right answer from v1, I would have assumed routing was fine. Multiple runs revealed the flakiness. v1 classified EXPERIENCE correctly maybe 5 out of 6 times. Not terrible, but not consistently reliable.</p>
+<p>I ran a full pipeline evaluation with Router v2. All 6 cases passed, all routing correct, $1.45 total. The downstream score impact was modest (+3 on EXPERIENCE bare, +1 on boosted) because the generator was robust enough to produce reasonable output even with the wrong question bank. But eliminating an intermittent failure matters more than the score delta suggests. Intermittent bugs are worse than consistent bugs because they’re harder to reproduce.</p>
+<p>Router v2 promoted. My first data-driven prompt change.</p>
+<h2 id="day-4-dashboard">Day 4: Dashboard</h2>
+<p>Thursday was light. I built a dashboard with five tabs via Claude Code in a single session:</p>
+<p><strong>Tab 1: Run Evaluation</strong> lets me select a router version, pick a case or run the full set, and see results with expandable per-case scorecards. Color-coded sections and recommendations.</p>
+<p><strong>Tab 2: Compare Runs</strong> does side-by-side comparison of any two runs with section-level deltas. Shows router version, reviewer version, classification, and score.</p>
+<p><strong>Tab 3: Quality Dashboard</strong> has a score-over-time line chart with all 6 golden set cases color-coded, a per-section score trend with dropdown selector, and a historical runs table.</p>
+<p><strong>Tab 4: Cost Tracker</strong> shows summary metrics (total spend, avg cost/run, total runs), a cost-per-run bar chart, and a cost-by-agent breakdown table. This is where the Generator’s cost dominance became visible (more on that below).</p>
+<p><strong>Tab 5: Suggest Improvements</strong> was a placeholder for Day 5.</p>
+<h2 id="day-5-improvement-suggester">Day 5: Improvement Suggester</h2>
+<p>As many a manager has said, “Come to me with solutions, not just problems.” The Improvement Suggester does just that. It loads all stored runs for a golden set case, aggregates section scores and reviewer feedback, identifies the weakest sections, and calls Claude Sonnet at temperature 0.2 to analyze the patterns and propose specific prompt edits. Each suggestion includes: a quote from the current prompt, a diagnosis, a suggested edit, and a rationale.</p>
+<p>The key design choice: the Suggester proposes. I decide whether to apply. It doesn’t auto-modify prompts. That’s the human-in-the-loop pattern from Week 8, applied to prompt optimization instead of spec improvement.</p>
+<p>Dashboard Tab 5 wired up: case dropdown, sections-to-analyze input, expandable result cards with score badges and diff-formatted suggestions. The session state caches results keyed by (case_id, run_count) so they auto-invalidate when new runs are added.</p>
+<h1 id="what-i-learned">What I Learned</h1>
+<h2 id="llm-as-judge-variance-is-real-even-at-temperature-00">LLM-as-Judge Variance Is Real (Even at Temperature 0.0)</h2>
+<p>The most counterintuitive finding of the week. I ran <code>cap_001_bare</code> three times with identical inputs, identical prompts, and temperature set to 0.0. The scores came back: 71, 78, 71.</p>
+<p>My first reaction was that something was broken. Temperature 0.0 is supposed to be deterministic. Same input, same prompt, same model. The scores should be identical.</p>
+<p>They’re not. And they never will be.</p>
+<p>Even at temperature 0.0, there’s enough non-determinism in the inference process (floating point arithmetic, batching, hardware state) that the same evaluation produces different scores on consecutive runs. The variance I observed was roughly ±7 points on a 100-point scale.</p>
+<p>This changes how I interpret every evaluation result. A score of 78 doesn’t mean 78. It means somewhere in the low-to-mid 70s, probably. A single run is a data point, not a verdict. The PM analogy is obvious: one day’s conversion rate doesn’t tell you anything. A two-week trend does. I knew this from product analytics. I just hadn’t internalized it for AI evaluation.</p>
+<h2 id="the-bareboosted-spread-quantifies-the-value-of-pm-input">The Bare/Boosted Spread Quantifies the Value of PM Input</h2>
+<p>The score spread between bare and boosted variants:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Type</th><th>Bare</th><th>Boosted</th><th>Spread</th></tr></thead><tbody><tr><td>CAPABILITY</td><td>71-78</td><td>92</td><td>+14 to +21</td></tr><tr><td>WEBPAGE</td><td>62-72</td><td>87</td><td>+15 to +25</td></tr><tr><td>EXPERIENCE</td><td>78-81</td><td>93-94</td><td>+13 to +15</td></tr></tbody></table>
+<p>The boost inputs aren’t making the AI smarter. They’re giving it information it literally doesn’t have. When the bare WEBPAGE case scores 62, it’s because the generator doesn’t know the client’s SEO requirements, the specific analytics platform, or the campaign taxonomy. It fills those gaps with reasonable industry defaults (LCP under 2.5 seconds, 44×44 pixel touch targets, GA4 event taxonomy). These aren’t hallucinations. They’re educated guesses. But they’re not the client’s actual requirements, and the reviewer correctly penalizes that.</p>
+<p>This has direct product implications. The SAFe system’s long-term vision is to transform vague intake form submissions into well-formed specs. The bare/boosted spread tells me exactly which sections the intake form needs to extract information for. It’s a roadmap for the product, derived from evaluation data.</p>
+<h2 id="where-the-money-goes">Where the Money Goes</h2>
+<p>The cost tracker revealed that the Generator consumes 67% of total pipeline cost. Out of $3.74 spent across 15+ runs, $2.52 went to the Generator. This makes sense once you see it: the Generator produces the longest output (a complete SAFe Feature spec) from the longest input (all section answers plus the system prompt plus the preamble). The Router, running on Haiku instead of Sonnet, costs almost nothing. If cost optimization becomes important, the Generator is the first target, and I now have real data that shows why.</p>
+<h2 id="the-claude-code-workflow-shift">The Claude Code Workflow Shift</h2>
+<p>This was my first full week using Claude Code for all implementation. The division of labor: Claude Code writes files, runs tests, handles merges. The conversational Claude (this project) reviews architecture, makes design decisions, handles Notion documentation.</p>
+<p>What worked: the hybrid model let me focus on the “what” and “why” while Claude Code handled the “how.” I spent my time reviewing design choices (like the content-addressed hashing) instead of debugging Python imports.</p>
+<p>What felt uncomfortable: trusting code I hadn’t written line by line. In earlier weeks, I understood every function because I’d built it or edited it myself (with a LOT of hand-holding from Claude). This week, I had to trust the smoke tests and integration tests instead of reading every line.</p>
+<h1 id="what-i-struggled-with">What I Struggled With</h1>
+<p>Not many hiccups this week. I’ve got my CLI legs under me now. The infrastructure work was mostly clean because I had solid foundations from Week 8. SQLite is built into Python (no dependency issues for a change). The eval runner imports the existing SAFe pipeline and wraps it with measurement, so there wasn’t a lot of new architecture to invent.</p>
+<p>The score variance discovery was frustrating until I understood it was a feature of the problem space, not a bug in my code. And the improvement suggester’s suggestions were sometimes too vague (“add more detail to this section”) despite the prompt asking for specific edits. But those are tuning problems, not architectural ones.</p>
+<p>The biggest “struggle” was resisting the urge to act on every suggestion the improvement suggester produced. It’s tempting to implement all five edits at once. But the whole point of A/B testing is changing one variable at a time.</p>
+<h1 id="the-week-9-shift">The Week 9 Shift</h1>
+<p>Week 8’s mental model was “AI that replaces a manual workflow end-to-end.” Week 9 is “AI that measures and improves itself.” The first is a product. The second is product infrastructure. The distinction maps to a career pattern I recognize: early-career PMs ship features, senior PMs build the systems (analytics, experimentation, quality monitoring) that make features better. The evaluation pipeline is the AI equivalent. No user will ever see the dashboard. But it’s the thing that turns every future prompt change into a data-driven decision instead of a guess.</p>
+<h2 id="key-numbers">Key Numbers</h2>
+<ul>
+<li>10 new Python modules in <code>safe-feature-system/evaluation/</code></li>
+<li>6 golden set test cases (3 types × bare/boosted)</li>
+<li>15+ evaluation runs stored in SQLite</li>
+<li>1 A/B test completed (Router v1 → v2 promoted)</li>
+<li>$3.74 total evaluation spend</li>
+<li>$1.45 per full golden set run</li>
+<li>$0.25 per individual case</li>
+<li>±7 point LLM-as-judge variance at temperature 0.0</li>
+<li>14-25 point bare/boosted spread across feature types</li>
+<li>67% of pipeline cost concentrated in the Generator agent</li>
+<li>5-tab Streamlit dashboard</li>
+</ul>
+<h2 id="looking-ahead">Looking Ahead</h2>
+<p>Next week I’ll be learning how to layer Responsible AI on top of capability. The evaluation infrastructure is where things like bias detection, content safety checks, cost guardrails, and audit trails will plug in.</p>
+<p>The improvement suggester already hints at what’s next: it can identify when WEBPAGE specs consistently score lower than CAPABILITY specs on the same rubric criteria. Is that a legitimate quality gap (WEBPAGE inputs tend to be thinner), or is it rubric bias (the rubric unfairly penalizes WEBPAGE-specific sections)? Week 10 will answer that with data.</p>
+<hr>
+<p><em>Week 9 complete. Evaluation pipeline operational. Every prompt change is now an experiment with a measurable outcome.</em></p> </div> </main> <footer class="border-t border-stone-200 dark:border-stone-800 dark:bg-stone-950 mt-24"> <div class="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between"> <span class="text-sm text-stone-400">Built by Richard Thomchick</span> <span class="text-sm text-stone-400">Powered by Astro</span> </div> </footer>  </body></html>
