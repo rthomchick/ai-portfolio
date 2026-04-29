@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.1.5"><meta name="description" content="AI product development portfolio and learning journal."><meta name="color-scheme" content="light dark"><title>Parse, edit, reassemble — Richard Thomchick</title><script>
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.1.5"><meta name="description" content="AI product development portfolio and learning journal."><meta name="color-scheme" content="light dark"><title>Week 8 Journal: Return of the Feature Spec Generator — Richard Thomchick</title><script>
       (function() {
         const stored = localStorage.getItem('theme');
         if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -69,11 +69,144 @@ Richard Thomchick
       showIcon(next);
     });
   })();
-</script> </nav> </div> </header> <main class="max-w-5xl mx-auto px-6 py-12"> <a href="/journal" class="text-sm text-teal-600 dark:text-teal-400 hover:underline transition-colors no-underline mb-8 block">← Journal</a> <p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-4">March 13, 2026</p> <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-2xl leading-tight">Parse, edit, reassemble</h1> <!-- Tags --> <div class="flex flex-wrap gap-2 mb-8"> <span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">multi-agent</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">structured-output</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">prompt-engineering</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">evaluation</span> </div> <!-- Body --> <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert"> <p>This was the week that taught me the most about production AI architecture. The goal was straightforward: build a system that takes vague stakeholder requests and produces structured SAFe feature specifications. The implementation taught me lessons I couldn’t have learned from documentation.</p>
-<h2 id="the-architecture">The architecture</h2>
-<p>The system uses a multi-agent pipeline: a Router classifies incoming requests by type, an Interviewer gathers missing context through structured questions, and a Generator produces the spec. Simple enough on paper.</p>
-<h2 id="where-it-broke">Where it broke</h2>
-<p>The interesting part was the improvement pipeline. After generating a spec, I wanted to automatically improve it based on scoring rubrics. My first approach — find the weak section in the output string and replace it in place — caused cascading corruption. Change one section and the surrounding context shifts, scores drift, and you end up with a worse spec than you started with.</p>
-<h2 id="the-fix">The fix</h2>
-<p>The reliable pattern is Parse → Edit → Reassemble. Parse the structured output into discrete sections, improve the target section in isolation, then reassemble the full document. This prevents score drift on untouched sections and gives you clean before/after comparisons.</p>
-<p>This is the kind of lesson that only comes from building. No tutorial would have taught me that positional string surgery on LLM outputs is fundamentally fragile.</p> </div> </main> <footer class="border-t border-stone-200 dark:border-stone-800 dark:bg-stone-950 mt-24"> <div class="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between"> <span class="text-sm text-stone-400">Built by Richard Thomchick</span> <span class="text-sm text-stone-400">Powered by Astro</span> </div> </footer>  </body></html>
+</script> </nav> </div> </header> <main class="max-w-5xl mx-auto px-6 py-12"> <a href="/journal" class="text-sm text-teal-600 dark:text-teal-400 hover:underline transition-colors no-underline mb-8 block">← Journal</a> <p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-4">February 16, 2026</p> <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-2xl leading-tight">Week 8 Journal: Return of the Feature Spec Generator</h1> <!-- Tags --> <div class="flex flex-wrap gap-2 mb-8"> <span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">multi-agent</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">streamlit</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">safe</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">feature-spec</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">session-state</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">reflexive-architecture</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">llm-as-judge</span><span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">workflow-automation</span> </div> <!-- Body --> <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert"> <p><em>Goal: automate a multi-step product management workflow with quality-critical outputs.</em></p>
+<hr>
+<p>Week 8 was about utilizing all the things I’d learned so far to solve a real-world problem. I decided to revisit my Feature Spec Generator and re-imagine it as a multi-agent system.</p>
+<h1 id="the-problem-i-was-solving">The Problem I Was Solving</h1>
+<p>Last year, my PM team created a shared prompt library to speed up the feature documentation process for our website. The prompts were very detailed and produced high-quality output, but the process still took hours or even days as each PM hunted down information from across the organization to answer 20-40 questions per feature.</p>
+<p>I experimented with multiple chat sessions to speed things up:</p>
+<ul>
+<li>Session 1: Paste prompt → run Q&#x26;A interview (20-40 questions)</li>
+<li>Session 2: Help draft answers → copy back to Session 1 manually</li>
+<li>Session 1: Generate spec from answers</li>
+<li>Session 3: Paste spec into Review prompt → get 100-point scorecard → iterate by hand</li>
+</ul>
+<p>That was the workflow. Three browser tabs, fragmented context, and me as the integration layer: a human clipboard, copying and pasting outputs between chat sessions. I was moving 2x faster, and my docs met the 90% scorecard threshold, but I could still only produce 2-3 docs a week. Not quick enough for leadership. They wanted 4-5 feature docs per week. All with 90+ scores.</p>
+<p>I knew there must be a better way. And this week, I manifested it: an agentic AI system that can produce 4-5 feature docs per hour with a consistently high level of quality.</p>
+<h1 id="what-i-built">What I Built</h1>
+<p>This week’s build: a six-agent Streamlit application I call “SAFe Feature Spec System”. The premise is simple; a PM describes the feature, pastes some notes, and the system handles (almost) everything else, including:</p>
+<ul>
+<li>Classifying the feature type (content, experience, capability)</li>
+<li>Drafting answers to clarifying questions</li>
+<li>Generating a full SAFe feature spec</li>
+<li>Scoring the spec against a 100-point rubric</li>
+<li>Improving the spec to meet quality thresholds</li>
+<li>Outputting a full spec with a score >= 90%</li>
+</ul>
+<p>The system uses a reflexive (self-improving) architecture with six agents that have specific jobs.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Agent</th><th>Model</th><th>Job</th></tr></thead><tbody><tr><td><strong>Classifier</strong></td><td>Haiku</td><td>Reads the feature description and classifies it as a Capability, Experience, or Content request. This determines which question bank and which rubric interpretation to use.</td></tr><tr><td><strong>Clarifier</strong></td><td>Sonnet</td><td>Takes the PM’s pasted notes and proposes answers to the interview questions, section by section. Where the notes don’t cover something, it says so. <strong>The PM reviews, edits, and fills gaps before the pipeline continues.</strong></td></tr><tr><td><strong>Spec Generator</strong></td><td>Sonnet</td><td>Takes all the answers and produces a full SAFe Feature spec with all required sections (e.g., strategy, scope, design dependencies, technical requirements), and user stories with acceptance criteria.</td></tr><tr><td><strong>Reviewer</strong></td><td>Sonnet</td><td>Scores the generated spec against a 100-point rubric, section by section. <strong>The PM sees the scorecard and can paste boost inputs (additional domain context) for sections that scored below 75%.</strong></td></tr><tr><td><strong>Improver</strong></td><td>Sonnet</td><td>Takes sections that scored below 75% and rewrites them, targeting the specific rubric criteria that failed.</td></tr><tr><td><strong>Polisher</strong></td><td>Sonnet</td><td>A second-tier pass that auto-triggers when the overall score lands between 80-89%, pushing specs over the 90% threshold for leadership review.</td></tr></tbody></table>
+<p>The whole pipeline runs in about 10-15 minutes per spec, costs roughly $0.15-0.25 in API calls, and consistently produces specs scoring 90+ out of 100. At 10 specs per week, that’s about $100/year in API costs versus 10-20 hours per week of PM time recovered.</p>
+<h1 id="what-i-learned">What I Learned</h1>
+<h2 id="how-to-replace-myself-with-session-state">How to Replace Myself With Session State</h2>
+<p>The biggest insight of the week was realizing that my feature documentation workflow had turned me into the de facto supervisor or integration layer. Every piece of context that moved between the three sessions lived in my head or on my clipboard. The feature type? I knew it because I picked which prompt to paste. The interview answers? I copied them between tabs. The review scores? I read them, decided what to fix, and did the fixing by hand.</p>
+<p>The system I built this week basically replaces me with Streamlit session state. Every <code>st.session_state</code> variable is a piece of context that used to live in my head or my clipboard. <code>st.session_state.feature_type</code> replaces my mental note of which prompt I chose. <code>st.session_state.answers</code> replaces the clipboard. <code>st.session_state.scorecard</code> replaces me reading the rubric and deciding what to fix.</p>
+<p>This realization clarified the architecture. I wasn’t building a “smarter prompt.” I was making implicit PM workflow knowledge explicit and machine-readable. Each agent handoff needed to be defined precisely because the automated pipeline has none of the human flexibility I’d been relying on to bridge gaps.</p>
+<h2 id="boost-inputs-and-two-tier-improvement">Boost Inputs and Two-Tier Improvement</h2>
+<p>Two design decisions combined to push specs from “decent” to “leadership-ready.”</p>
+<p>The first was <strong>boost inputs</strong>. After the Reviewer scores the spec, the PM sees the section-by-section scorecard and can paste additional domain context for sections that scored below 75%. Maybe the SEO section scored 50% because the original notes didn’t mention canonical URLs or schema markup. The PM pastes those details as boost inputs, and the Improver incorporates them alongside the rubric feedback.</p>
+<p>This is more than a UX feature. It’s a philosophical choice about where the human belongs in the pipeline. The system generates, scores, and improves, but the PM still provides the domain knowledge that makes the difference between a generic spec and a grounded one. Boost inputs aren’t optional polish; they’re the mechanism that bridges the gap between “competent AI output” and “PM-quality specification.”</p>
+<p>The second was a <strong>two-tier improvement threshold</strong>. A single 75% threshold created a ceiling at 85-88. The Improver would fix the worst sections, but the spec would plateau just below the 90-point leadership review threshold. The fix: Tier 1 targets sections below 75% (fix the bad stuff). Tier 2 auto-triggers a polish pass if the overall score lands between 80-89 (push through to excellent). This mirrors how real PM revision works. First pass: fix what’s broken. Second pass: elevate what’s merely adequate.</p>
+<p>Together, these two mechanisms produced consistent results across all three feature types:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Case</th><th>Type</th><th>Original</th><th>Final</th><th>Delta</th><th>Grade</th></tr></thead><tbody><tr><td>Realtime Decisioning</td><td>Capability</td><td>71</td><td>93</td><td>+22</td><td>A</td></tr><tr><td>New Solution Web Page</td><td>Webpage</td><td>71</td><td>94</td><td>+23</td><td>A</td></tr><tr><td>Progressive Profiling Form</td><td>Experience</td><td>78</td><td>92</td><td>+14</td><td>A</td></tr></tbody></table>
+<h2 id="parse-once-edit-independently-reassemble">Parse Once, Edit Independently, Reassemble</h2>
+<p>Early in the week, I tried positional string surgery to edit spec sections: find the offset of Section 7, extract it, modify it, splice it back in. This broke immediately because editing Section 7 shifts the offsets for Section 8 and everything after it. One change cascades into positional corruption.</p>
+<p>The fix is Parse → Edit → Reassemble. Parse the spec into a dictionary of section objects once. Edit any section by key. Reassemble from the dictionary. Editing index 7 cannot affect index 8 because they’re independent dictionary entries, not substrings of the same string.</p>
+<p>Combined with the append-only Improver pattern, this means the spec is structurally immutable once parsed. The only way content changes is through explicit, targeted modifications that Python controls. The LLM never touches the structural layer.</p>
+<h1 id="what-i-struggled-with">What I Struggled With</h1>
+<h2 id="the-improver-regression-saga">The Improver Regression Saga</h2>
+<p>The User Stories regression consumed more debugging time than any other problem in the program so far. The symptom was clear (scores dropping on untouched sections), but the root cause was hidden behind the LLM’s tendency to regenerate rather than edit. Each attempted fix (splice, criterion-level, filtered scorecard) required a full pipeline run to validate, and each one failed in a slightly different way.</p>
+<p>What made it frustrating was that every fix felt correct in theory. “Just return the unchanged sections verbatim” is a perfectly reasonable instruction for a human to follow. It’s just not how language models work. The insight that you cannot reliably instruct an LLM to leave text unchanged was expensive to learn, but it applies to every multi-agent pipeline, not just this one.</p>
+<p>The solution came from an Opus consultation: <strong>append-only output</strong>. Instead of asking the Improver to return the full spec, have it return only XML blocks describing additions and modifications. Python handles the concatenation. The model never sees the sections it shouldn’t touch, so it can’t corrupt them. <strong>The model cannot destroy what it’s never asked to produce.</strong></p>
+<h2 id="feature-type-boundary-cases">Feature Type Boundary Cases</h2>
+<p>The Router occasionally misclassified features at the boundary between EXPERIENCE and CAPABILITY. A “progressive profiling form” is technically a form component (EXPERIENCE) but involves backend logic for progressive disclosure (CAPABILITY-adjacent). This didn’t fully resolve in Week 8. The Router v2 fix came in Week 9 during the A/B testing work.</p>
+<h2 id="the-rubric-itself-has-opinions">The Rubric Itself Has Opinions</h2>
+<p>The 100-point rubric I’d been using for manual reviews turned out to encode assumptions I hadn’t examined. Some sections weighted criteria that only matter for certain feature types. Some criteria overlapped, letting a single piece of missing information penalize multiple sections. Tuning the rubric and type-aware Reviewer prompt was iterative and took longer than I expected.</p>
+<h1 id="whats-next">What’s Next</h1>
+<p>The SAFe system is deployed and I’m using it for real specs. Five deployed tools now, with this one as the flagship.</p>
+<p>Week 9 shifts to evaluation infrastructure: building the measurement layer that lets me prove the system works and track whether prompt changes make it better or worse. The ±7 point LLM-as-judge variance I noticed this week means I need multiple runs, statistical baselines, and proper A/B testing, not one-off spot checks. The Router classification flakiness needs a controlled comparison. And the 14-25 point bare/boosted spread I’m seeing is a measurable signal that PM-provided context has quantifiable value, something I can design an intake form around.</p>
+<p>But the biggest takeaway from this week isn’t technical. It’s the realization that building AI products is mostly not about AI. It’s about workflow design, structured data handling, error recovery, and knowing where the human adds irreplaceable value. The AI agents do the heavy lifting. The PM still provides the judgment. The product is the system that connects them.</p>
+<p>The mental model keeps building:</p>
+<p>Weeks 1-4: AI that thinks<br>
+Week 5: AI others can use<br>
+Week 6: AI that knows your data<br>
+Week 7: AI that reasons about what it needs to know<br>
+<strong>Week 8: AI that replaces a manual workflow end-to-end</strong></p>
+<hr>
+<p><em>Week 8 complete. I’ve evolved from human clipboard to pipeline architect.</em></p> </div> </main> <footer class="border-t border-stone-200 dark:border-stone-800 dark:bg-stone-950 mt-24"> <div class="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between"> <span class="text-sm text-stone-400">Built by Richard Thomchick</span> <span class="text-sm text-stone-400">Powered by Astro</span> </div> </footer>  </body></html>
