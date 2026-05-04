@@ -1,6 +1,6 @@
 ---
-title: "Week 10 Journal"
-headline: "Week 10 Journal"
+title: "Week 10 Journal: Responsible AI"
+headline: "Week 10 Journal: Responsible AI"
 week: 10
 date: 2026-03-03
 summary: "Built nine responsible AI modules — cost guardrails, grounding checks, content safety, bias detection, audit trails, and prompt governance — that turn the SAFe Feature Spec System from a working pipeline into one that can be interrogated and trusted in production."
