@@ -45,9 +45,15 @@ Last month, Anthropic released the [advisor tool](https://platform.claude.com/do
 
 First, I added Anthropic's `advisor_20260301` beta tool to the Reviewer and Improver stages of my SAFe Feature Spec System. Sonnet executes the task end-to-end; when it hits a decision it can't confidently resolve, it consults Opus. Built `llm_call_with_advisor()` as a parallel function to the existing `llm_call()` wrapper — handles mixed response content blocks (text, server_tool_use, advisor_tool_result), records executor and advisor tokens separately, and degrades gracefully when Opus is overloaded. Controlled via a sidebar checkbox in Streamlit and a `--advisor` CLI flag on the eval runner, defaulting to OFF.
 
+![Just a manual checkbox for now…](/images/week-11/advisor-checkbox.png)
+
 ### 2. Governance Wiring
 
 The AuditTrail, CostGuard, and TokenTracker modules existed since Weeks 9–10, but weren't connected to the production pipeline. So I wired all three into `app.py`. Every agent call is token-tracked, every stage transition logs an audit event, every expensive call checks cost limits before proceeding. A "Run Details" expander on the final stage shows per-agent token breakdown, total cost, and a timestamped event trace. I also added a `_tracker_flushed` guard to prevent duplicate database inserts on Streamlit reruns.
+
+![Token breakdown per agent in the Run Details expander](/images/week-11/governance-tokens.png)
+
+![Timestamped audit trail in the Run Details expander](/images/week-11/governance-audit.png)
 
 ### 3. PostgreSQL Migration
 
@@ -56,6 +62,8 @@ Next, I replaced SQLite with PostgreSQL (Supabase) across the entire evaluation 
 ### 4. Connector Interface and Request Queue
 
 After that, I built a `ConnectorInterface` abstract base class with a `FeatureRequest` dataclass that represents the standardized format all connectors produce. PostgreSQL is the first implementation. Notion, Jira, and Asana are stubs showing the pattern for future connectors. New "Request Queue" Streamlit page with create, process, and completed-request views. The pipeline stages are untouched. The queue is an alternative entry point that feeds into the same pipeline. The UX so far is just OK. I'd need to make significant improvements in order for an average tech marketing manager to use it successfully.
+
+![This will be replaced with a conversational interface next week….](/images/week-11/request-queue.png)
 
 ### 5. Streamlit Cloud Deployment
 
