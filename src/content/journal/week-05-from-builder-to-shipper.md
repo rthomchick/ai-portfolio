@@ -1,6 +1,6 @@
 ---
-title: "Week 5 Journal: From Builder to Shipper"
-headline: "Week 5 Journal: From Builder to Shipper"
+title: "Week 5 Journal: Feature Spec Generator Ship and Share"
+headline: "Week 5 Journal: Feature Spec Generator Ship and Share"
 week: 5
 date: 2026-02-03
 summary: "Converted the Feature Spec Generator from a CLI tool into a Streamlit web app, deployed it to Streamlit Cloud, and shipped it to real users with Teams webhook notifications."
@@ -34,6 +34,8 @@ I converted the Feature Spec Generator from a CLI script into a Streamlit web ap
 ## **Day 1: Streamlit Setup and Local Testing**
 
 So, Streamlit. I'd never heard of it, but it was fairly easy to set up. I installed it, configured the `secrets.toml` file for API key management, and got my Feature Spec Generator running locally. Claude did the grunt work of refactoring the code for Streamlit. I tested the full app flow: input, Q&A mode, spec generation, and download. It needed some polish, but worked out of the box.
+
+![Feature Spec Generator running locally in Streamlit on Day 1](/images/journal/week-05-streamlit-app-local-testing.png)
 
 ## **Day 2-3: Testing and GitHub Prep**
 
@@ -97,4 +99,4 @@ The hardest part wasn't the code. The Streamlit conversion was straightforward, 
 
 ---
 
-*Week 5 complete. First AI product shipped to real users. Next week's goal: make it smarter.*
+*Week 5 complete. First AI product shipped to real users. Next week's goal: Stop hallucinations.*
