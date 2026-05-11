@@ -1,9 +1,9 @@
 ---
-title: "Week 4 Journal: AI Product Architecture"
-headline: "Week 4 Journal: AI Product Architecture"
+title: "Week 4 Journal: Multi-Agent Systems"
+headline: "Week 4 Journal: Multi-Agent Systems"
 week: 4
 date: 2026-01-27
-summary: "A deep week building multi-agent systems, resilience libraries, and cost optimization tools, shifting from individual AI components to production-grade AI product architecture."
+summary: "A grueling but rewarding week building production-grade multi-agent systems — from a hierarchical Feature Spec Generator to an ROI Analyzer hardened with resilience patterns, cost optimization, and smart model routing."
 tags:
   - multi-agent
   - tool-use
@@ -14,20 +14,22 @@ tags:
   - asyncio
   - model-routing
 keyInsights:
-  - "The difference between a component that works and a system that survives production is mostly error handling, validation, and graceful degradation."
-  - "Start simple, add complexity only when justified — single-agent to multi-agent only when quality improvement justifies 2-3x cost."
-  - "Don't optimize low-volume tools. Save optimization for products with 100+ uses/day."
-  - "Context quality > context quantity — focused, relevant context beats comprehensive history."
+  - "The difference between a component that works and a system that survives production is mostly error handling, validation, and graceful degradation. Not glamorous, but essential."
+  - "80% of failures are recoverable with proper error handling. The remaining 20% are catastrophic and require human intervention."
+  - "My production ROI Analyzer is 600 lines of code. Only 150 lines are core functionality. The other 450 lines? Error handling, validation, logging, graceful degradation."
   - "Knowing when to skip resilience is as important as knowing how to build it."
+  - "Context quality > context quantity. Focused, relevant context beats comprehensive history. Give agents only what they need."
 toolsBuilt:
-  - "Multi-Agent Feature Spec Generator (v1 and v2)"
-  - "Multi-Agent Conversation Manager"
-  - "Multi-Agent ROI Analyzer"
-  - "Resilience Library"
-  - "Token Profiler"
-  - "Smart Model Router"
-  - "Parallelized Research Assistant"
-  - "Personalization Strategy Assistant"
+  - "Multi-Agent Feature Spec Generator (Day 1)"
+  - "Multi-Agent Conversation Manager (Day 2)"
+  - "Tool Library with 5 reusable agent tools (Day 3)"
+  - "Multi-Agent ROI Analyzer (Day 3)"
+  - "Resilience Library (Day 4)"
+  - "Token Profiler (Day 5)"
+  - "Smart Model Router (Day 5)"
+  - "Parallelized Research Assistant (Day 5)"
+  - "Feature Spec Generator v2 (Day 6)"
+  - "Personalization Strategy Assistant (Day 6)"
 status: published
 ---
 
@@ -41,18 +43,9 @@ This is a long post. It was a long week. But it was well worth the effort to go 
 
 ## Day 1: Multi-Agent Feature Spec Generator
 
-I started the week learning about multi-agent architecture patterns (Sequential, Parallel, Hierarchical, Reflexive etc.) and took a stab at redesigning my Feature Spec Generator as a multi-agent system. My first attempt was a hierarchical pattern with a Supervisor agent. It looked ok:
+I started the week learning about multi-agent architecture patterns (Sequential, Parallel, Hierarchical, Reflexive etc.) and took a stab at redesigning my Feature Spec Generator as a multi-agent system. My first attempt was a hierarchical pattern with a Supervisor agent. It looked ok at first, but then I ran the numbers. My envisioned 5-agent Feature Spec Generator would cost $0.15 per run. The original one with the "McKinsey-style" semantic anchor from Week 2? $0.05.
 
-```markdown
-Supervisor Agent
-↓
-├─ Question Generator (asks clarifying questions)
-├─ Researcher (checks existing solutions)
-├─ Spec Writer (generates specification)
-└─ Quality Assurance Specialist (reviews quality)
-```
-
-Then I ran the numbers. My envisioned 5-agent Feature Spec Generator would cost $0.15 per run. The original version with the "McKinsey-style" semantic anchor from Week 2? $0.05.
+![Multi-agent cost comparison showing single-agent vs multi-agent pricing](/images/journal/week-04-multi-agent-cost-comparison.png)
 
 **Is the 3x cost worth it?** This became a defining question of the week. The answer, I discovered, is that it depends a lot on value and scale. For my Feature Spec Generator, used ~10 times/week:
 
@@ -149,26 +142,15 @@ My final task was to combine everything I'd built into a solution with multiple 
 
 Here's the conversation flow I outlined. To keep things simple, I tried to match each agent to a single tool (but without telling Claude which tool each agent should use):
 
-```markdown
-User: "Should we invest $500K to improve personalization and increase conversion by 2%?"
-↓
-Supervisor Agent: Breaks down into sub-tasks
-↓
-├─ Data Agent: Gets current metrics (servicenow_lookup)
-├─ Calculator Agent: Computes ROI (calculate)
-├─ Research Agent: Finds benchmarks (web_search)
-└─ Analyst Agent: Synthesizes recommendation
-↓
-Output: Executive brief with data-driven recommendation
-```
+![ROI Analyzer multi-agent conversation flow diagram showing agents mapped to tools](/images/journal/week-04-roi-analyzer-agent-flow.png)
 
-On the first run, I encountered a hallucination (it produced a 6,150% ROI that would make executives laugh me out of the room). So Claude showed me how to add steps in the process to ensure realistic conversion economics, assumption validation, and an alert that flags potentially unrealistic scenarios. I ran three different scenarios to simulate conservative, moderate, and aggressive investments, and applied a different conversion lift to each. Here are the results:
+On the first run, I encountered what I thought was a hallucination (it produced a 6,150% ROI that would make executives laugh me out of the room…turned out to be a data issue). Claude showed me how to add steps in the process to ensure realistic conversion economics, assumption validation, and an alert that flags potentially unrealistic scenarios. I ran three different scenarios to simulate conservative, moderate, and aggressive investments, and applied a different conversion lift to each. Here are the results:
 
-| Scenario     | Investment | Conversion Lift | Revenue    | ROI | Payback | Assessment           |
-|--------------|------------|-----------------|------------|-----|---------|----------------------|
-| Conservative | $250K      | +0.3%           | $468,750   | 88% | 0.5y    | ✅ realistic          |
-| Moderate     | $500K      | +0.6%           | $937,500   | 88% | 0.5y    | 🟡 needs validation  |
-| Aggressive   | $1M        | +1.0%           | $1,562,500 | 56% | 0.6y    | 🟡 needs validation  |
+| Scenario | Investment | Conversion Lift | Revenue | ROI | Payback | Assessment |
+|---|---|---|---|---|---|---|
+| Conservative | $250K | +0.3% | $468,750 | 88% | 0.5y | ✅ realistic |
+| Moderate | $500K | +0.6% | $937,500 | 88% | 0.5y | 🟡 needs validation |
+| Aggressive | $1M | +1.0% | $1,562,500 | 56% | 0.6y | 🟡 needs validation |
 
 To be honest, this build was kind of grueling. Not the typical "I built this perfect thing in 45 minutes!" story I see on LinkedIn. But with a bit of prompt engineering, it was good enough to avoid getting laughed out of the room!
 
@@ -200,12 +182,12 @@ My ROI Analyzer works, but it's expensive ($0.15 per analysis). So now it was ti
 
 Here's a rundown of today's builds:
 
-| Build | Description |
+| | |
 |---|---|
 | **Token Profiler** | Instrumentation layer that identifies where tokens are being spent by wrapping API calls and tracks input tokens, output tokens, per-call cost, and which operation generated the spend. |
 | **Optimized ROI Analyzer** | Redesigned to execute 1 LLM call + 4 tool calls ($0.05), down from 5 LLM calls ($0.15). 70% cost reduction by recognizing deterministic steps (lookups, math, validation) that don't need an LLM at all. The LLM's only job is synthesis at the end. |
-| **Smart Model Router** | A classification layer that decides which model to call based on task complexity: Simple (factual Q&A, formatting) → Haiku; Complex (analysis, synthesis) → Sonnet. Classification was keyword-heuristic at first (`"analyze"`, `"compare"`, `"synthesize"` → complex; `"extract"`, `"format"`, `"list"` → simple), with prompt length as a fallback signal. The math that made this worth it: adding a ~$0.0001 classification call up front to route the main call saves $0.08 per call on anything classifiable as simple. At 1,000 calls/day, that's ~$29K/year. |
-| **Parallelized Research Assistant** | Refactored to run independent research tasks concurrently using `asyncio` after I realized that the validation and research steps don't depend on each other, and can run in parallel instead of sequentially. Here's the agent architecture: `Planner (sequential) → [Q1 + Q2 + Q3 in parallel] → Synthesizer (sequential)`. The outcome was faster by a mile. Sequential 46s → Parallel 16s. Same cost, same quality. |
+| **Smart Model Router** | A classification layer that decides which model to call based on task complexity:<br>• Simple (factual Q&A, formatting) → Haiku<br>• Complex (analysis, synthesis) → Sonnet<br><br>Classification was keyword-heuristic at first (`"analyze"`, `"compare"`, `"synthesize"` → complex; `"extract"`, `"format"`, `"list"` → simple), with prompt length as a fallback signal.<br><br>The math that made this worth it: adding a ~$0.0001 classification call up front to route the main call saves $0.08 per call on anything classifiable as simple. At 1,000 calls/day, that's ~$29K/year. |
+| **Parallelized Research Assistant** | Refactored to run independent research tasks concurrently using `asyncio` after I realized that the validation and research steps don't depend on each other, and can run in parallel instead of sequentially. Here's the agent architecture:<br><br>`Planner (sequential) → [Q1 + Q2 + Q3 in parallel] → Synthesizer (sequential)`<br><br>The outcome was faster by a mile. Sequential 46s → Parallel 16s. Same cost, same quality. |
 
 #### Was the Savings Worth the Effort?
 
@@ -328,10 +310,7 @@ Hard limits can waste tokens on simple queries and shortchange complex ones. Cla
 
 This gave me two dimensions of control: **quality** and **cost**. Each stopping strategy optimizes for one dimension and constrains the other.
 
-|              | **Low Cost**                                                                                              | **High Cost**                                                                              |
-|--------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| **High Quality** | ✅ **Ideal Zone** — confidence stopping ends the loop as soon as quality is good enough, before the budget is spent | ⚠️ Over-investment — kept running past the point where additional research added real value |
-| **Low Quality**  | ⚠️ Budget stopping — ran out of budget before quality was sufficient; output is usable but thin            | ❌ Worst case — spent the full budget and still didn't hit quality threshold                |
+![Smart stopping diagram showing confidence-based vs budget-based stopping conditions](/images/journal/week-04-smart-stopping-diagram.png)
 
 **Confidence stopping** = "Stop when quality is good enough."
 **Budget stopping** = "Stop when cost matters more than incremental quality."
