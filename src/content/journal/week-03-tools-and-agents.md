@@ -1,6 +1,6 @@
 ---
-title: "Week 3: Tools and Agents"
-headline: "Week 3: Tools and Agents"
+title: "Week 3 Journal: Tools and Agents"
+headline: "Week 3 Journal: Tools and Agents"
 week: 3
 date: 2026-01-25
 summary: "Built a progression from calculator tool to autonomous research agent, and learned that resilience code, context management, and bounded workflows aren't optional — they're load-bearing."
@@ -127,14 +127,11 @@ Tool use isn't cheap. In a basic multi-turn conversation: enter a prompt → Cla
 
 A tool-enabled conversation requires 2–3× as many API calls. Each tool cycle requires a minimum of 2 API calls: enter a prompt → Claude requests tool → you return result → Claude processes and responds. About twice the cost of a basic conversation.
 
-But often it's more. A complex workflow might hit 4–6 calls per user question, and every API call includes the full context — including all tool definitions (~1,500 tokens for a modest toolkit):
+But often it's more. A more complex workflow might hit 4–6 calls per user question. And every API call includes the full context, including all tool definitions (~1,500 tokens for a modest toolkit):
 
-- Call 1: System prompt + Tools + User message = 1,600 tokens
-- Call 2: System prompt + Tools + Previous messages + Tool result = 3,400 tokens
-- Call 3: System prompt + Tools + All previous + Another tool result = 5,400 tokens
-- Call 4: System prompt + Tools + All previous + Final tool result = 7,400 tokens
+![API cost diagram showing how context window grows with each tool use round trip](/images/journal/week-03-tool-use-api-cost-diagram.png)
 
-The context window fills fast. By the time a research agent is five calls deep, it's shipping 10,000+ tokens per round trip. With agents and tool use, context management isn't optional. It's load-bearing.
+The context window fills FAST. By the time a research agent is five calls deep, it's shipping 10,000+ tokens per round trip. The lesson learned: with agents and tool use, context management isn't optional. It's load-bearing.
 
 ### Tool-Chaining Is Where Autonomous Workflows Begin
 
