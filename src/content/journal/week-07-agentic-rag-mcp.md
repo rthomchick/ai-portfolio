@@ -63,7 +63,9 @@ The fix is a **hosted vector database**. Claude recommended Pinecone.
 
 > The mental model shift: "ChromaDB is SQLite. Pinecone is Postgres."
 
-This is a great plug. Is Anthropic getting a kickback? I decided not to push back for now. Creating an account was free and it only took a few minutes to set up my first Pinecone index (`pm-knowledge`, 1536 dimensions, cosine metric, serverless on AWS us-east-1).
+This is a great plug. Is Anthropic getting a kickback? I decided not to push back for now. Creating an account was free and it only took a few minutes to set up my first Pinecone index.
+
+![Pinecone index dashboard showing the pm-knowledge index configuration with 1536 dimensions and cosine metric](/images/journal/week-07-pinecone-index.png)
 
 Next, Claude and I rebuilt the ingestion pipeline. 30-45 minutes of work. About 4-5k tokens. The new code looked structurally similar to ChromaDB, with two key differences. First, the code now passes OpenAI embedding vectors (Pinecone doesn't handle the embedding call for you):
 
@@ -74,51 +76,7 @@ def get_embedding(text, model="text-embedding-3-small"):
     return response.data[0].embedding
 ```
 
-Second, Pinecone's upsert is idempotent: same ID means update, not duplicate.
-
-```python
-def ingest_document(text, metadata, batch_size=100):
-    """
-    Ingest a document into Pinecone.
-
-    Key difference from ChromaDB: we upsert vectors in batches.
-    Pinecone's upsert is idempotent — re-ingesting the same doc
-    with the same IDs just updates it. Safe to re-run.
-    """
-    chunks = chunk_text(text)
-    print(f"📄 Ingesting '{metadata.get('source')}': {len(chunks)} chunks")
-
-    vectors = []
-    for i, chunk in enumerate(chunks):
-        embedding = get_embedding(chunk)
-        chunk_id = make_chunk_id(metadata.get("source", "doc"), i)
-
-        vectors.append({
-            "id": chunk_id,
-            "values": embedding,
-            "metadata": {
-                **metadata,
-                "text": chunk,           # Store chunk text in metadata
-                "chunk_index": i,
-                "total_chunks": len(chunks),
-                "ingested_at": datetime.now().isoformat()
-            }
-        })
-
-        # Upsert in batches (Pinecone limit: 100 vectors/request)
-        if len(vectors) >= batch_size:
-            index.upsert(vectors=vectors)
-            vectors = []
-
-    # Upsert remaining
-    if vectors:
-        index.upsert(vectors=vectors)
-
-    print(f"✅ Stored {len(chunks)} chunks")
-    return len(chunks)
-```
-
-To verify the migration worked, Claude and I built `pinecone_rag_assistant.py` and ran the same grounding tests from Week 6:
+Second, Pinecone's upsert is idempotent: same ID means update, not duplicate. To verify the migration worked, Claude and I built `pinecone_rag_assistant.py` and ran the same grounding tests from Week 6:
 
 1. Ask about Q3 conversion results (should cite the specific 2.3%)
 2. Ask about Adobe Target config (should reference the indexed doc)
@@ -127,6 +85,8 @@ To verify the migration worked, Claude and I built `pinecone_rag_assistant.py` a
 All three passed. The Pinecone backend seemed functionally equivalent to ChromaDB, but now the data persists across app restarts and deployments.
 
 Next, I upgraded the Knowledge Assistant Streamlit app from ChromaDB (`knowledge_assistant_app.py`) to Pinecone (`knowledge_assistant_v2.py`). The sidebar now shows the live Pinecone vector count instead of a local ChromaDB collection count, and the document upload widget pushes directly to the hosted index. Deployed to Streamlit Cloud, restarted, confirmed the vectors were still there. Done and done.
+
+![Knowledge Assistant v2 Streamlit app showing Pinecone-backed vector store with live vector count in sidebar](/images/journal/week-07-knowledge-assistant-v2.png)
 
 ## Day 3: Agentic RAG
 
@@ -173,7 +133,9 @@ My Personalization Strategy Assistant from Week 4 had a hard-coded data flow and
 - ROI calculations
 - An agent that reasons about which tools to use for each sub-question
 
-The Strategy Assistant is the most architecturally complex thing I've deployed so far. The agent architecture uses the same Planner → Workers → Synthesizer pattern, but now the Workers have real tools. Three independent worker agents running in sequence, each making their own tool use decisions, feeding results into a synthesis step. The status expander shows each step in real-time so the user can see the research happening.
+The Strategy Assistant is the most architecturally complex thing I've deployed so far. The agent architecture uses the same **Planner → Workers → Synthesizer** pattern, but now the Workers have real tools. Three independent worker agents running in sequence, each making their own tool use decisions, feeding results into a synthesis step. The status expander shows each step in real-time so the user can see the research happening.
+
+![Strategy Assistant v3 showing multi-agent Planner → Workers → Synthesizer architecture with real-time status expander](/images/journal/week-07-strategy-assistant-v3.png)
 
 ## Day 6: Streamlit Deployment + Golden Set Evaluation
 
