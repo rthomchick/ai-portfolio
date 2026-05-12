@@ -34,7 +34,9 @@ status: published
 
 # What I Built
 
-I am a big geek about information retrieval and I've been eagerly awaiting this lesson. I finally get to build the thing! I built a very simple app with Claude and ChromaDB, learned a lot along with way, AND compiled my first golden set to set baseline metrics for my Feature Spec Generator.
+I am a big geek about information retrieval and I've been eagerly awaiting this lesson. I finally get to build the thing! I built a very simple app with Claude and ChromaDB: A PM Knowledge Assistant and Strategy Advisor that provides grounded responses based on my documents.
+
+Oh, and I also made my first golden set to define baseline metrics for my Feature Spec Generator.
 
 ## Day 1: Embeddings
 
@@ -91,10 +93,10 @@ Without that system prompt guardrail, Claude would have happily invented an answ
 
 Yesterday showed me how retrieval works and that my guardrails kept Claude from hallucinating. Today was the day the whole week clicked. I connected ChromaDB retrieval to Claude generation and built the full RAG retrieve → generate pipeline in `rag_assistant.py`.
 
-This time, I ingested five (AI-generated) documents to simulate the following:
+This time, I ingested five synthetic (AI-generated) documents to simulate the following:
 
 - Account-based marketing strategy
-- Personalization platform details (Adobe Target)
+- Personalization platform details
 - Data signal definition framework
 - Quarterly performance metrics
 - A personalization roadmap
@@ -107,6 +109,8 @@ The architecture was straightforward: embed the question, pull the top 3 chunks 
 
 I asked "What was our conversion lift from personalization?" twice: once with the RAG pipeline, once with the same model and prompt but no retrieved context. With RAG, Claude cited the specific 2.3% from our Q3 data. Without RAG, it gave me generic industry benchmarks about personalization typically driving 5-15% lift. Same model. Same prompt. Completely different answers. One is useful to my team. The other is a Google search.
 
+![RAG grounding test comparison showing specific Q3 data from RAG pipeline versus generic industry benchmarks without retrieval](/images/journal/week-06-rag-grounding-test.jpg)
+
 #### **Cross-Document Synthesis Test**
 
 I asked "what's working in our personalization program?"… Claude pulled from both the quarterly metric and the signal definitions, connected the behavioral targeting 3:1 ratio to the signal-first architecture in our scoring framework, and drew a novel insight: "the behavioral signal-first approach is validated by the data." I didn't tell it to connect those documents. The retrieval surfaced relevant chunks from both, and Claude reasoned across the evidence on its own.
@@ -114,6 +118,8 @@ I asked "what's working in our personalization program?"… Claude pulled from b
 #### Out-of-Context Behavior
 
 I asked about our Salesforce integration strategy, which isn't in any of the documents I ingested. ChromaDB still returned its top 3 chunks (it always does; there's no "no match found" threshold). But Claude read the retrieved chunks, recognized none of them were about Salesforce, and said it didn't have that information. Then it listed what it *did* have context for. No hallucination. No confident-sounding nonsense borrowed from training data.
+
+![Out-of-context behavior showing Claude acknowledging missing Salesforce information and listing what it does have context for](/images/journal/week-06-out-of-context-behavior.png)
 
 ## Day 4: RAG Quality Deep Dive
 
@@ -139,7 +145,7 @@ I converted `rag_assistant.py` into a Streamlit app, reusing the patterns from t
 
 The app added a few things the CLI script didn't have. A file upload widget lets users ingest their own documents into the vector store without touching the command line. Source citations display below each answer so the user can see which chunks Claude drew from and verify the grounding. The vector store persists across sessions, so documents ingested once stay available.
 
-Deployment to Streamlit Cloud followed the same workflow as Week 5: push to a dedicated GitHub repo, connect in the Streamlit Cloud dashboard, configure secrets, deploy. No surprises this time. The muscle memory from the Feature Spec Generator deployment made this one feel routine.
+Deployment to Streamlit Cloud followed the same workflow as Week 5: push to a dedicated GitHub repo, connect in the Streamlit Cloud dashboard, configure secrets, deploy. Ta-da!
 
 Two deployed tools now live: Feature Spec Generator and Knowledge Assistant. The first is a single-agent prompt wrapper. The second has an entire retrieval pipeline underneath it. From the user's perspective, both are just a text box and a response. The complexity is invisible, which is exactly where it should be.
 
@@ -152,11 +158,13 @@ Claude presented me with an "extra credit" assignment to build a golden set of 1
 1. A set of rule-based checks (are the required sections present? is the output long enough?)
 2. An LLM-as-judge scorer that rates overall quality on a 5-point scale
 
-The results from the first run were weird. The rule-based checks passed at 94%, which seemed right. But the LLM judge scored 4.2/5.0, docking points for missing acceptance criteria and incomplete technical requirements. I looked at the specs. The acceptance criteria were there. So were the technical requirements. Then I discovered a truncation bug: the judge was evaluating only the first 3,000 chars and docking points for sections it couldn't see. So I bumped the limit to 6,000 characters and ran it again. 94% rule-based, 4.6/5.0 LLM judge. Baseline recorded.
+The results from the first run were weird. The rule-based checks passed at 94%, which seemed right. But the LLM judge scored 4.2/5.0, docking points for missing acceptance criteria and incomplete technical requirements.
+
+I looked at the specs. The acceptance criteria were there. So were the technical requirements. Then I discovered a truncation bug: the judge was evaluating only the first 3,000 chars and docking points for sections it couldn't see. So I bumped the limit to 6,000 characters and ran it again. 94% rule-based, 4.6/5.0 LLM judge. Baseline recorded.
 
 # What I Learned
 
-## **The Economics of Embeddings**
+## **Embeddings Are Inexpensive**
 
 AI economics have become a much more central topic than I anticipated at the outset of this learning path. What I learned this week is that embeddings have completely different economics than LLM calls:
 
@@ -172,7 +180,7 @@ The architectural implication is about where to invest optimization effort. If R
 
 If I wanted to reduce LLM costs for a RAG application as the PM, I would probably focus on things like caching frequent queries (same question = same answer, skip the LLM call entirely), routing simple queries to cheaper models, or truncating retrieved context to only what's needed. I would not worry about reducing embeddings, since there's almost nothing to save there.
 
-## Embeddings Turn Meaning Into Math
+## Turning Meaning Into Math
 
 I drank from the firehose this week to understand the nuances between vectors, embeddings, chunks, and dimensions, especially in relation to tokens. It was a lot to take in, but I feel like I can "see" the matrix of embeddings, almost like a social graph or the stick-and-ball molecular models I used to construct in Chemistry class, but with thousands of dimensions instead of 2-3.
 
@@ -194,7 +202,7 @@ BUT …. Claude STILL hallucinates without explicit instructions. It undermines 
 
 The LLM judge was scoring specs lower than they deserved because it was only seeing the first 3,000 characters. Acceptance criteria and technical requirements were getting cut off. The fix (bumping to 6,000 chars) immediately revealed the true quality.
 
-Meta-lesson: if your evaluation says quality is low, make sure the evaluation itself isn't broken before you start "fixing" the product.
+Meta-lesson: check to see if the evaluation itself isn't broken before I start "fixing" the product.
 
 In any case, the evaluation habit starts now. Any time I touch a system prompt, I will know to run the golden set and track performance against the baseline over time. This is the difference between maintaining a tool and hoping it stays good.
 
@@ -208,7 +216,7 @@ The recurring venv activation lesson continued: every new terminal session requi
 
 # The Week 6 Shift
 
-RAG is a great technique, but the veil has been lifted. Behind the curtain, LLM reasoning still dictates the output. Vector DBs blow my mind, but RAG doesn't require a vector database. It's just a retrieval + generation pattern. The retrieval layer can be backed by whatever storage fits the data. And while Claude can draw on actual documents, cite real numbers, and retrieve information beyond its training data, grounding is NOT automatic. You STILL have to instruct Claude to tell you when it doesn't have enough information instead of making something up.
+RAG is a great technique, but the veil has been lifted. Behind the curtain,  LLM reasoning still dictates the output. Vector DBs blow my mind, but RAG doesn't require a vector database. It's just a retrieval + generation pattern. The retrieval layer can be backed by whatever storage fits the data. And while Claude can draw on actual documents, cite real numbers, and retrieve information beyond its training data, grounding is NOT automatic. You STILL have to instruct Claude to tell you when it doesn't have enough information instead of making something up.
 
 The evaluation tool and golden set I created on Saturday was possibly a bigger unlock. I now have a baseline (94% rule-based, 4.6/5.0 LLM judge) for my Feature Spec Generator. Any future prompt changes can be measured against that baseline. No more vibes-based quality assessment.
 
