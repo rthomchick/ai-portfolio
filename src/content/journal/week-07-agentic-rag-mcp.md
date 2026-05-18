@@ -2,7 +2,7 @@
 title: "Week 7 Journal: Agentic RAG + MCP"
 headline: "Week 7 Journal: Agentic RAG + MCP"
 week: 7
-date: 2026-02-17
+date: 2026-04-13
 summary: Upgraded the Knowledge Assistant from a local ChromaDB prototype to a production-grade Pinecone-backed system, added agentic retrieval, and refactored tools into an MCP-style composable layer.
 tags:
   - rag

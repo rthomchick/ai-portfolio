@@ -2,7 +2,7 @@
 title: "Week 6 Journal: RAG Time"
 headline: "Week 6 Journal: RAG Time"
 week: 6
-date: 2026-02-10
+date: 2026-04-06
 summary: "Built a full RAG pipeline from embeddings to deployed Knowledge Assistant, explored hybrid search and re-ranking, and established a baseline evaluation framework for the Feature Spec Generator."
 tags:
   - rag

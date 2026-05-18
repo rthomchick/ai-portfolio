@@ -2,7 +2,7 @@
 title: "Week 8 Journal: Return of the Feature Spec Generator"
 headline: "Week 8 Journal: Return of the Feature Spec Generator"
 week: 8
-date: 2026-02-17
+date: 2026-04-20
 summary: "Built a six-agent Streamlit system that automates the full SAFe feature spec workflow — from classification to scoring to polish — replacing a multi-session manual process with a consistent, 10-15 minute pipeline."
 tags:
   - multi-agent

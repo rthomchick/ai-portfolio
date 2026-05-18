@@ -2,7 +2,7 @@
 title: "Week 12 Journal: Feature Intake Copilot"
 headline: "Week 12 Journal: Feature Intake Copilot"
 week: 12
-date: 2026-05-15
+date: 2026-05-17
 summary: Built a conversational AI intake copilot that transforms messy stakeholder feature requests into structured specs using a two-gate review architecture.
 tags:
   - conversational-ai

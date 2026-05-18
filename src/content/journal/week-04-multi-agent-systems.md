@@ -2,7 +2,7 @@
 title: "Week 4 Journal: Multi-Agent Systems"
 headline: "Week 4 Journal: Multi-Agent Systems"
 week: 4
-date: 2026-01-27
+date: 2026-03-23
 summary: "A grueling but rewarding week building production-grade multi-agent systems — from a hierarchical Feature Spec Generator to an ROI Analyzer hardened with resilience patterns, cost optimization, and smart model routing."
 tags:
   - multi-agent

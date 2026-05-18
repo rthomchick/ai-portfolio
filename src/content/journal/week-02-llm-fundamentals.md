@@ -2,7 +2,7 @@
 title: "Week 2: LLM and API Basics"
 headline: "Week 2: LLM and API Basics"
 week: 2
-date: 2026-04-18
+date: 2026-03-09
 summary: "Hands-on experiments with tokens, context windows, streaming, and prompting techniques reveal that AI product management requires an entirely new economic mental model."
 tags:
   - tokens

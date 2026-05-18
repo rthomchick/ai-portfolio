@@ -2,7 +2,7 @@
 title: "Week 5 Journal: Feature Spec Generator Ship and Share"
 headline: "Week 5 Journal: Feature Spec Generator Ship and Share"
 week: 5
-date: 2026-02-03
+date: 2026-03-30
 summary: "Converted the Feature Spec Generator from a CLI tool into a Streamlit web app, deployed it to Streamlit Cloud, and shipped it to real users with Teams webhook notifications."
 tags:
   - streamlit

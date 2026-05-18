@@ -2,7 +2,7 @@
 title: "Week 3 Journal: Tools and Agents"
 headline: "Week 3 Journal: Tools and Agents"
 week: 3
-date: 2026-01-25
+date: 2026-03-16
 summary: "Built a progression from calculator tool to autonomous research agent, and learned that resilience code, context management, and bounded workflows aren't optional — they're load-bearing."
 tags: ["tool-use", "agents", "python", "context-window", "prompt-engineering", "error-handling"]
 keyInsights:

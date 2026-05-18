@@ -2,7 +2,7 @@
 title: "Week 1: First Steps"
 headline: "Week 1: First Steps"
 week: 1
-date: 2026-04-12
+date: 2026-02-27
 summary: "A non-engineer sets up a Python dev environment, generates an API key, and makes a first Claude API call — and discovers that vibe-coding has limits."
 tags:
   - python
