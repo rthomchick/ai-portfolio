@@ -14,6 +14,13 @@ const sortedEntries = allJournalEntries.sort((a, b) => b.data.week - a.data.week
 const featured = sortedEntries[0];
 const recentEntries = sortedEntries.slice(1, 4);
 
+function calcReadingTime(body: string | undefined): number {
+  if (!body) return 0;
+  const textOnly = body.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
+  const wordCount = textOnly.trim().split(/\s+/).filter(Boolean).length;
+  return wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
+}
+
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sortOrder).slice(0, 3);
 
@@ -30,6 +37,7 @@ const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sort
         summary={featured.data.summary}
         slug={featured.id}
         date={featured.data.date}
+        readingTime={calcReadingTime(featured.body)}
       />
     )}
 
@@ -48,6 +56,7 @@ const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sort
               slug={entry.id}
               tags={entry.data.tags}
               compact
+              readingTime={calcReadingTime(entry.body)}
             />
           ))}
         </div>
