@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="Search" description="Search journal entries and project pages.">
+  <Header />
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-8">Search</h1>
+    <div id="search-container"></div>
+  </main>
+  <Footer />
+
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+
+  <style is:global>
+    :root {
+      --pagefind-ui-scale: 0.9;
+      --pagefind-ui-primary: #0F6E56;
+      --pagefind-ui-text: #1C1917;
+      --pagefind-ui-background: #FFFFFF;
+      --pagefind-ui-border: #E7E5E4;
+      --pagefind-ui-tag: #F5F5F4;
+      --pagefind-ui-border-width: 1px;
+      --pagefind-ui-border-radius: 8px;
+      --pagefind-ui-font: 'DM Sans', system-ui, sans-serif;
+    }
+
+    .dark {
+      --pagefind-ui-primary: #2DD4BF;
+      --pagefind-ui-text: #F5F5F4;
+      --pagefind-ui-background: #0C0A09;
+      --pagefind-ui-border: #292524;
+      --pagefind-ui-tag: #1C1917;
+    }
+
+    .pagefind-ui__search-input {
+      font-weight: 400 !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    .pagefind-ui__result-title {
+      font-weight: 500 !important;
+    }
+
+    .pagefind-ui__result-link {
+      color: var(--pagefind-ui-primary) !important;
+    }
+
+    .pagefind-ui__result-excerpt {
+      font-size: 0.875rem !important;
+      line-height: 1.6 !important;
+      opacity: 0.7;
+    }
+
+    .pagefind-ui__result {
+      border-top: 0.5px solid var(--pagefind-ui-border) !important;
+      padding: 1rem 0 !important;
+    }
+
+    .pagefind-ui__search-input:focus {
+      outline: none !important;
+      box-shadow: 0 0 0 2px var(--pagefind-ui-primary) !important;
+    }
+
+    .pagefind-ui__filter-panel {
+      margin-top: 0.5rem !important;
+    }
+  </style>
+
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', function() {
+      new PagefindUI({
+        element: '#search-container',
+        showSubResults: true,
+        showImages: false,
+        autofocus: true,
+        resetStyles: false,
+      });
+    });
+  </script>
+</BaseLayout>

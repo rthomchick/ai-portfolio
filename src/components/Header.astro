@@ -5,12 +5,13 @@ const navLinks = [
   { href: '/journal', label: 'Journal' },
   { href: '/projects', label: 'Projects' },
   { href: '/about', label: 'About' },
+  { href: '/search', label: 'Search' },
 ];
 
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="border-b border-stone-200 dark:border-stone-800 dark:bg-stone-950">
+<header data-pagefind-ignore class="border-b border-stone-200 dark:border-stone-800 dark:bg-stone-950">
   <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" class="text-stone-900 dark:text-stone-100 font-medium text-base no-underline hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
       Richard Thomchick

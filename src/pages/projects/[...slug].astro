@@ -32,12 +32,14 @@ const badgeLabel: Record<string, string> = {
   description={project.data.description}
 >
   <Header />
-  <main class="max-w-5xl mx-auto px-6 py-12">
+  <main data-pagefind-body class="max-w-5xl mx-auto px-6 py-12">
+    <meta data-pagefind-meta="description" content={project.data.description} />
+    <meta data-pagefind-filter="type" content="project" />
     <a href="/projects" class="text-sm text-teal-600 dark:text-teal-400 link-slide transition-colors no-underline mb-8 inline-block">← Projects</a>
 
     <div class="reveal">
       <div class="flex items-center gap-3 mb-4">
-        <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100">{project.data.title}</h1>
+        <h1 data-pagefind-meta="title" class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100">{project.data.title}</h1>
         <span class={`text-xs px-2.5 py-1 rounded-full font-medium ${badgeClasses[project.data.status]}`}>
           {badgeLabel[project.data.status]}
         </span>

@@ -91,5 +91,13 @@ const canonical = canonicalUrl || Astro.url.href;
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
       }
     </script>
+    <script is:inline>
+      document.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          window.location.href = '/search';
+        }
+      });
+    </script>
   </body>
 </html>
