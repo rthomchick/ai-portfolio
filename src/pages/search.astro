@@ -18,7 +18,7 @@ import Footer from '../components/Footer.astro';
   <style is:global>
     :root {
       --pagefind-ui-scale: 0.9;
-      --pagefind-ui-primary: #0d9488;
+      --pagefind-ui-primary: #0D9488;
       --pagefind-ui-text: #1C1917;
       --pagefind-ui-background: #FFFFFF;
       --pagefind-ui-border: #E7E5E4;
@@ -39,6 +39,31 @@ import Footer from '../components/Footer.astro';
     .pagefind-ui__search-input {
       font-weight: 400 !important;
       letter-spacing: -0.01em !important;
+      border: 1px solid #E7E5E4 !important;
+      transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease !important;
+    }
+
+    .dark .pagefind-ui__search-input {
+      border-color: #292524 !important;
+    }
+
+    .pagefind-ui__search-input:hover {
+      border-color: #0D9488 !important;
+    }
+
+    .dark .pagefind-ui__search-input:hover {
+      border-color: #2DD4BF !important;
+    }
+
+    .pagefind-ui__search-input:focus {
+      outline: none !important;
+      border-color: #0D9488 !important;
+      box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25) !important;
+    }
+
+    .dark .pagefind-ui__search-input:focus {
+      border-color: #2DD4BF !important;
+      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.25) !important;
     }
 
     .pagefind-ui__result-title {
@@ -58,16 +83,6 @@ import Footer from '../components/Footer.astro';
     .pagefind-ui__result {
       border-top: 0.5px solid var(--pagefind-ui-border) !important;
       padding: 1rem 0 !important;
-    }
-
-    .pagefind-ui__search-input:hover {
-      border-color: var(--pagefind-ui-primary) !important;
-    }
-
-    .pagefind-ui__search-input:focus {
-      outline: none !important;
-      border-color: var(--pagefind-ui-primary) !important;
-      box-shadow: 0 0 0 2px var(--pagefind-ui-primary) !important;
     }
 
     .pagefind-ui__filter-panel {
