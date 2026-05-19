@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "index": "node scripts/index-content.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
@@ -20,5 +21,10 @@
     "astro": "^6.1.5",
     "astro-pagefind": "^2.0.0",
     "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@pinecone-database/pinecone": "^7.2.0",
+    "gray-matter": "^4.0.3",
+    "openai": "^6.38.0"
   }
 }

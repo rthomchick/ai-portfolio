@@ -8,7 +8,32 @@ import Footer from '../components/Footer.astro';
   <Header />
   <main class="flex-1 max-w-5xl mx-auto px-6 py-12 w-full">
     <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-8">Search</h1>
+
+    <div class="flex gap-2 mb-6" id="search-mode-toggle">
+      <button id="mode-keyword" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
+        Keyword
+      </button>
+      <button id="mode-semantic" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
+        Semantic
+      </button>
+    </div>
+
     <div id="search-container"></div>
+
+    <div id="semantic-container" style="display: none;">
+      <div class="relative">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+        <input
+          id="semantic-input"
+          type="text"
+          placeholder="Ask about this portfolio..."
+          class="w-full pl-11 pr-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:border-teal-600 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-600/25 dark:focus:ring-teal-400/25 transition-colors"
+        />
+      </div>
+      <div id="semantic-results" class="mt-6"></div>
+    </div>
   </main>
   <Footer />
 
@@ -41,6 +66,11 @@ import Footer from '../components/Footer.astro';
       letter-spacing: -0.01em !important;
       border: 1px solid #E7E5E4 !important;
       transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease !important;
+      width: 100% !important;
+    }
+
+    .pagefind-ui__form {
+      width: 100% !important;
     }
 
     .dark .pagefind-ui__search-input {
@@ -74,6 +104,10 @@ import Footer from '../components/Footer.astro';
       color: var(--pagefind-ui-primary) !important;
     }
 
+    .pagefind-ui__result-link:hover {
+      color: #0D9488 !important;
+    }
+
     .pagefind-ui__result-excerpt {
       font-size: 0.875rem !important;
       line-height: 1.6 !important;
@@ -87,14 +121,6 @@ import Footer from '../components/Footer.astro';
 
     .pagefind-ui__filter-panel {
       margin-top: 0.5rem !important;
-    }
-
-    .pagefind-ui__search-input {
-      width: 100% !important;
-    }
-
-    .pagefind-ui__form {
-      width: 100% !important;
     }
 
     .dark .pagefind-ui__result-title,
@@ -119,10 +145,6 @@ import Footer from '../components/Footer.astro';
       color: #A8A29E !important;
     }
 
-    .pagefind-ui__result-link:hover {
-      color: #0D9488 !important;
-    }
-
     .pagefind-ui mark {
       background: rgba(13, 148, 136, 0.35) !important;
       color: #1C1917 !important;
@@ -144,13 +166,103 @@ import Footer from '../components/Footer.astro';
 
   <script is:inline>
     window.addEventListener('DOMContentLoaded', function() {
-      new PagefindUI({
+      var pf = new PagefindUI({
         element: '#search-container',
         showSubResults: true,
         showImages: false,
         autofocus: true,
         resetStyles: false,
       });
+
+      var modeKeyword = document.getElementById('mode-keyword');
+      var modeSemantic = document.getElementById('mode-semantic');
+      var keywordContainer = document.getElementById('search-container');
+      var semanticContainer = document.getElementById('semantic-container');
+      var semanticInput = document.getElementById('semantic-input');
+      var semanticResults = document.getElementById('semantic-results');
+
+      var activeBtn = 'px-4 py-1.5 text-sm rounded-full border transition-colors bg-teal-600 dark:bg-teal-400 text-white dark:text-stone-900 border-teal-600 dark:border-teal-400';
+      var inactiveBtn = 'px-4 py-1.5 text-sm rounded-full border transition-colors bg-transparent text-stone-500 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-teal-600 dark:hover:border-teal-400';
+
+      function setMode(mode) {
+        if (mode === 'keyword') {
+          keywordContainer.style.display = '';
+          semanticContainer.style.display = 'none';
+          modeKeyword.className = activeBtn;
+          modeSemantic.className = inactiveBtn;
+        } else {
+          keywordContainer.style.display = 'none';
+          semanticContainer.style.display = '';
+          modeKeyword.className = inactiveBtn;
+          modeSemantic.className = activeBtn;
+          semanticInput.focus();
+        }
+      }
+
+      setMode('keyword');
+
+      modeKeyword.addEventListener('click', function() { setMode('keyword'); });
+      modeSemantic.addEventListener('click', function() { setMode('semantic'); });
+
+      var debounceTimer;
+      semanticInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        var query = semanticInput.value.trim();
+        if (query.length < 3) {
+          semanticResults.innerHTML = '';
+          return;
+        }
+        debounceTimer = setTimeout(function() {
+          performSemanticSearch(query);
+        }, 500);
+      });
+
+      function performSemanticSearch(query) {
+        semanticResults.innerHTML = '<p class="text-sm text-stone-400">Searching...</p>';
+
+        fetch('/api/semantic-search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query }),
+        })
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            if (data.error) {
+              semanticResults.innerHTML = '<p class="text-sm text-red-400">' + data.error + '</p>';
+              return;
+            }
+            renderSemanticResults(data.results);
+          })
+          .catch(function() {
+            semanticResults.innerHTML = '<p class="text-sm text-red-400">Search failed. Please try again.</p>';
+          });
+      }
+
+      function renderSemanticResults(results) {
+        if (!results || results.length === 0) {
+          semanticResults.innerHTML = '<p class="text-sm text-stone-400">No results found.</p>';
+          return;
+        }
+
+        var html = '<p class="text-sm text-teal-600 dark:text-teal-400 mb-4">' + results.length + ' results</p>';
+
+        results.forEach(function(r) {
+          var score = Math.round((r.score || 0) * 100);
+          var typeLabel = r.type === 'journal' ? 'Week ' + r.week : 'Project';
+          var snippet = (r.text || '').substring(0, 200) + (r.text && r.text.length > 200 ? '...' : '');
+
+          html += '<div class="border-t border-stone-200 dark:border-stone-800 py-4">';
+          html += '  <div class="flex items-baseline gap-2 mb-1">';
+          html += '    <a href="' + r.url + '" class="text-base font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">' + (r.title || 'Untitled') + '</a>';
+          html += '    <span class="text-xs text-stone-400 dark:text-stone-500">' + score + '% match</span>';
+          html += '  </div>';
+          html += '  <p class="text-xs text-stone-400 dark:text-stone-500 mb-1">' + typeLabel + (r.section ? ' · ' + r.section : '') + '</p>';
+          html += '  <p class="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">' + snippet + '</p>';
+          html += '</div>';
+        });
+
+        semanticResults.innerHTML = html;
+      }
     });
   </script>
 </BaseLayout>
