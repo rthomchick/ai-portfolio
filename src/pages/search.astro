@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 
 <BaseLayout title="Search" description="Search journal entries and project pages.">
   <Header />
-  <main class="max-w-5xl mx-auto px-6 py-12">
+  <main class="flex-1 max-w-5xl mx-auto px-6 py-12 w-full">
     <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-8">Search</h1>
     <div id="search-container"></div>
   </main>
@@ -87,6 +87,14 @@ import Footer from '../components/Footer.astro';
 
     .pagefind-ui__filter-panel {
       margin-top: 0.5rem !important;
+    }
+
+    .pagefind-ui__search-input {
+      width: 100% !important;
+    }
+
+    .pagefind-ui__form {
+      width: 100% !important;
     }
   </style>
 
