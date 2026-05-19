@@ -110,9 +110,12 @@ async function readEntries(dir, type) {
 }
 
 async function upsertBatch(vectors) {
+  if (!vectors || vectors.length === 0) return;
   const BATCH_SIZE = 100;
   for (let i = 0; i < vectors.length; i += BATCH_SIZE) {
-    await index.upsert(vectors.slice(i, i + BATCH_SIZE));
+    const batch = vectors.slice(i, i + BATCH_SIZE);
+    if (batch.length === 0) continue;
+    await index.upsert({ records: batch });
   }
 }
 
