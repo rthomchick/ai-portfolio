@@ -18,7 +18,7 @@ import Footer from '../components/Footer.astro';
   <style is:global>
     :root {
       --pagefind-ui-scale: 0.9;
-      --pagefind-ui-primary: #0F6E56;
+      --pagefind-ui-primary: #0d9488;
       --pagefind-ui-text: #1C1917;
       --pagefind-ui-background: #FFFFFF;
       --pagefind-ui-border: #E7E5E4;
@@ -60,8 +60,13 @@ import Footer from '../components/Footer.astro';
       padding: 1rem 0 !important;
     }
 
+    .pagefind-ui__search-input:hover {
+      border-color: var(--pagefind-ui-primary) !important;
+    }
+
     .pagefind-ui__search-input:focus {
       outline: none !important;
+      border-color: var(--pagefind-ui-primary) !important;
       box-shadow: 0 0 0 2px var(--pagefind-ui-primary) !important;
     }
 
