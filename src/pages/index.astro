@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import HeroPlaceholder from '../components/HeroPlaceholder.astro';
 import FeaturedEntry from '../components/FeaturedEntry.astro';
 import JournalCard from '../components/JournalCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
 const allJournalEntries = await getCollection('journal', ({ data }) => data.status === 'published');
@@ -16,16 +17,6 @@ const recentEntries = sortedEntries.slice(1, 4);
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sortOrder).slice(0, 3);
 
-const deployedBadge: Record<string, string> = {
-  deployed: 'live',
-  built: 'built',
-  planning: 'planning',
-};
-const deployedBadgeClasses: Record<string, string> = {
-  deployed: 'bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-400',
-  built: 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400',
-  planning: 'bg-stone-50 text-stone-400 dark:bg-stone-800 dark:text-stone-500',
-};
 ---
 
 <BaseLayout>
@@ -66,21 +57,16 @@ const deployedBadgeClasses: Record<string, string> = {
       </div>
 
       <!-- Projects column -->
-      <div class="reveal">
+      <div>
         <h2 class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-6">Shipped</h2>
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-6">
           {sortedProjects.map(project => (
-            <div class="py-3">
-              <div class="flex items-center gap-2 mb-1">
-                <a href={`/projects/${project.id}`} class="text-base font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors no-underline">
-                  {project.data.title}
-                </a>
-                <span class={`text-xs px-2 py-0.5 rounded-full font-medium ${deployedBadgeClasses[project.data.status]}`}>
-                  {deployedBadge[project.data.status]}
-                </span>
-              </div>
-              <p class="text-sm text-stone-500 dark:text-stone-400">{project.data.description}</p>
-            </div>
+            <ProjectCard
+              title={project.data.title}
+              description={project.data.description}
+              status={project.data.status}
+              slug={project.id}
+            />
           ))}
         </div>
         <div class="mt-6">
