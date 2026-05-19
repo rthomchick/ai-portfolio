@@ -8,6 +8,7 @@ problemSolved: "A working AI pipeline isn't a trustworthy one. This dashboard an
 architecturePattern: "Modular governance layer integrated into existing evaluation pipeline"
 techStack: ["Python", "Streamlit", "Anthropic API", "SQLite"]
 sortOrder: 2
+journalSlug: "week-10-responsible-ai"
 ---
 
 ## What it does

@@ -10,6 +10,7 @@ problemSolved: "PMs spend 2-3 hours manually writing feature specs. This tool ge
 architecturePattern: "Single agent with structured output"
 techStack: ["Python", "Streamlit", "Anthropic API"]
 sortOrder: 1
+journalSlug: "week-05-from-builder-to-shipper"
 ---
 
 ## What it does

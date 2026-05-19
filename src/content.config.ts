@@ -30,6 +30,7 @@ const projects = defineCollection({
     architecturePattern: z.string().optional(),
     techStack: z.array(z.string()),
     sortOrder: z.number().default(0),
+    journalSlug: z.string().optional(),
   }),
 });
 

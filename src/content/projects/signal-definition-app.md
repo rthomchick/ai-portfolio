@@ -8,6 +8,7 @@ problemSolved: "A 30+ page Signal Definition Document is comprehensive but hard 
 architecturePattern: "Single-page interactive reference (no AI inference)"
 techStack: ["Python", "Streamlit"]
 sortOrder: 5
+journalSlug: "week-07-agentic-rag-mcp"
 ---
 
 ## What it does

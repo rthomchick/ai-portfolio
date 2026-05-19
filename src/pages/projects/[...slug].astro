@@ -68,7 +68,10 @@ const badgeLabel: Record<string, string> = {
         <div>
           <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1">Week built</dt>
           <dd>
-            <a href={`/journal`} class="text-sm text-teal-600 dark:text-teal-400 hover:underline">Week {project.data.weekBuilt}</a>
+            <a
+              href={project.data.journalSlug ? `/journal/${project.data.journalSlug}` : `/journal`}
+              class="text-sm text-teal-600 dark:text-teal-400 hover:underline"
+            >Week {project.data.weekBuilt}</a>
           </dd>
         </div>
 

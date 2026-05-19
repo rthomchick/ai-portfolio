@@ -9,6 +9,7 @@ problemSolved: "Team members spend time searching through documents for specific
 architecturePattern: "RAG pipeline: retrieve → generate"
 techStack: ["Python", "Streamlit", "Anthropic API", "ChromaDB", "OpenAI Embeddings"]
 sortOrder: 2
+journalSlug: "week-06-rag"
 ---
 
 ## What it does

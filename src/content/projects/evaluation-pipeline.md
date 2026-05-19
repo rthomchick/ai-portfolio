@@ -8,6 +8,7 @@ problemSolved: "Prompt engineering was guesswork — no way to measure whether c
 architecturePattern: "Golden set runner → SQLite storage → Dashboard visualization + AI-powered improvement suggestions"
 techStack: ["Python", "Streamlit", "Anthropic API", "SQLite"]
 sortOrder: 3
+journalSlug: "week-09-ai-evaluation-system"
 ---
 
 ## What it does

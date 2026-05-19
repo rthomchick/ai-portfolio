@@ -10,6 +10,7 @@ problemSolved: "The original Feature Spec Generator worked but couldn't handle d
 architecturePattern: "Router → Draft Answerer → Generator → Reviewer → Improver → Polish (with conditional improvement loops)"
 techStack: ["Python", "Streamlit", "Anthropic API", "PostgreSQL", "Supabase"]
 sortOrder: 0
+journalSlug: "week-08-safe-system"
 ---
 
 ## What it does

@@ -9,6 +9,7 @@ architecturePattern: "Five-stage service blueprint: Intake â†’ Classification â†
 techStack: ["Python", "Streamlit", "Anthropic API", "Supabase (PostgreSQL)"]
 deployUrl: "https://safe-feature-system.streamlit.app"
 sortOrder: 1
+journalSlug: "week-12-feature-intake-copilot"
 ---
 
 ## What it does

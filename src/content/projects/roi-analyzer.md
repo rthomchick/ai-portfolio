@@ -8,6 +8,7 @@ problemSolved: "Personalization investment decisions rely on gut instinct and ve
 architecturePattern: "Supervisor + Specialists (Data Agent, Calculator Agent, Research Agent, Analyst Agent)"
 techStack: ["Python", "Streamlit", "Anthropic API"]
 sortOrder: 4
+journalSlug: "week-04-multi-agent-systems"
 ---
 
 ## What it does
