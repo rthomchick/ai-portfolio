@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "index": "node scripts/index-content.mjs"
+    "index": "node --env-file=.env scripts/index-content.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
