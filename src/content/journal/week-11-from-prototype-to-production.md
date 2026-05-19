@@ -3,7 +3,7 @@ title: "Week 11 Journal: Anthropic Advisor Tool Experiment"
 headline: "Week 11 Journal: Anthropic Advisor Tool Experiment"
 week: 11
 date: 2026-05-11
-summary: "Upgraded the SAFe Feature Spec System from prototype to production by integrating the advisor tool (then A/B testing it out), wiring governance modules into the live pipeline, migrating from SQLite to PostgreSQL, building a ConnectorInterface abstraction, and deploying the full v3 system to Streamlit Cloud."
+summary: "Took the SAFe Feature Spec System from prototype to production by wiring in governance, migrating from SQLite to PostgreSQL, building a ConnectorInterface abstraction, and deploying the full v3 system to Streamlit Cloud."
 tags:
   - advisor-tool
   - postgresql
