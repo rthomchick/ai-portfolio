@@ -44,7 +44,7 @@ const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
       <h1 data-pagefind-meta="title" class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-2xl leading-tight">{entry.data.headline}</h1>
 
       <!-- Tags -->
-      <div class="flex flex-wrap gap-2 mb-8">
+      <div data-pagefind-ignore class="flex flex-wrap gap-2 mb-8">
         {entry.data.tags.map(tag => (
           <span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">{tag}</span>
         ))}

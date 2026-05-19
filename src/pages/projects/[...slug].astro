@@ -64,7 +64,7 @@ const badgeLabel: Record<string, string> = {
 
         <div>
           <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-2">Tech stack</dt>
-          <dd class="flex flex-wrap gap-1.5">
+          <dd data-pagefind-ignore class="flex flex-wrap gap-1.5">
             {project.data.techStack.map(tech => (
               <span class="text-xs bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-full">{tech}</span>
             ))}
