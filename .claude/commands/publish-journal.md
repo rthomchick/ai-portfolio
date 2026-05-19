@@ -18,7 +18,18 @@ Search Notion for "Week {n} Journal" to locate the source page. Fetch the full p
 
 Read `src/content.config.ts` to get the current frontmatter schema for the journal collection.
 
-### 3. Generate the markdown file
+### 3. Extract and download images
+
+Scan the fetched Notion content for any embedded images (these will appear as Notion file URLs, S3 signed URLs, or image blocks).
+
+For each image found:
+- Download the image file
+- Save it to `public/images/journal/` with a descriptive filename following the pattern: `week-{NN}-{description}.{ext}` (e.g., `week-09-eval-dashboard-quality.png`, `week-11-advisor-cost-comparison.png`)
+- Keep filenames lowercase, kebab-case, and descriptive enough to identify without opening the file
+- If the image is a screenshot, preserve the original resolution (do not resize)
+- If `public/images/journal/` does not exist, create it
+
+### 4. Generate the markdown file
 
 Create a well-formed Astro content file with:
 
@@ -39,8 +50,10 @@ Create a well-formed Astro content file with:
 - Do NOT add, remove, or rewrite any sections
 - Do NOT add a "Key Insights" or "Tools Built" section to the body — that data belongs in frontmatter only, and is not rendered on the entry page
 - Preserve all headings, code blocks, and structure exactly as authored
+- **Replace all Notion image URLs** with local paths: `![alt text](/images/journal/week-{NN}-{description}.{ext})`
+- Preserve image alt text from Notion if present; if no alt text exists, write a brief descriptive alt text based on the image context (e.g., "Eval dashboard quality scores tab showing score trends across golden set cases")
 
-### 4. Save the file
+### 5. Save the file
 
 Save to `src/content/journal/week-{NN}-{slug}.md` where:
 - `{NN}` is zero-padded week number (01, 02, etc.)
@@ -48,13 +61,21 @@ Save to `src/content/journal/week-{NN}-{slug}.md` where:
 
 If a file for this week already exists, replace it.
 
-### 5. Verify
+### 6. Verify
 
-Run `npx astro build` and confirm the new entry appears in the build output with no errors.
+Run `npx astro build` and confirm:
+- The new entry appears in the build output with no errors
+- All image paths resolve (no broken image references in the build)
+
+### 7. Commit and push
+
+Stage all changes (the markdown file AND all new images in `public/images/journal/`), commit with message "Publish Week {N} journal entry", and push to `origin/main`.
 
 ## Important rules
 
 - Do NOT rewrite Richard's prose. You are a converter, not an editor.
 - Do NOT invent editorial headlines. Use the title as-is.
 - Do NOT render keyInsights or toolsBuilt in the page body.
+- Do NOT skip images. Every image in the Notion source must be downloaded and included.
+- If an image URL is expired or fails to download, log the failure and continue with the remaining images. Note any missing images in the commit message.
 - If the Notion page cannot be found, stop and ask for the Notion page ID.

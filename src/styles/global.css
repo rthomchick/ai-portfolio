@@ -119,6 +119,7 @@ html.theme-transition *::after {
 /* ── Effect 4: Link Underline Slide ── */
 .link-slide {
   position: relative;
+  display: inline-block;
   text-decoration: none;
 }
 
