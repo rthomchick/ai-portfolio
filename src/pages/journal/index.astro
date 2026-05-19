@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import JournalCard from '../../components/JournalCard.astro';
 import { getCollection } from 'astro:content';
 
 const allEntries = await getCollection('journal', ({ data }) => data.status === 'published');
@@ -16,18 +17,13 @@ const sorted = allEntries.sort((a, b) => b.data.week - a.data.week);
 
     <div class="divide-y divide-stone-200 dark:divide-stone-800">
       {sorted.map(entry => (
-        <article class="py-8 reveal">
-          <div class="flex items-baseline gap-3 mb-2">
-            <time class="text-xs text-stone-400 dark:text-stone-500" datetime={entry.data.date.toISOString()}>
-              {entry.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-            </time>
-          </div>
-          <a href={`/journal/${entry.id}`} class="block text-lg font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors mb-2 no-underline">
-            {entry.data.headline}
-          </a>
-          <p class="text-sm text-stone-500 dark:text-stone-400 leading-relaxed mb-3 max-w-2xl">{entry.data.summary}</p>
-          <p class="text-xs text-stone-400 dark:text-stone-500">{entry.data.tags.join(', ')}</p>
-        </article>
+        <JournalCard
+          headline={entry.data.headline}
+          summary={entry.data.summary}
+          date={entry.data.date}
+          slug={entry.id}
+          tags={entry.data.tags}
+        />
       ))}
     </div>
   </main>
