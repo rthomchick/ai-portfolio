@@ -5,20 +5,30 @@ export interface Props {
   date: Date;
   slug: string;
   tags: string[];
+  compact?: boolean;
 }
 
-const { headline, summary, date, slug, tags } = Astro.props;
+const { headline, summary, date, slug, tags, compact = false } = Astro.props;
+const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <article class="py-8 reveal">
-  <div class="flex items-baseline gap-3 mb-2">
-    <time class="text-xs text-stone-400 dark:text-stone-500" datetime={date.toISOString()}>
-      {date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}
-    </time>
-  </div>
+  {!compact && (
+    <div class="flex items-baseline gap-3 mb-2">
+      <time class="text-xs text-stone-400 dark:text-stone-500" datetime={date.toISOString()}>
+        {formattedDate}
+      </time>
+    </div>
+  )}
   <a href={`/journal/${slug}`} class="block text-lg font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors mb-2 no-underline">
     {headline}
   </a>
   <p class="text-sm text-stone-500 dark:text-stone-400 leading-relaxed mb-3 max-w-2xl">{summary}</p>
-  <p class="text-xs text-stone-400 dark:text-stone-500">{tags.join(', ')}</p>
+  {compact ? (
+    <time class="text-xs text-stone-400 dark:text-stone-500" datetime={date.toISOString()}>
+      {formattedDate}
+    </time>
+  ) : (
+    <p class="text-xs text-stone-400 dark:text-stone-500">{tags.join(', ')}</p>
+  )}
 </article>
