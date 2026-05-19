@@ -35,7 +35,22 @@ const { title = 'Richard Thomchick', description = 'AI product development portf
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans antialiased">
-    <slot />
+    <div class="page-enter">
+      <slot />
+    </div>
     <SpeedInsights />
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+      }
+    </script>
   </body>
 </html>

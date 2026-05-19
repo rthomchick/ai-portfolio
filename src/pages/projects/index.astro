@@ -15,7 +15,7 @@ const sorted = allProjects.sort((a, b) => a.data.sortOrder - b.data.sortOrder);
     <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-3">Projects</h1>
     <p class="text-base text-stone-500 dark:text-stone-400 leading-relaxed mb-12">AI-powered tools built and deployed during the program.</p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 stagger">
       {sorted.map(project => (
         <ProjectCard
           title={project.data.title}

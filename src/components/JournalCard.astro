@@ -10,7 +10,7 @@ const { headline, summary, date, slug } = Astro.props;
 const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<article class="py-4">
+<article class="py-4 card-hover">
   <a href={`/journal/${slug}`} class="text-base font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors block mb-1 no-underline">
     {headline}
   </a>

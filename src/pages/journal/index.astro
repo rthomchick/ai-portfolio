@@ -16,7 +16,7 @@ const sorted = allEntries.sort((a, b) => b.data.week - a.data.week);
 
     <div class="divide-y divide-stone-200 dark:divide-stone-800">
       {sorted.map(entry => (
-        <article class="py-8">
+        <article class="py-8 reveal">
           <div class="flex items-baseline gap-3 mb-2">
             <time class="text-xs text-stone-400 dark:text-stone-500" datetime={entry.data.date.toISOString()}>
               {entry.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
