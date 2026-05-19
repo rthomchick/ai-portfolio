@@ -48,13 +48,14 @@ const deployedBadgeClasses: Record<string, string> = {
       <!-- Journal column -->
       <div class="reveal">
         <h2 class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-6">Journal</h2>
-        <div class="divide-y divide-stone-100 dark:divide-stone-800">
+        <div class="divide-y divide-stone-200 dark:divide-stone-800">
           {recentEntries.map(entry => (
             <JournalCard
               headline={entry.data.headline}
               summary={entry.data.summary}
               date={entry.data.date}
               slug={entry.id}
+              tags={entry.data.tags}
             />
           ))}
         </div>
