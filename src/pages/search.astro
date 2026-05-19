@@ -16,6 +16,9 @@ import Footer from '../components/Footer.astro';
       <button id="mode-semantic" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
         Semantic
       </button>
+      <button id="mode-rag" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
+        Ask
+      </button>
     </div>
 
     <div id="search-container"></div>
@@ -28,10 +31,11 @@ import Footer from '../components/Footer.astro';
         <input
           id="semantic-input"
           type="text"
-          placeholder="Ask about this portfolio..."
+          placeholder="Search across portfolio content..."
           class="w-full pl-11 pr-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:border-teal-600 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-600/25 dark:focus:ring-teal-400/25 transition-colors"
         />
       </div>
+      <div id="rag-answer" class="mt-6" style="display: none;"></div>
       <div id="semantic-results" class="mt-6"></div>
     </div>
   </main>
@@ -176,25 +180,37 @@ import Footer from '../components/Footer.astro';
 
       var modeKeyword = document.getElementById('mode-keyword');
       var modeSemantic = document.getElementById('mode-semantic');
+      var modeRag = document.getElementById('mode-rag');
       var keywordContainer = document.getElementById('search-container');
       var semanticContainer = document.getElementById('semantic-container');
       var semanticInput = document.getElementById('semantic-input');
       var semanticResults = document.getElementById('semantic-results');
+      var ragAnswer = document.getElementById('rag-answer');
+
+      var currentMode = 'keyword';
 
       var activeBtn = 'px-4 py-1.5 text-sm rounded-full border transition-colors bg-teal-600 dark:bg-teal-400 text-white dark:text-stone-900 border-teal-600 dark:border-teal-400';
       var inactiveBtn = 'px-4 py-1.5 text-sm rounded-full border transition-colors bg-transparent text-stone-500 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-teal-600 dark:hover:border-teal-400';
 
       function setMode(mode) {
+        currentMode = mode;
+        ragAnswer.style.display = 'none';
+        ragAnswer.innerHTML = '';
+        semanticResults.innerHTML = '';
+
         if (mode === 'keyword') {
           keywordContainer.style.display = '';
           semanticContainer.style.display = 'none';
           modeKeyword.className = activeBtn;
           modeSemantic.className = inactiveBtn;
+          modeRag.className = inactiveBtn;
         } else {
           keywordContainer.style.display = 'none';
           semanticContainer.style.display = '';
           modeKeyword.className = inactiveBtn;
-          modeSemantic.className = activeBtn;
+          modeSemantic.className = mode === 'semantic' ? activeBtn : inactiveBtn;
+          modeRag.className = mode === 'rag' ? activeBtn : inactiveBtn;
+          semanticInput.placeholder = mode === 'rag' ? 'Ask about this portfolio...' : 'Search across portfolio content...';
           semanticInput.focus();
         }
       }
@@ -203,6 +219,7 @@ import Footer from '../components/Footer.astro';
 
       modeKeyword.addEventListener('click', function() { setMode('keyword'); });
       modeSemantic.addEventListener('click', function() { setMode('semantic'); });
+      modeRag.addEventListener('click', function() { setMode('rag'); });
 
       var debounceTimer;
       semanticInput.addEventListener('input', function() {
@@ -210,32 +227,90 @@ import Footer from '../components/Footer.astro';
         var query = semanticInput.value.trim();
         if (query.length < 3) {
           semanticResults.innerHTML = '';
+          ragAnswer.style.display = 'none';
+          ragAnswer.innerHTML = '';
           return;
         }
         debounceTimer = setTimeout(function() {
-          performSemanticSearch(query);
-        }, 500);
+          performSearch(query, currentMode);
+        }, currentMode === 'rag' ? 800 : 500);
       });
 
-      function performSemanticSearch(query) {
-        semanticResults.innerHTML = '<p class="text-sm text-stone-400">Searching...</p>';
+      semanticInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          clearTimeout(debounceTimer);
+          var query = semanticInput.value.trim();
+          if (query.length >= 3) {
+            performSearch(query, currentMode);
+          }
+        }
+      });
+
+      function performSearch(query, mode) {
+        if (mode === 'rag') {
+          ragAnswer.style.display = '';
+          ragAnswer.innerHTML = '<p class="text-sm text-stone-400 dark:text-stone-500">Thinking...</p>';
+          semanticResults.innerHTML = '';
+        } else {
+          ragAnswer.style.display = 'none';
+          semanticResults.innerHTML = '<p class="text-sm text-stone-400">Searching...</p>';
+        }
 
         fetch('/api/semantic-search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: query }),
+          body: JSON.stringify({ query: query, mode: mode }),
         })
           .then(function(res) { return res.json(); })
           .then(function(data) {
             if (data.error) {
-              semanticResults.innerHTML = '<p class="text-sm text-red-400">' + data.error + '</p>';
+              if (mode === 'rag') {
+                ragAnswer.innerHTML = '<p class="text-sm text-red-400">' + data.error + '</p>';
+              } else {
+                semanticResults.innerHTML = '<p class="text-sm text-red-400">' + data.error + '</p>';
+              }
               return;
             }
-            renderSemanticResults(data.results);
+
+            if (data.mode === 'rag') {
+              renderRagAnswer(data.answer, data.sources);
+            } else {
+              renderSemanticResults(data.results);
+            }
           })
           .catch(function() {
-            semanticResults.innerHTML = '<p class="text-sm text-red-400">Search failed. Please try again.</p>';
+            var errorHtml = '<p class="text-sm text-red-400">Search failed. Please try again.</p>';
+            if (mode === 'rag') {
+              ragAnswer.innerHTML = errorHtml;
+            } else {
+              semanticResults.innerHTML = errorHtml;
+            }
           });
+      }
+
+      function renderRagAnswer(answer, sources) {
+        var htmlAnswer = answer
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-teal-600 dark:text-teal-400 hover:underline">$1</a>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-stone-900 dark:text-stone-100">$1</strong>')
+          .replace(/\n\n/g, '</p><p class="mb-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300">');
+
+        ragAnswer.style.display = '';
+        ragAnswer.innerHTML =
+          '<div class="rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 p-5 mb-6">' +
+          '  <p class="mb-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300">' + htmlAnswer + '</p>' +
+          '</div>';
+
+        if (sources && sources.length > 0) {
+          var sourcesHtml = '<p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-3">Sources</p>';
+          sources.forEach(function(s) {
+            var label = s.type === 'journal' ? 'Week ' + s.week : 'Project';
+            sourcesHtml += '<div class="border-t border-stone-200 dark:border-stone-800 py-3">';
+            sourcesHtml += '  <a href="' + s.url + '" class="text-sm font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">' + (s.title || 'Untitled') + '</a>';
+            sourcesHtml += '  <span class="text-xs text-stone-400 dark:text-stone-500 ml-2">' + label + (s.section ? ' · ' + s.section : '') + '</span>';
+            sourcesHtml += '</div>';
+          });
+          semanticResults.innerHTML = sourcesHtml;
+        }
       }
 
       function renderSemanticResults(results) {

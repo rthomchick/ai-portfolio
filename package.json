@@ -13,6 +13,7 @@
     "index": "node --env-file=.env scripts/index-content.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.97.1",
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/vercel": "^10.0.4",
     "@tailwindcss/typography": "^0.5.19",
