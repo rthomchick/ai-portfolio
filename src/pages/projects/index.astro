@@ -9,7 +9,10 @@ const allProjects = await getCollection('projects');
 const sorted = allProjects.sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 ---
 
-<BaseLayout title="Projects">
+<BaseLayout
+  title="Projects"
+  description="Deployed AI tools including a multi-agent feature spec system, RAG knowledge assistant, evaluation pipeline, and conversational intake copilot."
+>
   <Header />
   <main class="max-w-5xl mx-auto px-6 py-12">
     <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-3">Projects</h1>

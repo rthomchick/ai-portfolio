@@ -5,9 +5,21 @@ import SpeedInsights from '@vercel/speed-insights/astro';
 export interface Props {
   title?: string;
   description?: string;
+  ogType?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
 }
 
-const { title = 'Richard Thomchick', description = 'AI product development portfolio and learning journal.' } = Astro.props;
+const {
+  title = 'Richard Thomchick',
+  description = 'AI product development portfolio and learning journal.',
+  ogType = 'website',
+  ogImage = '/og-default.png',
+  canonicalUrl,
+} = Astro.props;
+
+const pageTitle = title === 'Richard Thomchick' ? title : `${title} — Richard Thomchick`;
+const canonical = canonicalUrl || Astro.url.href;
 ---
 
 <!DOCTYPE html>
@@ -20,7 +32,25 @@ const { title = 'Richard Thomchick', description = 'AI product development portf
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light dark" />
     <meta name="google-site-verification" content="nkWJEXw5Rb9t31t7ES_QmHyMc4nvlhXy8yHvDNRid7I" />
-    <title>{title === 'Richard Thomchick' ? title : `${title} — Richard Thomchick`}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta property="og:site_name" content="Richard Thomchick" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonical} />
+
+    <title>{pageTitle}</title>
     <script is:inline>
       (function() {
         const stored = localStorage.getItem('theme');
@@ -30,6 +60,14 @@ const { title = 'Richard Thomchick', description = 'AI product development portf
           document.documentElement.classList.remove('dark');
         }
       })();
+    </script>
+    <!-- Google Analytics -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-N2265LHX8B"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-N2265LHX8B');
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

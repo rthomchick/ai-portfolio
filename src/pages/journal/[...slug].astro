@@ -28,7 +28,11 @@ const wordCount = textOnly.trim().split(/\s+/).filter(Boolean).length;
 const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
 ---
 
-<BaseLayout title={entry.data.headline}>
+<BaseLayout
+  title={entry.data.headline}
+  description={entry.data.summary}
+  ogType="article"
+>
   <Header />
   <main class="max-w-5xl mx-auto px-6 py-12">
     <a href="/journal" class="text-sm text-teal-600 dark:text-teal-400 link-slide transition-colors no-underline mb-8 inline-block">← Journal</a>
