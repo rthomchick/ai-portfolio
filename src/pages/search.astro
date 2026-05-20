@@ -67,10 +67,18 @@ import Footer from '../components/Footer.astro';
 
     .pagefind-ui__search-input {
       font-weight: 400 !important;
+      font-size: 0.875rem !important;
+      line-height: 1.25rem !important;
       letter-spacing: -0.01em !important;
+      padding: 0.75rem 1rem 0.75rem 2.75rem !important;
       border: 1px solid #E7E5E4 !important;
+      border-radius: 0.5rem !important;
       transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease !important;
       width: 100% !important;
+    }
+
+    .pagefind-ui__search-input::placeholder {
+      color: #A8A29E !important;
     }
 
     .pagefind-ui__form {
