@@ -226,6 +226,8 @@ import Footer from '../components/Footer.astro';
           modeKeyword.className = activeBtn;
           modeSemantic.className = inactiveBtn;
           modeRag.className = inactiveBtn;
+          var pfInput = keywordContainer.querySelector('.pagefind-ui__search-input');
+          if (pfInput) pfInput.focus();
         } else {
           keywordContainer.style.display = 'none';
           semanticContainer.style.display = '';
