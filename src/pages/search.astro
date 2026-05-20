@@ -78,7 +78,13 @@ import Footer from '../components/Footer.astro';
     }
 
     .dark .pagefind-ui__search-input {
+      background: #1C1917 !important;
+      color: #F5F5F4 !important;
       border-color: #292524 !important;
+    }
+
+    .dark .pagefind-ui__search-input::placeholder {
+      color: #78716C !important;
     }
 
     .pagefind-ui__search-input:hover {
@@ -98,6 +104,10 @@ import Footer from '../components/Footer.astro';
     .dark .pagefind-ui__search-input:focus {
       border-color: #2DD4BF !important;
       box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.25) !important;
+    }
+
+    .dark .pagefind-ui__search-clear {
+      color: #A8A29E !important;
     }
 
     .pagefind-ui__result-title {
