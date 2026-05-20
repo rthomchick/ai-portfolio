@@ -68,6 +68,12 @@
 
     showIcon(getState());
 
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+      if (getState() === 'system') {
+        applyTheme('system');
+      }
+    });
+
     btn.addEventListener('click', function() {
       const current = getState();
       const next = nextState(current);
