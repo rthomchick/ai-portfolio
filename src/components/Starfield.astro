@@ -1,0 +1,146 @@
+<canvas
+  id="starfield-canvas"
+  style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:0;transition:opacity 1s ease;"
+></canvas>
+
+<script>
+  (function () {
+    const canvas = document.getElementById('starfield-canvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+
+    const STAR_COUNT = 220;
+    let stars: { x: number; y: number; radius: number; baseOpacity: number; phase: number; speed: number }[] = [];
+    let shootingStars: { x: number; y: number; angle: number; length: number; speed: number; opacity: number; progress: number }[] = [];
+    let lastTimestamp: number | null = null;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let shootTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function rand(min: number, max: number) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        const isLarge = Math.random() > 0.7;
+        stars.push({
+          x: rand(0, canvas.width),
+          y: rand(0, canvas.height),
+          radius: isLarge ? rand(1.2, 2.2) : rand(0.5, 1.2),
+          baseOpacity: rand(0.15, 0.55),
+          phase: rand(0, Math.PI * 2),
+          speed: rand(0.4, 1.2),
+        });
+      }
+    }
+
+    function spawnShootingStar() {
+      const angle = rand(20, 45) * (Math.PI / 180);
+      shootingStars.push({
+        x: rand(0, canvas.width * 0.7),
+        y: rand(0, canvas.height * 0.5),
+        angle,
+        length: rand(80, 180),
+        speed: rand(0.8, 1.4),
+        opacity: 1,
+        progress: 0,
+      });
+    }
+
+    function scheduleNextShoot() {
+      shootTimer = setTimeout(() => {
+        spawnShootingStar();
+        scheduleNextShoot();
+      }, rand(8000, 18000));
+    }
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
+    }
+
+    function isDark() {
+      return document.documentElement.classList.contains('dark');
+    }
+
+    function setOpacity(dark: boolean) {
+      canvas.style.opacity = dark ? '1' : '0';
+    }
+
+    function draw(timestamp: number) {
+      requestAnimationFrame(draw);
+
+      if (parseFloat(canvas.style.opacity) <= 0) {
+        lastTimestamp = null;
+        return;
+      }
+
+      const delta = lastTimestamp !== null ? timestamp - lastTimestamp : 0;
+      lastTimestamp = timestamp;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const star of stars) {
+        const opacity = star.baseOpacity * (0.5 + 0.5 * Math.sin(timestamp * 0.001 * star.speed + star.phase));
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+        ctx.fill();
+      }
+
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
+        s.progress += s.speed * (delta / 1000);
+
+        const headX = s.x + s.progress * canvas.width * Math.cos(s.angle);
+        const headY = s.y + s.progress * canvas.width * Math.sin(s.angle);
+        const tailX = headX - s.length * Math.cos(s.angle);
+        const tailY = headY - s.length * Math.sin(s.angle);
+
+        const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+        grad.addColorStop(0, 'rgba(231, 229, 228, 0)');
+        grad.addColorStop(1, 'rgba(231, 229, 228, 0.9)');
+
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(headX, headY);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        if (s.progress >= 1) {
+          shootingStars.splice(i, 1);
+        }
+      }
+    }
+
+    // Init canvas dimensions and stars
+    resize();
+    setOpacity(isDark());
+
+    // Debounced resize via ResizeObserver
+    const resizeObs = new ResizeObserver(() => {
+      if (resizeTimer !== null) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    });
+    resizeObs.observe(document.body);
+
+    // Respond to localStorage theme changes (Light/Dark explicit toggle)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'theme') {
+        const dark =
+          e.newValue === 'dark' ||
+          (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        setOpacity(dark);
+      }
+    });
+
+    // Respond to direct class mutations (System mode OS changes + same-tab toggles)
+    const mutObs = new MutationObserver(() => setOpacity(isDark()));
+    mutObs.observe(document.documentElement, { attributeFilter: ['class'] });
+
+    scheduleNextShoot();
+    requestAnimationFrame(draw);
+  })();
+</script>
