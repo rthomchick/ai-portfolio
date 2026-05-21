@@ -44,16 +44,25 @@ html.theme-transition *::after {
 }
 
 /* ── Mobile overflow prevention ── */
+html {
+  overflow-x: hidden;
+}
+
+.prose {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 .prose pre {
   overflow-x: auto;
-  max-width: 100%;
+  max-width: calc(100vw - 3rem);
   white-space: pre;
 }
 
 .prose table {
   display: block;
   overflow-x: auto;
-  max-width: 100%;
+  max-width: calc(100vw - 3rem);
   white-space: nowrap;
 }
 
@@ -62,6 +71,10 @@ html.theme-transition *::after {
 .prose iframe {
   max-width: 100%;
   height: auto;
+}
+
+div[class*="flex-wrap"] {
+  max-width: 100%;
 }
 
 /* ── Effect 1: Scroll Reveal ── */
