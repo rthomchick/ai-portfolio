@@ -61,13 +61,25 @@ Save to `src/content/journal/week-{NN}-{slug}.md` where:
 
 If a file for this week already exists, replace it.
 
-### 6. Verify
+### 6. Verify build
 
 Run `npx astro build` and confirm:
 - The new entry appears in the build output with no errors
 - All image paths resolve (no broken image references in the build)
 
-### 7. Commit and push
+### 7. Re-index for semantic search
+
+Run the content indexing script to update the Pinecone search index with the new entry:
+
+```bash
+node --env-file=.env scripts/index-content.mjs
+```
+
+This re-embeds all content and upserts to the `portfolio-search` Pinecone index. It's idempotent — existing entries get updated, not duplicated.
+
+If the script fails (missing API keys, Pinecone unavailable), log the error and continue with the commit/push. The keyword search (Pagefind) will still work; semantic search will pick up the new content on the next successful index run.
+
+### 8. Commit and push
 
 Stage all changes (the markdown file AND all new images in `public/images/journal/`), commit with message "Publish Week {N} journal entry", and push to `origin/main`.
 
