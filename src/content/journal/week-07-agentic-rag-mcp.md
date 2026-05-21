@@ -35,7 +35,7 @@ status: published
 
 ---
 
-# What I Built
+## What I Built
 
 Week 6 introduced me to RAG. This week, I added agents and tools to the RAG pipeline so Claude could reason about what to retrieve, and moved from ChromaDB on my laptop to a hosted Pinecone index.
 
@@ -48,7 +48,7 @@ Week 6 introduced me to RAG. This week, I added agents and tools to the RAG pipe
 | Agent pattern | None (fixed code pipeline) | **MCP-style** (tools as a menu Claude reasons over) |
 | Deployment | Streamlit Cloud | Same (no need to change) |
 
-## Days 1-2: Pinecone Migration
+### Days 1-2: Pinecone Migration
 
 ChromaDB was perfect for Week 6 learning. Here's where I saw it break down in production:
 
@@ -88,7 +88,7 @@ Next, I upgraded the Knowledge Assistant Streamlit app from ChromaDB (`knowledge
 
 ![Knowledge Assistant v2 Streamlit app showing Pinecone-backed vector store with live vector count in sidebar](/images/journal/week-07-knowledge-assistant-v2.png)
 
-## Day 3: Agentic RAG
+### Day 3: Agentic RAG
 
 On Wednesday, I added an agent to the mix. The RAG pipeline I built in Week 6 was non-agentic: embed the query, retrieve top-K chunks, send them to Claude, generate an answer. (I'll call this "standard RAG" from here on.) The same steps run regardless of whether the question is simple or complex.
 
@@ -115,7 +115,7 @@ I ran a head-to-head comparison using the same three test questions through both
 
 The results were more nuanced than I expected. Agentic RAG's quality edge was small (0.3 points average), and the complex strategic question, where I most expected multi-search to shine, was a tie. The agentic agent made 5 searches on that question and consumed nearly 3x the tokens, but the judge scored both answers the same. The structural advantage of adaptive retrieval is real, but on this test set, the quality payoff doesn't seem to justify the cost difference. The real payoff likely requires the full multi-agent decomposition pattern (Planner → Workers → Synthesizer) built later in the week, not just a single agent with more search autonomy.
 
-## Day 4: MCP-Pattern Tool Server
+### Day 4: MCP-Pattern Tool Server
 
 MCP (Model Context Protocol) seems to be a hot topic lately, and it seemed like a natural progression from the shared tool library I built in Week 4. In practice, this meant refactoring my tools into a single `mcp_tools.py` file with:
 
@@ -124,7 +124,7 @@ MCP (Model Context Protocol) seems to be a hot topic lately, and it seemed like 
 
 Then I built `mcp_agent.py`, which imports those two exports and runs an agent loop. The agent is generic; the tools are specific. If I want to add a new tool next week, I add it in `mcp_tools.py` and every agent that imports the module gets it automatically. Define once, use everywhere. I also connected Notion, Google Calendar, and Gmail as MCP servers in Claude.ai this week, which made the concept tangible.
 
-## Day 5: Strategy Assistant v3
+### Day 5: Strategy Assistant v3
 
 My Personalization Strategy Assistant from Week 4 had a hard-coded data flow and used mock data. Today, I rebuilt it with:
 
@@ -137,7 +137,7 @@ The Strategy Assistant is the most architecturally complex thing I've deployed s
 
 ![Strategy Assistant v3 showing multi-agent Planner → Workers → Synthesizer architecture with real-time status expander](/images/journal/week-07-strategy-assistant-v3.png)
 
-## Day 6: Streamlit Deployment + Golden Set Evaluation
+### Day 6: Streamlit Deployment + Golden Set Evaluation
 
 Instead of deploying the Day 5 Strategy Assistant as a separate app, I combined it with my Knowledge Assistant from earlier in the week into a single Streamlit app with multiple tabs.
 
@@ -153,9 +153,9 @@ Each test case has rule-based checks (must_contain, must_not_contain, must_cite)
 
 Results: 100% pass rate on rule-based checks, 4.4/5.0 average LLM judge score. The out-of-scope category scored well, which is actually harder to get right than factual recall. Not bad!
 
-# What I Learned
+## What I Learned
 
-## Standard vs. Agentic RAG Is a Product Decision
+### Standard vs. Agentic RAG Is a Product Decision
 
 The technical difference is who controls retrieval. Standard RAG is predictable, fast, and cheap: you can profile exactly how many API calls each query will consume. Agentic RAG is adaptive and variable-cost. The head-to-head comparison made this concrete: on the complex strategic question, the agentic agent made 5 searches and consumed nearly 3x the tokens, but the LLM judge scored it the same as standard RAG (both 4/5). Across all three test cases, the quality edge was only 0.3 points (4.3 vs 4.0) at a 66% token premium. More retrieval doesn't automatically mean better answers.
 
@@ -163,7 +163,7 @@ The real quality leap came from the multi-agent architecture in the Strategy Ass
 
 For my Knowledge Assistant, the takeaway was: offer both, but for different reasons than I originally assumed. Tab 1 (standard RAG) isn't just the cheap option; it's genuinely sufficient for most questions. Tab 2 (Strategy Assistant) earns its cost because multi-agent decomposition does something standard RAG structurally can't. Simple mode for daily use, power mode for strategic work. The key is making sure the power mode delivers proportional value, not just proportional cost.
 
-## MCP Is Composability, Not Complexity
+### MCP Is Composability, Not Complexity
 
 The insight that landed hardest this week: I'd been building MCP-compatible tools since Week 3. Every tool schema I'd written, every handler function, every dispatch loop. The pattern was already there. MCP just standardizes the interface so tools are composable across agents instead of hardwired to one.
 
@@ -171,15 +171,15 @@ I expected MCP to be complicated. It wasn't. The entire `mcp_tools.py` file is a
 
 The proof: `knowledge_assistant_v3.py` imports from `mcp_tools.py` and the Strategy Assistant workers get all three tools automatically. `mcp_agent.py` imports the same file and gets the same tools. If I build a new agent next week, it starts with full tool access by adding one import line.
 
-## Idempotent Operations Matter More Than You'd Think
+### Idempotent Operations Matter More Than You'd Think
 
 Pinecone's idempotent upsert ("same ID = update, not duplicate") is a small technical detail that has outsized impact. In production, users will upload the same document twice. They'll update a document and re-ingest it. Without idempotent operations, the knowledge base accumulates garbage. With them, re-ingestion is safe and expected. This principle extends beyond vector databases: anywhere users can repeat an action, the system should handle it gracefully.
 
-# What I Struggled With
+## What I Struggled With
 
 This was a relatively smooth week. The Pinecone migration was straightforward because the concepts transferred directly from ChromaDB. The agentic RAG loop was familiar from Week 3's tool use patterns. The MCP refactoring was more organizational than technical.
 
-# Looking Ahead to Week 8
+## Looking Ahead to Week 8
 
 I've built a nice collection of new capabilities and have already used them to improve several of the simple tools I built in the first weeks of my journey. In that spirit, I'll be revisiting my Feature Spec Generator next week and re-imagining it as a SAFe Feature Spec System. Six agents, a 100-point rubric, and the goal of replacing a manual process that takes several days (or even weeks) and at least 3 people with an automated workflow that takes 10 minutes to complete.
 

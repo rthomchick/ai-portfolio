@@ -41,17 +41,17 @@ status: published
 
 ---
 
-# What I Built
+## What I Built
 
 I've spent a good deal of time reading up on responsible AI. But I wanted to understand it from a product and engineering perspective, not just policy. I insisted on doing a basic responsible AI build this week. The Claude abides.
 
 Together, we created 9 new evaluation modules, a 4-section Responsible AI dashboard, and a reusable governance template that I can apply to other tools. The general process I followed was to audit what I had, fill the gaps, validate with data, generalize the patterns.
 
-## Day 1: Responsible AI Foundations
+### Day 1: Responsible AI Foundations
 
 While I had a framework for evaluating whether my SAFe Feature System was producing good scores, I had no structured way to see if it was behaving responsibly (or mitigate bad behavior). So, I built a couple of auditing scripts to start poking at my product.
 
-#### Responsible AI Checker
+##### Responsible AI Checker
 
 The first build was `responsible_ai_checklist.py`, which performs "checks" against a set of 25 guidelines in six categories (fairness, reliability, transparency, cost governance, safety, and versioning), and reports the status of each category (full, partial, missing). Here's an example of checks from the Safety category:
 
@@ -62,11 +62,11 @@ The first build was `responsible_ai_checklist.py`, which performs "checks" again
 
 When I ran it against my SAFe Feature System, it passed 12 of 25 checks. The gaps were clustered in cost governance, audit trails, content safety, and regression baselines. 48% coverage overall. Not great. But something to learn from.
 
-#### Infrastructure Auditor
+##### Infrastructure Auditor
 
 The second deliverable was `infrastructure_audit.py`, which queries the eval database and produces a structured report. The audit surfaced a detail I hadn't noticed: the Reviewer agent consumes roughly 80% of total pipeline input tokens. Not the Generator, even though it produces the longest output. I realized the reason is because Reviewer gets the longest input: the full spec plus the full rubric plus the system prompt.
 
-## Day 2: Cost Guardrails + Audit Trails
+### Day 2: Cost Guardrails + Audit Trails
 
 After that token "reveal" on Monday, cost governance went to the top of Tuesday's agenda. Claude taught me how to implement basic cost guardrails via a `CostGuard` "enforcer" (sounds ominous, like something out of TRON) with four configurable limits.
 
@@ -85,7 +85,7 @@ COST_LIMITS: dict[str, float | int] = {
 
 The design is a `llm_call_guarded()` drop-in for `llm_call()`, so existing agents don't need their signatures changed. A `guard=None` default preserves backward compatibility.
 
-#### Claude Code Improvements
+##### Claude Code Improvements
 
 The original design included a `improvement_iterations_max` setting to catch the edge case where each improvement pass is cheap but the loop logic itself is broken, preventing "runaway" loops. What the original design didn't prevent was a *single expensive pass*. The original design specified two caps, but no mechanism to select between them at call time.
 
@@ -96,13 +96,13 @@ The CostGuard needs to enforce different caps at different moments. Using the sa
 
 Claude Code detected this issue during implementation and added a `limit_key` that lets the caller specify, on a per-call basis, which configured cap is the relevant ceiling for this particular API call. `limit_key` enforces per-pass cost discipline that the original directive's two-cap config implied but didn't operationalize. It was fascinating to watch Claude Code proactively improving on design work from Claude AI.
 
-#### Audit Trail
+##### Audit Trail
 
 Not to be overlooked, I also worked on an audit trail script, `audit_trail.py`, that records every pipeline decision to a new `audit_trail` table in the eval database. It includes 7 event types: ROUTE, DRAFT, GENERATE, GROUND_CHECK, REVIEW, IMPROVE, COST_CHECK. Each event has a run ID, timestamp, event type, and a `details_dict` carrying event-specific context.
 
 The CLI trace viewer (`--run-id`) was more useful than I expected during Days 3 and 4, when I needed to debug grounding checker behavior. Being able to run see the full decision trace in the terminal saved real time. Three observability objects now thread through pipeline: TokenTracker, CostGuard, AuditTrail. All optional, all backward-compatible.
 
-## Day 3: Grounding Checks + Content Safety
+### Day 3: Grounding Checks + Content Safety
 
 Wednesday was the most technically interesting day of the week. First, I created a Grounding Checker (bullshit detector?) to verify whether the Generator output traces back to the original human input. It works by classifying Generator "claims" into one of 4 categories:
 
@@ -138,7 +138,7 @@ But regardless of classification, the Generator was filling `[NEEDS INPUT]` plac
 
 The boost finding from the grounding results deserves its own callout: every boosted case returned 0 inventions. Every bare case had at least one. This is the clearest quantitative signal the program has surfaced so far for why PM context matters.
 
-#### Content Safety Checker
+##### Content Safety Checker
 
 `content_safety.py` runs before the grounding checker and includes:
 
@@ -151,7 +151,7 @@ No LLM calls.
 
 All nine smoke test assertions passed, including a deliberate edge case where `≤500ms` should be caught but a PM-provided `200ms` target should be allowed through.
 
-## Day 4: Bias Detection + Responsible AI Dashboard
+### Day 4: Bias Detection + Responsible AI Dashboard
 
 Thursday's focus was on looking at patterns in the data I'd been generating for two weeks. I worked on a `bias_detector.py` script that groups eval runs by feature type, computes per-category statistics, and flags gaps exceeding a configurable threshold (default: 10 points). Section-level analysis goes deeper, flagging any section where a given feature type scores more than 15% below the cross-type average.
 
@@ -166,7 +166,7 @@ To cap off the day, I created a Responsible AI dashboard with four sections:
 3. Content Safety (static reference to the full golden set grounding run: 6/6 PASS, 0 contradictions)
 4. Cost Governance (daily and all-time spend, agent cost breakdown, infrastructure audit checklist)
 
-## Day 5: Prompt Governance + Responsible AI Template
+### Day 5: Prompt Governance + Responsible AI Template
 
 Friday tied together the week's infrastructure into something reusable.
 
@@ -183,15 +183,15 @@ I ran the Router v2 agent prompt to check it against these rules. Result: approv
 
 The `assess_tool()` function runs active checks and returns HEALTHY, DEGRADED, or UNHEALTHY. But…. when I ran it against the SAFe system, one finding came back: the audit trail is empty. Not because the module is broken, but because I haven't wired AuditTrail, CostGuard, and TokenTracker into the live `app.py` pipeline. The modules exist. The pipeline doesn't use them yet. That gap is now documented and named. I added it to my backlog and decided to call it a week.
 
-# What I Learned
+## What I Learned
 
-## Responsible AI Is a Quality Layer, Not a Product Category
+### Responsible AI Is a Quality Layer, Not a Product Category
 
 The framing shift that made the week productive: responsible AI isn't a set of abstract principles to endorse, it's a set of checks to integrate into the production path. Every module I built this week plugs into infrastructure that already existed. The grounding checker slots between Generate and Review. The cost guardrails wrap `llm_call()`. The audit trail adds a table to the eval database.
 
 The PM equivalent: accessibility isn't a separate product. It's a quality standard applied to every feature. The moment you treat responsible AI as a separate workstream, it becomes something you do once instead of something built into how you ship.
 
-## Server-Side Verdict Re-computation Is the Correct Pattern
+### Server-Side Verdict Re-computation Is the Correct Pattern
 
 The grounding checker and the SAFe Reviewer use the same design: the LLM returns structured data (percentages, counts, classifications), and Python enforces the business rule. The LLM does not decide whether something PASSes or FAILs. Code does that.
 
@@ -199,7 +199,7 @@ This matters for two reasons. First, you can change the threshold without touchi
 
 This pattern will show up in every evaluation system I build from here.
 
-## Different Tools Need Different Risk Profiles
+### Different Tools Need Different Risk Profiles
 
 The `ResponsibleAIConfig` was the week's most direct product application. The ROI Analyzer and the SAFe Feature Spec System are both AI tools, but they need completely different governance configurations.
 
@@ -207,15 +207,15 @@ The ROI Analyzer takes structured inputs and performs calculations. Grounding ch
 
 One-size-fits-all governance would either under-govern the SAFe system or misfire on the ROI Analyzer. Risk profiles need to match the tool's actual failure modes.
 
-## Cost Guardrails Should Start Conservative
+### Cost Guardrails Should Start Conservative
 
 The $0.50/run and $5.00/day limits are deliberately tight. My actual average run cost is $0.25, so the per-run limit gives 2× headroom, not 10×. Starting conservative means the limit will trigger during testing if something goes wrong. It also means I have real data to work from when I relax the limits later. The alternative (setting generous limits and tightening after an incident) is the wrong direction. It's easier to explain a raised limit than an unexpected bill.
 
-## The Audit Trail Is a Debugging Superpower
+### The Audit Trail Is a Debugging Superpower
 
 I didn't fully believe this claim when I wrote it into the syllabus. After using the CLI trace viewer on Day 3 to debug grounding classifier behavior, I do now. A multi-agent pipeline has six or more stages where something can go wrong. Without an audit trail, debugging a low-scoring spec means re-running the whole thing with verbose logging and hoping to catch the failure. With the audit trail, I query by run ID and see exactly which stage introduced the problem. This would have saved hours in Week 8.
 
-# What I Struggled With
+## What I Struggled With
 
 The run-to-run variance in the grounding classifier was genuinely frustrating until I recognized the pattern. The same content classified as INVENTION in the batch run and EXTRAPOLATION in the drill-down wasn't a bug. It was the same phenomenon as LLM-as-judge score variance from Week 9, showing up in a classification task instead of a scoring task. The classifier is a useful signal at this threshold. It's not a binary truth machine.
 
@@ -223,7 +223,7 @@ The infrastructure audit's "48% checklist coverage" framing was both useful and 
 
 The biggest deferred item: AuditTrail, CostGuard, and TokenTracker are built and tested. They are not wired into the production `app.py` pipeline. Every module this week was built in the evaluation layer and tested against the eval runner. The live Streamlit app still runs the Week 8 pipeline. Wiring the observability layer into production is the right next step, and it's been explicitly deferred to the backlog.
 
-# The Week 10 Shift
+## The Week 10 Shift
 
 The mental model progression this week was from AI that measures and improves itself to **AI I can trust in production.** Basically, from QA to governance. I certainly don't feel like a Responsible AI expert, but I now know there is far more to it than just preventing AI from destroying humanity and taking over the planet.
 

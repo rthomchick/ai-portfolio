@@ -37,11 +37,11 @@ status: published
 
 ---
 
-# What I Built
+## What I Built
 
 This is a long post. It was a long week. But it was well worth the effort to go deeper on agents, tool use, and resilience by revisiting (and up-leveling) some of the products I built in weeks 1-3.
 
-## Day 1: Multi-Agent Feature Spec Generator
+### Day 1: Multi-Agent Feature Spec Generator
 
 I started the week learning about multi-agent architecture patterns (Sequential, Parallel, Hierarchical, Reflexive etc.) and took a stab at redesigning my Feature Spec Generator as a multi-agent system. My first attempt was a hierarchical pattern with a Supervisor agent. It looked ok at first, but then I ran the numbers. My envisioned 5-agent Feature Spec Generator would cost $0.15 per run. The original one with the "McKinsey-style" semantic anchor from Week 2? $0.05.
 
@@ -62,7 +62,7 @@ But the multi-agent version:
 
 The $52/year cost is meaningless compared to even one avoided engineering mistake or one executive presentation that goes smoothly. But for a high-volume chatbot running 10,000 queries/day, that 3x premium becomes $365,000/year. Definitely harder to justify at scale.
 
-## Day 2: Multi-Agent Conversation Manager
+### Day 2: Multi-Agent Conversation Manager
 
 The goal for Tuesday was to understand **how agents coordinate**. To do this, I rebuilt my Conversation Manager tool from Week 2 as a multi-agent system. At first, I tried a rather naive approach: pass everything as parameters.
 
@@ -88,11 +88,11 @@ Each agent maintains its own conversation history (focused context) but can read
 
 This pattern enabled the Research Assistant, where the Researcher agent runs **multiple times** (once per question) while maintaining independent contexts for each research task but accumulating results in shared state.
 
-## Day 3: Multi-Agent ROI Analyzer
+### Day 3: Multi-Agent ROI Analyzer
 
 Wednesday's lesson was a deep dive on tool use and function calling. My lab assignment was to gather my tools into a shareable library file, connect a simple agent to the library, and then build a multi-agent ROI Analyzer system that makes use of the tool library.
 
-#### Step 1. The Tool Library
+##### Step 1. The Tool Library
 
 The goal of this exercise was to create a reusable library of 5 tools that my agents can call:
 
@@ -115,7 +115,7 @@ def generate_image(prompt: str) -> str:
 
 Instead of defining each tool inline (i.e., inside the same script as the agent that used them), the Tool Library pulls tools out of the agent and into a shared interface. This gives every agent a single, consistent "box" of tools with a predictable contract and one canonical schema per tool. Fix it once, fixed everywhere.
 
-#### Step 2: Single Agent + Tool Library Integration
+##### Step 2: Single Agent + Tool Library Integration
 
 Next, I learned how to build an agent that receives a user request, decides which tools to use (via function calling), calls those tools, and synthesizes results into a response. The result was fascinating. Without tools, I got a generic answer:
 
@@ -131,7 +131,7 @@ With tools:
 
 The tool-enabled agent gave the **correct** answer by actually doing the math instead of guessing.
 
-#### Step 3: Multi-Agent ROI Analyzer + Tool Library Integration
+##### Step 3: Multi-Agent ROI Analyzer + Tool Library Integration
 
 My final task was to combine everything I'd built into a solution with multiple tools + multi-agent coordination. I decided to turn my ROI Analyzer from Step 2 into a multi-agent system that:
 
@@ -154,7 +154,7 @@ On the first run, I encountered what I thought was a hallucination (it produced 
 
 To be honest, this build was kind of grueling. Not the typical "I built this perfect thing in 45 minutes!" story I see on LinkedIn. But with a bit of prompt engineering, it was good enough to avoid getting laughed out of the room!
 
-## Day 4: Failure Mode Tests and Resilience Library
+### Day 4: Failure Mode Tests and Resilience Library
 
 Day 4 was about making systems that can "survive" production. So I grabbed my ROI Analyzer from Day 3 and systematically broke it to observe various scenarios. For example, what if the API times out? What if a tool returns null? What if you hit rate limits or context window fills mid-task?
 
@@ -176,7 +176,7 @@ After I broke my poor little ROI Analyzer, Claude helped me build it back up int
 
 The resulting output quality was undeniably better. But it was a ton of work and a lot of additional overhead. For example, the retry logic = 2-3x more API calls on failures. Which begs the question: **when is resilience overhead worth it?**
 
-## Day 5: Cost Control and Performance Optimization
+### Day 5: Cost Control and Performance Optimization
 
 My ROI Analyzer works, but it's expensive ($0.15 per analysis). So now it was time to learn where the costs were coming from, and make things 2-3x cheaper without sacrificing quality.
 
@@ -189,7 +189,7 @@ Here's a rundown of today's builds:
 | **Smart Model Router** | A classification layer that decides which model to call based on task complexity:<br>• Simple (factual Q&A, formatting) → Haiku<br>• Complex (analysis, synthesis) → Sonnet<br><br>Classification was keyword-heuristic at first (`"analyze"`, `"compare"`, `"synthesize"` → complex; `"extract"`, `"format"`, `"list"` → simple), with prompt length as a fallback signal.<br><br>The math that made this worth it: adding a ~$0.0001 classification call up front to route the main call saves $0.08 per call on anything classifiable as simple. At 1,000 calls/day, that's ~$29K/year. |
 | **Parallelized Research Assistant** | Refactored to run independent research tasks concurrently using `asyncio` after I realized that the validation and research steps don't depend on each other, and can run in parallel instead of sequentially. Here's the agent architecture:<br><br>`Planner (sequential) → [Q1 + Q2 + Q3 in parallel] → Synthesizer (sequential)`<br><br>The outcome was faster by a mile. Sequential 46s → Parallel 16s. Same cost, same quality. |
 
-#### Was the Savings Worth the Effort?
+##### Was the Savings Worth the Effort?
 
 I spent Day 5 learning optimization techniques that save $1-5/year on my current usage. In a practical sense, it was premature. But from a learning standpoint:
 
@@ -197,11 +197,11 @@ I spent Day 5 learning optimization techniques that save $1-5/year on my current
 - I have reusable libraries (Smart Model Router, Token Profiler)
 - When the time comes to build high-volume products, I'll be ready
 
-## Day 6: Capstone Projects
+### Day 6: Capstone Projects
 
 Day 6 was the integration exam. By this point I had the Resilience Library (Day 4), the Smart Model Router (Day 5), the Multi-Agent Conversation Manager (Day 2), the Tool Library (Day 3), and the Token Profiler (Day 5) all ready to go. Day 6 was about putting them together into apps that a teammate might actually use.
 
-### Feature Spec Generator v2
+#### Feature Spec Generator v2
 
 I returned to my multi-agent Feature Spec Generator from Day 1 and incorporated my learnings from the week. Same "supervisor" agent architecture, but now with full resilience via the library I built on Day 4, smart model routing for cost optimization, and a QA review loop with smart stopping. The cost per run came in at about $0.08 per spec, down from $0.15. 60-90 seconds end-to-end. Executive-ready output.
 
@@ -212,21 +212,21 @@ To make things interesting, I added two additional cost-performance "modes":
 
 For personal brainstorming, $0.05 is appropriate. For a middle-of-the-road feature, the default mode is sufficient. For executive specs guiding $500K engineering investments, the $0.12 cost is irrelevant.
 
-#### Personalization Strategy Assistant
+##### Personalization Strategy Assistant
 
 I also built a five-step strategic planning tool that analyzed current personalization tooling and capabilities, identified opportunities, generated A/B test plans in parallel (using `concurrent.futures` for true parallel execution), estimated ROI for each initiative, and prioritized everything into a Q2 roadmap. I used a mix of models (Haiku for capability analysis, Sonnet for opportunity identification and prioritization) and integrated it with my Tool Library to run mock data lookups and calculations.
 
 This was a worthwhile build, but the app was not production-ready IMO since it used a mock data set. In the coming weeks, I will be exploring progressive data source enhancement, from manual config files to Google Sheets integration to real API connections.
 
-# What I Learned
+## What I Learned
 
-## Applied AI Systems Thinking
+### Applied AI Systems Thinking
 
 This week, I learned to build AI systems (vs. individual components). The difference between a component and a system is profound. A component does one thing. A system orchestrates multiple components to deliver complex outcomes while handling failures, managing costs, and maintaining quality under constraints.
 
 The most valuable learning for me: The difference between a component that works and a system that survives production is mostly error handling, validation, and graceful degradation. Not glamorous, but essential. This shift helped me expand my mental model from components and features to product architecture.
 
-#### AI Product Architecture Principles
+##### AI Product Architecture Principles
 
 Five principles emerged from Week 4 that will guide my AI product development practices:
 
@@ -239,9 +239,9 @@ Five principles emerged from Week 4 that will guide my AI product development pr
 4. **Context quality > context quantity.** Focused, relevant context beats comprehensive history. Give agents only what they need.
 5. **Validate outputs against reality.** AI can generate convincing-sounding nonsense. Your job: sanity check the results against domain knowledge.
 
-## The 80-20 Rules of Failure and Resilience
+### The 80-20 Rules of Failure and Resilience
 
-#### Rule 1: 80% of Failures are Recoverable, 20% Need Human Intervention
+##### Rule 1: 80% of Failures are Recoverable, 20% Need Human Intervention
 
 When I ran my failure experiments on Day 4, I discovered that 80% of these failures were recoverable with proper error handling:
 
@@ -258,7 +258,7 @@ The remaining 20% were catastrophic and required human intervention:
 
 For these failure modes, the best approach is to log everything, alert humans, give users a clear error ID to reference.
 
-#### Rule 2: Production Systems Are 80% Resilience, 20% Features
+##### Rule 2: Production Systems Are 80% Resilience, 20% Features
 
 The unglamorous truth: My production ROI Analyzer is 600 lines of code. Only 150 lines are core functionality. The other 450 lines? Error handling, validation, logging, graceful degradation.
 
@@ -270,7 +270,7 @@ Resilience was premature optimization for my current use case. But I built it an
 
 The insight for me: knowing when to skip resilience is as important as knowing how to build it.
 
-## Agent Conflict Resolution
+### Agent Conflict Resolution
 
 What happens when agents disagree?
 
@@ -296,7 +296,7 @@ For my Feature Spec Generator, I chose **Strategy 5 + 6**: confidence thresholds
 
 However, I recognize different products need different strategies. A legal contract reviewer might use human-in-the-loop for all contradictions. A high-volume chatbot might use weighted voting for speed. There is no universal solution. Contradiction resolution is a product decision.
 
-## Smart Stopping
+### Smart Stopping
 
 How do you know when to stop? My Research Assistant originally had a hard limit: always generate exactly 3-5 questions and research all of them. But different queries have different complexity:
 
@@ -317,7 +317,7 @@ This gave me two dimensions of control: **quality** and **cost**. Each stopping 
 
 The system automatically balances both, adapting to query complexity while respecting resource constraints. Whichever threshold fires first ends the loop.
 
-# What I Struggled With
+## What I Struggled With
 
 - **System-level failure points.** Most of my struggles were variations on one theme: systems break in places components don't. An agent confidently reported nonsense from hardcoded data. A classifier routed on keyword matches, not real complexity. A budget ran out mid-pipeline. These aren't really bugs, they're more like integration or pipeline failures.
 - **Retrofitted resilience instead of building it in.** Built the ROI Analyzer on Day 3, learned the five failure patterns on Day 4, then spent half a day patching resilience into code that hadn't been designed for it. Lots and lots of troubleshooting.
@@ -328,6 +328,6 @@ The system automatically balances both, adapting to query complexity while respe
 - **State management mistakes.** `KeyError: 'user_query'` inside the Multi-Agent Conversation Manager on Day 2. `shared_context` was nested but the agent was accessing it directly. Taught me the price of state-management mistakes when multiple agents read from the same object.
 - **Defensive parsing was harder than expected.** Multiple `AttributeError` and `JSONDecodeError` catches before the `DefensiveParser` actually handled all four format variations LLMs throw at you (clean JSON, fenced JSON, embedded JSON, prose with JSON-shaped substrings).
 
-# Final Thoughts
+## Final Thoughts
 
 Week 4 was where I stopped asking, "how do I make an API call?" and started asking, "how do I orchestrate five API calls across three agents with error recovery and cost controls?" It was sobering to see how much time and overhead goes into making AI systems production-ready. AI ideation is almost instant. Resilience and context management are not. But I feel far more confident that I can tackle AI product architectures and not just simple features and components. Next week will put my confidence to the test when I start deploying to Streamlit.

@@ -30,7 +30,7 @@ status: published
 
 Week 8 was about utilizing all the things I'd learned so far to solve a real-world problem. I decided to revisit my Feature Spec Generator and re-imagine it as a multi-agent system.
 
-# The Problem I Was Solving
+## The Problem I Was Solving
 
 Last year, my PM team created a shared prompt library to speed up the feature documentation process for our website. The prompts were very detailed and produced high-quality output, but the process still took hours or even days as each PM hunted down information from across the organization to answer 20-40 questions per feature.
 
@@ -45,7 +45,7 @@ That was the workflow. Three browser tabs, fragmented context, and me as the int
 
 I knew there must be a better way. And this week, I manifested it: an agentic AI system that can produce 4-5 feature docs per hour with a consistently high level of quality.
 
-# What I Built
+## What I Built
 
 This week's build: a six-agent Streamlit application I call "SAFe Feature Spec System". The premise is simple; a PM describes the feature, pastes some notes, and the system handles (almost) everything else, including:
 
@@ -69,9 +69,9 @@ The system uses a reflexive (self-improving) architecture with six agents that h
 
 The whole pipeline runs in about 10-15 minutes per spec, costs roughly $0.15-0.25 in API calls, and consistently produces specs scoring 90+ out of 100. At 10 specs per week, that's about $100/year in API costs versus 10-20 hours per week of PM time recovered.
 
-# What I Learned
+## What I Learned
 
-## How to Replace Myself With Session State
+### How to Replace Myself With Session State
 
 The biggest insight of the week was realizing that my feature documentation workflow had turned me into the de facto supervisor or integration layer. Every piece of context that moved between the three sessions lived in my head or on my clipboard. The feature type? I knew it because I picked which prompt to paste. The interview answers? I copied them between tabs. The review scores? I read them, decided what to fix, and did the fixing by hand.
 
@@ -79,7 +79,7 @@ The system I built this week basically replaces me with Streamlit session state.
 
 This realization clarified the architecture. I wasn't building a "smarter prompt." I was making implicit PM workflow knowledge explicit and machine-readable. Each agent handoff needed to be defined precisely because the automated pipeline has none of the human flexibility I'd been relying on to bridge gaps.
 
-## Boost Inputs and Two-Tier Improvement
+### Boost Inputs and Two-Tier Improvement
 
 Two design decisions combined to push specs from "decent" to "leadership-ready."
 
@@ -97,7 +97,7 @@ Together, these two mechanisms produced consistent results across all three feat
 | New Solution Web Page | Webpage | 71 | 94 | +23 | A |
 | Progressive Profiling Form | Experience | 78 | 92 | +14 | A |
 
-## Parse Once, Edit Independently, Reassemble
+### Parse Once, Edit Independently, Reassemble
 
 Early in the week, I tried positional string surgery to edit spec sections: find the offset of Section 7, extract it, modify it, splice it back in. This broke immediately because editing Section 7 shifts the offsets for Section 8 and everything after it. One change cascades into positional corruption.
 
@@ -105,9 +105,9 @@ The fix is Parse → Edit → Reassemble. Parse the spec into a dictionary of se
 
 Combined with the append-only Improver pattern, this means the spec is structurally immutable once parsed. The only way content changes is through explicit, targeted modifications that Python controls. The LLM never touches the structural layer.
 
-# What I Struggled With
+## What I Struggled With
 
-## The Improver Regression Saga
+### The Improver Regression Saga
 
 The User Stories regression consumed more debugging time than any other problem in the program so far. The symptom was clear (scores dropping on untouched sections), but the root cause was hidden behind the LLM's tendency to regenerate rather than edit. Each attempted fix (splice, criterion-level, filtered scorecard) required a full pipeline run to validate, and each one failed in a slightly different way.
 
@@ -115,15 +115,15 @@ What made it frustrating was that every fix felt correct in theory. "Just return
 
 The solution came from an Opus consultation: **append-only output**. Instead of asking the Improver to return the full spec, have it return only XML blocks describing additions and modifications. Python handles the concatenation. The model never sees the sections it shouldn't touch, so it can't corrupt them. **The model cannot destroy what it's never asked to produce.**
 
-## Feature Type Boundary Cases
+### Feature Type Boundary Cases
 
 The Router occasionally misclassified features at the boundary between EXPERIENCE and CAPABILITY. A "progressive profiling form" is technically a form component (EXPERIENCE) but involves backend logic for progressive disclosure (CAPABILITY-adjacent). This didn't fully resolve in Week 8. The Router v2 fix came in Week 9 during the A/B testing work.
 
-## The Rubric Itself Has Opinions
+### The Rubric Itself Has Opinions
 
 The 100-point rubric I'd been using for manual reviews turned out to encode assumptions I hadn't examined. Some sections weighted criteria that only matter for certain feature types. Some criteria overlapped, letting a single piece of missing information penalize multiple sections. Tuning the rubric and type-aware Reviewer prompt was iterative and took longer than I expected.
 
-# What's Next
+## What's Next
 
 The SAFe system is deployed and I'm using it for real specs. Five deployed tools now, with this one as the flagship.
 

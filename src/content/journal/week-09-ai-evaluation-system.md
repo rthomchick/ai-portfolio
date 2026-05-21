@@ -35,11 +35,11 @@ status: published
 
 ---
 
-# What I Built
+## What I Built
 
 An evaluation pipeline, a prompt versioning system, a golden set, a five-tab Streamlit dashboard, and an AI-powered improvement suggester. Together, they form a closed loop: run tests automatically, store results in SQLite, compare prompt versions with real data, visualize trends, and get Claude's suggestions for what to fix next.
 
-## Day 1: SQLite Foundations + Token Instrumentation
+### Day 1: SQLite Foundations + Token Instrumentation
 
 Monday was all plumbing. Claude Code built four modules in `safe-feature-system/evaluation/`:
 
@@ -51,7 +51,7 @@ Monday was all plumbing. Claude Code built four modules in `safe-feature-system/
 
 In the evening block, I wired `llm_call()` into all six SAFe agents (Router, Clarifier, Generator, Reviewer, Improver, Polisher). Every agent now records its token usage, but the instrumentation is invisible unless you pass a tracker. Backward compatible by default.
 
-## Day 2: Eval Runner + Golden Set + Baseline
+### Day 2: Eval Runner + Golden Set + Baseline
 
 The golden set was the hardest part of the week. Not technically, but in terms of the discipline required to write good test cases. Six cases covering all three feature types (CAPABILITY, EXPERIENCE, WEBPAGE), each in two variants:
 
@@ -62,7 +62,7 @@ That bare/boosted pairing turned out to be one of the most useful design decisio
 
 `eval_runner.py` feeds each test case through the full SAFe pipeline (classify → generate → review), stores the scorecard in SQLite with timestamps and prompt version IDs, and records token usage along the way. CLI flags let me run a single case (`--case cap_001_bare`) or the full set, with either Router version (`--router v1|v2`).
 
-### V1 Baseline Results
+#### V1 Baseline Results
 
 | Case | Type | Score | Pass | Routing | Cost |
 |---|---|---|---|---|---|
@@ -77,7 +77,7 @@ That bare/boosted pairing turned out to be one of the most useful design decisio
 
 Two things jumped out immediately. First, both EXPERIENCE cases routed to CAPABILITY. This was the intermittent routing bug from Week 8, now visible in data instead of hidden behind a single manual test. Second, the bare→boosted spread was massive and consistent: +14 (CAP), +25 (WEB), +15 (EXP).
 
-## Day 3: Router A/B Test
+### Day 3: Router A/B Test
 
 The EXPERIENCE misclassification gave me a clear target for my first A/B test. Claude Code built a v2 Router prompt with explicit signal words per feature type ("form component" + "Arc Design System" → EXPERIENCE) and removed a subtle CAPABILITY fallback bias from v1. I also got a lightweight routing-only A/B test script (`ab_test_router.py`) that runs all 6 classifications against both prompts: 12 Haiku calls, total cost about half a cent.
 
@@ -90,7 +90,7 @@ I ran a full pipeline evaluation with Router v2. All 6 cases passed, all routing
 
 Router v2 promoted. My first data-driven prompt change.
 
-## Day 4: Dashboard
+### Day 4: Dashboard
 
 Thursday was light. I built a dashboard with five tabs via Claude Code in a single session:
 
@@ -104,7 +104,7 @@ Thursday was light. I built a dashboard with five tabs via Claude Code in a sing
 
 **Tab 5: Suggest Improvements** was a placeholder for Day 5.
 
-## Day 5: Improvement Suggester
+### Day 5: Improvement Suggester
 
 As many a manager has said, "Come to me with solutions, not just problems." The Improvement Suggester does just that. It loads all stored runs for a golden set case, aggregates section scores and reviewer feedback, identifies the weakest sections, and calls Claude Sonnet at temperature 0.2 to analyze the patterns and propose specific prompt edits. Each suggestion includes: a quote from the current prompt, a diagnosis, a suggested edit, and a rationale.
 
@@ -112,9 +112,9 @@ The key design choice: the Suggester proposes. I decide whether to apply. It doe
 
 Dashboard Tab 5 wired up: case dropdown, sections-to-analyze input, expandable result cards with score badges and diff-formatted suggestions. The session state caches results keyed by (case_id, run_count) so they auto-invalidate when new runs are added.
 
-# What I Learned
+## What I Learned
 
-## LLM-as-Judge Variance Is Real (Even at Temperature 0.0)
+### LLM-as-Judge Variance Is Real (Even at Temperature 0.0)
 
 The most counterintuitive finding of the week. I ran `cap_001_bare` three times with identical inputs, identical prompts, and temperature set to 0.0. The scores came back: 71, 78, 71.
 
@@ -126,7 +126,7 @@ Even at temperature 0.0, there's enough non-determinism in the inference process
 
 This changes how I interpret every evaluation result. A score of 78 doesn't mean 78. It means somewhere in the low-to-mid 70s, probably. A single run is a data point, not a verdict. The PM analogy is obvious: one day's conversion rate doesn't tell you anything. A two-week trend does. I knew this from product analytics. I just hadn't internalized it for AI evaluation.
 
-## The Bare/Boosted Spread Quantifies the Value of PM Input
+### The Bare/Boosted Spread Quantifies the Value of PM Input
 
 The score spread between bare and boosted variants:
 
@@ -140,11 +140,11 @@ The boost inputs aren't making the AI smarter. They're giving it information it 
 
 This has direct product implications. The SAFe system's long-term vision is to transform vague intake form submissions into well-formed specs. The bare/boosted spread tells me exactly which sections the intake form needs to extract information for. It's a roadmap for the product, derived from evaluation data.
 
-## Where the Money Goes
+### Where the Money Goes
 
 The cost tracker revealed that the Generator consumes 67% of total pipeline cost. Out of $3.74 spent across 15+ runs, $2.52 went to the Generator. This makes sense once you see it: the Generator produces the longest output (a complete SAFe Feature spec) from the longest input (all section answers plus the system prompt plus the preamble). The Router, running on Haiku instead of Sonnet, costs almost nothing. If cost optimization becomes important, the Generator is the first target, and I now have real data that shows why.
 
-## The Claude Code Workflow Shift
+### The Claude Code Workflow Shift
 
 This was my first full week using Claude Code for all implementation. The division of labor: Claude Code writes files, runs tests, handles merges. The conversational Claude (this project) reviews architecture, makes design decisions, handles Notion documentation.
 
@@ -152,7 +152,7 @@ What worked: the hybrid model let me focus on the "what" and "why" while Claude 
 
 What felt uncomfortable: trusting code I hadn't written line by line. In earlier weeks, I understood every function because I'd built it or edited it myself (with a LOT of hand-holding from Claude). This week, I had to trust the smoke tests and integration tests instead of reading every line.
 
-# What I Struggled With
+## What I Struggled With
 
 Not many hiccups this week. I've got my CLI legs under me now. The infrastructure work was mostly clean because I had solid foundations from Week 8. SQLite is built into Python (no dependency issues for a change). The eval runner imports the existing SAFe pipeline and wraps it with measurement, so there wasn't a lot of new architecture to invent.
 
@@ -160,11 +160,11 @@ The score variance discovery was frustrating until I understood it was a feature
 
 The biggest "struggle" was resisting the urge to act on every suggestion the improvement suggester produced. It's tempting to implement all five edits at once. But the whole point of A/B testing is changing one variable at a time.
 
-# The Week 9 Shift
+## The Week 9 Shift
 
 Week 8's mental model was "AI that replaces a manual workflow end-to-end." Week 9 is "AI that measures and improves itself." The first is a product. The second is product infrastructure. The distinction maps to a career pattern I recognize: early-career PMs ship features, senior PMs build the systems (analytics, experimentation, quality monitoring) that make features better. The evaluation pipeline is the AI equivalent. No user will ever see the dashboard. But it's the thing that turns every future prompt change into a data-driven decision instead of a guess.
 
-## Key Numbers
+### Key Numbers
 
 - 10 new Python modules in `safe-feature-system/evaluation/`
 - 6 golden set test cases (3 types × bare/boosted)
@@ -178,7 +178,7 @@ Week 8's mental model was "AI that replaces a manual workflow end-to-end." Week 
 - 67% of pipeline cost concentrated in the Generator agent
 - 5-tab Streamlit dashboard
 
-## Looking Ahead
+### Looking Ahead
 
 Next week I'll be learning how to layer Responsible AI on top of capability. The evaluation infrastructure is where things like bias detection, content safety checks, cost guardrails, and audit trails will plug in.
 
