@@ -1,0 +1,236 @@
+<nav id="toc" aria-label="Table of contents">
+  <div id="toc-lines"></div>
+  <div id="toc-labels"></div>
+</nav>
+
+<style is:global>
+#toc {
+  position: fixed;
+  top: 8rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  #toc { display: none; }
+}
+
+#toc-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+#toc-labels {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 8px;
+  padding: 8px 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  min-width: 180px;
+  max-width: 260px;
+}
+
+.dark #toc-labels {
+  background: #1c1917;
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+#toc:hover #toc-labels {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toc-line {
+  height: 3px;
+  border-radius: 1px;
+  background-color: #a8a29e;
+  opacity: 0.35;
+  transition: width 200ms ease, background-color 200ms ease, opacity 200ms ease;
+  display: block;
+}
+
+.dark .toc-line {
+  background-color: #78716c;
+}
+
+.toc-line.active {
+  background-color: #14b8a6;
+  opacity: 1;
+}
+
+.dark .toc-line.active {
+  background-color: #2dd4bf;
+}
+
+.toc-label {
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: color 150ms ease, background-color 150ms ease;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+#toc .toc-label {
+  color: #1c1917 !important; /* stone-900 */
+}
+
+.dark #toc .toc-label {
+  color: #f5f5f4 !important; /* stone-100 */
+}
+
+
+#toc .toc-label.active {
+  color: #14b8a6 !important;
+}
+
+.dark #toc .toc-label.active {
+  color: #2dd4bf !important;
+}
+
+.toc-label:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.dark .toc-label:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.toc-label.toc-h2 {
+  color: #57534e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dark .toc-label.toc-h2 {
+  color: #a8a29e;
+}
+
+.toc-label.toc-h3 {
+  padding-left: 14px;
+}
+
+
+.dark .toc-label.toc-h2 {
+  color: #78716c;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const prose = document.querySelector('.prose');
+  if (!prose) return;
+
+  const headings = Array.from(
+    prose.querySelectorAll('h2[id], h3[id]')
+  ).map(el => ({
+    id: el.id,
+    text: el.textContent.trim(),
+    level: parseInt(el.tagName[1]),
+    element: el
+  }));
+
+  if (headings.length === 0) return;
+
+  // Pin TOC top to the prose element's page-absolute top offset
+  const tocEl = document.getElementById('toc');
+  const prosePageTop = prose.getBoundingClientRect().top + window.scrollY;
+  tocEl.style.top = prosePageTop + 'px';
+
+  const lineWidths = { 2: 28, 3: 20 };
+  const linesContainer = document.getElementById('toc-lines');
+  const labelsContainer = document.getElementById('toc-labels');
+  const lineEls = [];
+  const labelEls = [];
+
+  const spyHeadings = headings;
+  let activeIndex = -1;
+  let scrolling = false;
+  let scrollTimer = null;
+
+  function setActive(index) {
+    if (index === activeIndex) return;
+    activeIndex = index;
+    lineEls.forEach((el, i) => el.classList.toggle('active', i === index));
+    labelEls.forEach((el, i) => el.classList.toggle('active', i === index));
+  }
+
+  headings.forEach((h, i) => {
+    const line = document.createElement('div');
+    line.className = 'toc-line';
+    line.style.width = (lineWidths[h.level] || 12) + 'px';
+    linesContainer.appendChild(line);
+    lineEls.push(line);
+
+    const label = document.createElement('a');
+    label.className = `toc-label toc-h${h.level}`;
+    label.textContent = h.text;
+    label.href = '#' + h.id;
+    label.addEventListener('click', e => {
+      e.preventDefault();
+      setActive(i);
+      scrolling = true;
+      clearTimeout(scrollTimer);
+      document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' });
+      scrollTimer = setTimeout(() => { scrolling = false; }, 800);
+    });
+    labelsContainer.appendChild(label);
+    labelEls.push(label);
+  });
+
+  // Set first heading active on load if page is at top
+  if (window.scrollY < 100) setActive(0);
+
+  const observer = new IntersectionObserver(entries => {
+    if (scrolling) return;
+
+    // Find the topmost intersecting heading
+    let topmost = null;
+    let topmostTop = Infinity;
+
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const top = entry.boundingClientRect.top;
+        if (top < topmostTop) {
+          topmostTop = top;
+          topmost = entry.target;
+        }
+      }
+    });
+
+    if (topmost) {
+      const index = headings.findIndex(h => h.element === topmost);
+      if (index !== -1) setActive(index);
+    }
+  }, {
+    rootMargin: '-10% 0px -75% 0px'
+  });
+
+  spyHeadings.forEach(h => observer.observe(h.element));
+});
+</script>

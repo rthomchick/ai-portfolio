@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import BackToTop from '../../components/BackToTop.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -56,6 +57,7 @@ const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
       <Content />
     </div>
   </main>
+  <TableOfContents />
   <Footer />
   <BackToTop />
 </BaseLayout>
