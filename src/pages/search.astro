@@ -7,361 +7,391 @@ import Footer from '../components/Footer.astro';
 <BaseLayout title="Search" description="Search journal entries and project pages.">
   <Header />
   <main class="flex-1 max-w-5xl mx-auto px-6 py-12 w-full">
-    <h1 class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-8">Search</h1>
 
-    <div class="flex gap-2 mb-6" id="search-mode-toggle">
-      <button id="mode-keyword" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
-        Keyword
-      </button>
-      <button id="mode-semantic" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
-        Semantic
-      </button>
-      <button id="mode-rag" class="px-4 py-1.5 text-sm rounded-full border transition-colors">
-        Ask
-      </button>
+    <!-- Search bar -->
+    <form id="search-form" class="relative mb-6" autocomplete="off">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+      </svg>
+      <input
+        id="search-input"
+        type="search"
+        name="q"
+        placeholder="Search journal entries and projects..."
+        autofocus
+        class="w-full pl-11 pr-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:border-teal-600 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-600/25 dark:focus:ring-teal-400/25 transition-colors"
+      />
+    </form>
+
+    <!-- Filter pills -->
+    <div class="flex gap-2 mb-8" id="filter-pills">
+      <button data-filter="all" class="filter-pill active px-4 py-1.5 text-sm rounded-full border transition-colors">All</button>
+      <button data-filter="journal" class="filter-pill px-4 py-1.5 text-sm rounded-full border transition-colors">Journal</button>
+      <button data-filter="project" class="filter-pill px-4 py-1.5 text-sm rounded-full border transition-colors">Projects</button>
     </div>
 
-    <div id="search-container"></div>
-
-    <div id="semantic-container" style="display: none;">
-      <div class="relative">
-        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-        </svg>
-        <input
-          id="semantic-input"
-          type="text"
-          placeholder="Search across portfolio content..."
-          class="w-full pl-11 pr-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-sm focus:outline-none focus:border-teal-600 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-600/25 dark:focus:ring-teal-400/25 transition-colors"
-        />
+    <!-- AI answer card (hidden until streaming begins) -->
+    <div id="ai-card" class="hidden mb-8 rounded-xl border border-teal-200 dark:border-teal-900 bg-teal-50/50 dark:bg-teal-950/30 p-5 opacity-0 transition-opacity duration-300">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300">AI answer</span>
+        <span class="text-xs text-stone-400 dark:text-stone-500">from your portfolio</span>
       </div>
-      <div id="rag-answer" class="mt-6" style="display: none;"></div>
-      <div id="semantic-results" class="mt-6"></div>
+      <div id="ai-answer-text" class="text-sm leading-relaxed text-stone-700 dark:text-stone-300 whitespace-pre-wrap"></div>
+      <div id="ai-sources" class="mt-4 flex flex-wrap gap-2 hidden"></div>
     </div>
+
+    <!-- Result list -->
+    <div id="result-list"></div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="hidden text-sm text-stone-400 dark:text-stone-500 py-8 text-center">No results found for this query.</div>
+
   </main>
   <Footer />
 
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-  <script is:inline src="/pagefind/pagefind-ui.js"></script>
-
-  <style is:global>
-    :root {
-      --pagefind-ui-scale: 0.9;
-      --pagefind-ui-primary: #0D9488;
-      --pagefind-ui-text: #1C1917;
-      --pagefind-ui-background: #FFFFFF;
-      --pagefind-ui-border: #E7E5E4;
-      --pagefind-ui-tag: #F5F5F4;
-      --pagefind-ui-border-width: 1px;
-      --pagefind-ui-border-radius: 8px;
-      --pagefind-ui-font: 'DM Sans', system-ui, sans-serif;
+  <style>
+    .filter-pill.active {
+      background-color: #0D9488;
+      color: white;
+      border-color: #0D9488;
     }
-
-    .dark {
-      --pagefind-ui-primary: #2DD4BF;
-      --pagefind-ui-text: #F5F5F4;
-      --pagefind-ui-background: #0C0A09;
-      --pagefind-ui-border: #292524;
-      --pagefind-ui-tag: #1C1917;
+    .dark .filter-pill.active {
+      background-color: #2DD4BF;
+      color: #1C1917;
+      border-color: #2DD4BF;
     }
-
-    .pagefind-ui__search-input {
-      height: auto !important;
-      color: #1C1917 !important;
-      font-weight: 400 !important;
-      font-size: 0.875rem !important;
-      line-height: 1.25rem !important;
-      letter-spacing: -0.01em !important;
-      padding: 0.75rem 1rem 0.75rem 2.75rem !important;
-      border: 1px solid #E7E5E4 !important;
-      border-radius: 0.5rem !important;
-      transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease !important;
-      width: 100% !important;
+    .filter-pill:not(.active) {
+      background-color: transparent;
+      color: #78716C;
+      border-color: #E7E5E4;
     }
-
-    .pagefind-ui__search-input::placeholder {
-      color: #A8A29E !important;
-      opacity: 1 !important;
+    .dark .filter-pill:not(.active) {
+      color: #A8A29E;
+      border-color: #292524;
     }
-
-    .pagefind-ui__form {
-      width: 100% !important;
+    .filter-pill:not(.active):hover {
+      border-color: #0D9488;
+      color: #0D9488;
     }
-
-    .dark .pagefind-ui__search-input {
-      background: #1C1917 !important;
-      color: #F5F5F4 !important;
-      border-color: #292524 !important;
+    .dark .filter-pill:not(.active):hover {
+      border-color: #2DD4BF;
+      color: #2DD4BF;
     }
-
-    .dark .pagefind-ui__search-input::placeholder {
-      color: #78716C !important;
-      opacity: 1 !important;
-    }
-
-    .pagefind-ui__search-input:hover {
-      border-color: #0D9488 !important;
-    }
-
-    .dark .pagefind-ui__search-input:hover {
-      border-color: #2DD4BF !important;
-    }
-
-    .pagefind-ui__search-input:focus {
-      outline: none !important;
-      border-color: #0D9488 !important;
-      box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25) !important;
-    }
-
-    .dark .pagefind-ui__search-input:focus {
-      border-color: #2DD4BF !important;
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.25) !important;
-    }
-
-    .dark .pagefind-ui__search-clear {
-      color: #A8A29E !important;
-    }
-
-    .pagefind-ui__result-title {
-      font-weight: 500 !important;
-    }
-
-    .pagefind-ui__result-link {
-      color: var(--pagefind-ui-primary) !important;
-    }
-
-    .pagefind-ui__result-link:hover {
-      color: #0D9488 !important;
-    }
-
-    .pagefind-ui__result-excerpt {
-      font-size: 0.875rem !important;
-      line-height: 1.6 !important;
-      opacity: 0.7;
-    }
-
-    .pagefind-ui__result {
-      border-top: 0.5px solid var(--pagefind-ui-border) !important;
-      padding: 1rem 0 !important;
-    }
-
-    .pagefind-ui__filter-panel {
-      margin-top: 0.5rem !important;
-    }
-
-    .dark .pagefind-ui__result-title,
-    .dark .pagefind-ui__result-link {
-      color: #F5F5F4 !important;
-    }
-
-    .dark .pagefind-ui__result-link:hover {
-      color: #2DD4BF !important;
-    }
-
-    .dark .pagefind-ui__result-excerpt {
-      color: #A8A29E !important;
-    }
-
-    .dark .pagefind-ui__result-tag {
-      background: #1C1917 !important;
-      color: #A8A29E !important;
-    }
-
-    .dark .pagefind-ui__message {
-      color: #A8A29E !important;
-    }
-
-    .pagefind-ui mark {
-      background: rgba(13, 148, 136, 0.35) !important;
-      color: #1C1917 !important;
-      padding: 1px 2px !important;
-      border-radius: 2px !important;
-    }
-
-    .dark .pagefind-ui mark {
-      background: rgba(45, 212, 191, 0.3) !important;
-      color: #F5F5F4 !important;
-      padding: 1px 2px !important;
-      border-radius: 2px !important;
-    }
-
-    .dark .pagefind-ui__result-nested {
-      border-left-color: #292524 !important;
+    :global(mark) {
+      background-color: rgba(20, 184, 166, 0.25);
+      color: inherit;
+      border-radius: 3px;
     }
   </style>
 
   <script is:inline>
-    window.addEventListener('DOMContentLoaded', function() {
-      var pf = new PagefindUI({
-        element: '#search-container',
-        showSubResults: true,
-        showImages: false,
-        autofocus: true,
-        resetStyles: false,
+    (function () {
+      var keywordResults = [];
+      var semanticResults = [];
+      var mergedResults = [];
+      var aiAnswer = '';
+      var aiSources = [];
+      var activeFilter = 'all';
+      var currentReader = null;
+
+      var searchInput = document.getElementById('search-input');
+      var searchForm = document.getElementById('search-form');
+      var aiCard = document.getElementById('ai-card');
+      var aiAnswerText = document.getElementById('ai-answer-text');
+      var aiSourcesEl = document.getElementById('ai-sources');
+      var resultList = document.getElementById('result-list');
+      var emptyState = document.getElementById('empty-state');
+      var filterPills = document.querySelectorAll('.filter-pill');
+
+      // Filter pills
+      filterPills.forEach(function (pill) {
+        pill.addEventListener('click', function () {
+          activeFilter = pill.dataset.filter;
+          filterPills.forEach(function (p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+          renderResultList();
+        });
       });
 
-      var modeKeyword = document.getElementById('mode-keyword');
-      var modeSemantic = document.getElementById('mode-semantic');
-      var modeRag = document.getElementById('mode-rag');
-      var keywordContainer = document.getElementById('search-container');
-      var semanticContainer = document.getElementById('semantic-container');
-      var semanticInput = document.getElementById('semantic-input');
-      var semanticResults = document.getElementById('semantic-results');
-      var ragAnswer = document.getElementById('rag-answer');
+      // Pre-populate from ?q= param
+      var params = new URLSearchParams(window.location.search);
+      var initialQuery = params.get('q');
+      if (initialQuery) {
+        searchInput.value = initialQuery;
+        runSearch(initialQuery);
+      }
 
-      var currentMode = 'keyword';
+      // Form submit
+      searchForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var query = searchInput.value.trim();
+        if (!query) return;
+        var url = new URL(window.location.href);
+        url.searchParams.set('q', query);
+        window.history.replaceState({}, '', url.toString());
+        runSearch(query);
+      });
 
-      var activeBtn = 'px-4 py-1.5 text-sm rounded-full border transition-colors bg-teal-600 dark:bg-teal-400 text-white dark:text-stone-900 border-teal-600 dark:border-teal-400';
-      var inactiveBtn = 'px-4 py-1.5 text-sm rounded-full border transition-colors bg-transparent text-stone-500 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-teal-600 dark:hover:border-teal-400';
-
-      function setMode(mode) {
-        currentMode = mode;
-        ragAnswer.style.display = 'none';
-        ragAnswer.innerHTML = '';
-        semanticResults.innerHTML = '';
-
-        if (mode === 'keyword') {
-          keywordContainer.style.display = '';
-          semanticContainer.style.display = 'none';
-          modeKeyword.className = activeBtn;
-          modeSemantic.className = inactiveBtn;
-          modeRag.className = inactiveBtn;
-          var pfInput = keywordContainer.querySelector('.pagefind-ui__search-input');
-          if (pfInput) pfInput.focus();
-        } else {
-          keywordContainer.style.display = 'none';
-          semanticContainer.style.display = '';
-          modeKeyword.className = inactiveBtn;
-          modeSemantic.className = mode === 'semantic' ? activeBtn : inactiveBtn;
-          modeRag.className = mode === 'rag' ? activeBtn : inactiveBtn;
-          semanticInput.placeholder = mode === 'rag' ? 'Ask about this portfolio...' : 'Search across portfolio content...';
-          semanticInput.focus();
+      function resetState() {
+        keywordResults = [];
+        semanticResults = [];
+        mergedResults = [];
+        aiAnswer = '';
+        aiSources = [];
+        aiCard.classList.add('hidden');
+        aiCard.style.opacity = '0';
+        aiAnswerText.textContent = '';
+        aiSourcesEl.innerHTML = '';
+        aiSourcesEl.classList.add('hidden');
+        resultList.innerHTML = '';
+        emptyState.classList.add('hidden');
+        if (currentReader) {
+          try { currentReader.cancel(); } catch (e) {}
+          currentReader = null;
         }
       }
 
-      setMode('keyword');
+      function weekFromUrl(url) {
+        var m = (url || '').match(/\/journal\/week-(\d+)/);
+        return m ? parseInt(m[1], 10) : null;
+      }
 
-      modeKeyword.addEventListener('click', function() { setMode('keyword'); });
-      modeSemantic.addEventListener('click', function() { setMode('semantic'); });
-      modeRag.addEventListener('click', function() { setMode('rag'); });
+      function normalizeUrl(url) {
+        return (url || '').replace(/\/$/, '');
+      }
 
-      var debounceTimer;
-      semanticInput.addEventListener('input', function() {
-        clearTimeout(debounceTimer);
-        var query = semanticInput.value.trim();
-        if (query.length < 3) {
-          semanticResults.innerHTML = '';
-          ragAnswer.style.display = 'none';
-          ragAnswer.innerHTML = '';
-          return;
-        }
-        debounceTimer = setTimeout(function() {
-          performSearch(query, currentMode);
-        }, currentMode === 'rag' ? 800 : 500);
-      });
-
-      semanticInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          clearTimeout(debounceTimer);
-          var query = semanticInput.value.trim();
-          if (query.length >= 3) {
-            performSearch(query, currentMode);
+      function mergeResults() {
+        var byUrl = {};
+        keywordResults.forEach(function (r) {
+          byUrl[normalizeUrl(r.url)] = Object.assign({}, r, { matchType: 'keyword' });
+        });
+        semanticResults.forEach(function (r) {
+          var key = normalizeUrl(r.url);
+          if (byUrl[key]) {
+            byUrl[key].matchType = 'both';
+          } else {
+            byUrl[key] = Object.assign({}, r, { matchType: 'semantic' });
           }
-        }
-      });
-
-      function performSearch(query, mode) {
-        if (mode === 'rag') {
-          ragAnswer.style.display = '';
-          ragAnswer.innerHTML = '<p class="text-sm text-stone-400 dark:text-stone-500">Thinking...</p>';
-          semanticResults.innerHTML = '';
-        } else {
-          ragAnswer.style.display = 'none';
-          semanticResults.innerHTML = '<p class="text-sm text-stone-400">Searching...</p>';
-        }
-
-        fetch('/api/semantic-search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: query, mode: mode }),
-        })
-          .then(function(res) { return res.json(); })
-          .then(function(data) {
-            if (data.error) {
-              if (mode === 'rag') {
-                ragAnswer.innerHTML = '<p class="text-sm text-red-400">' + data.error + '</p>';
-              } else {
-                semanticResults.innerHTML = '<p class="text-sm text-red-400">' + data.error + '</p>';
-              }
-              return;
-            }
-
-            if (data.mode === 'rag') {
-              renderRagAnswer(data.answer, data.sources);
-            } else {
-              renderSemanticResults(data.results);
-            }
-          })
-          .catch(function() {
-            var errorHtml = '<p class="text-sm text-red-400">Search failed. Please try again.</p>';
-            if (mode === 'rag') {
-              ragAnswer.innerHTML = errorHtml;
-            } else {
-              semanticResults.innerHTML = errorHtml;
-            }
-          });
+        });
+        mergedResults = Object.values(byUrl);
       }
 
-      function renderRagAnswer(answer, sources) {
-        var htmlAnswer = answer
-          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-teal-600 dark:text-teal-400 hover:underline">$1</a>')
-          .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-stone-900 dark:text-stone-100">$1</strong>')
-          .replace(/\n\n/g, '</p><p class="mb-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300">');
-
-        ragAnswer.style.display = '';
-        ragAnswer.innerHTML =
-          '<div class="rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 p-5 mb-6">' +
-          '  <p class="mb-3 text-sm leading-relaxed text-stone-600 dark:text-stone-300">' + htmlAnswer + '</p>' +
-          '</div>';
-
-        if (sources && sources.length > 0) {
-          var sourcesHtml = '<p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-3">Sources</p>';
-          sources.forEach(function(s) {
-            var label = s.type === 'journal' ? 'Week ' + s.week : 'Project';
-            sourcesHtml += '<div class="border-t border-stone-200 dark:border-stone-800 py-3">';
-            sourcesHtml += '  <a href="' + s.url + '" class="text-sm font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">' + (s.title || 'Untitled') + '</a>';
-            sourcesHtml += '  <span class="text-xs text-stone-400 dark:text-stone-500 ml-2">' + label + (s.section ? ' · ' + s.section : '') + '</span>';
-            sourcesHtml += '</div>';
-          });
-          semanticResults.innerHTML = sourcesHtml;
-        }
-      }
-
-      function renderSemanticResults(results) {
-        if (!results || results.length === 0) {
-          semanticResults.innerHTML = '<p class="text-sm text-stone-400">No results found.</p>';
-          return;
-        }
-
-        var html = '<p class="text-sm text-teal-600 dark:text-teal-400 mb-4">' + results.length + ' results</p>';
-
-        results.forEach(function(r) {
-          var score = Math.round((r.score || 0) * 100);
-          var typeLabel = r.type === 'journal' ? 'Week ' + r.week : 'Project';
-          var snippet = (r.text || '').substring(0, 200) + (r.text && r.text.length > 200 ? '...' : '');
-
-          html += '<div class="border-t border-stone-200 dark:border-stone-800 py-4">';
-          html += '  <div class="flex items-baseline gap-2 mb-1">';
-          html += '    <a href="' + r.url + '" class="text-base font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">' + (r.title || 'Untitled') + '</a>';
-          html += '    <span class="text-xs text-stone-400 dark:text-stone-500">' + score + '% match</span>';
-          html += '  </div>';
-          html += '  <p class="text-xs text-stone-400 dark:text-stone-500 mb-1">' + typeLabel + (r.section ? ' · ' + r.section : '') + '</p>';
-          html += '  <p class="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">' + snippet + '</p>';
-          html += '</div>';
+      function renderResultList() {
+        var filtered = mergedResults.filter(function (r) {
+          if (activeFilter === 'all') return true;
+          return r.type === activeFilter;
         });
 
-        semanticResults.innerHTML = html;
+        if (filtered.length === 0 && mergedResults.length > 0) {
+          resultList.innerHTML = '<p class="text-sm text-stone-400 dark:text-stone-500 py-4">No ' + activeFilter + ' results.</p>';
+          emptyState.classList.add('hidden');
+          return;
+        }
+
+        if (filtered.length === 0) {
+          resultList.innerHTML = '';
+          // Don't show empty state while search is still running
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        var html = '';
+        filtered.forEach(function (r) {
+          var typeBadgeClass = r.type === 'journal'
+            ? 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400'
+            : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400';
+          var typeLabel = r.type === 'journal'
+            ? ('Journal' + (r.week ? ' · Week ' + r.week : ''))
+            : 'Project';
+
+          var matchBadgeClass = (r.matchType === 'keyword')
+            ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+            : 'bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800';
+          var matchLabel = (r.matchType === 'keyword') ? 'keyword' : 'semantic';
+
+          // Keyword excerpts have Pagefind's <mark> HTML; semantic excerpts are plain text
+          var excerptHtml = r.excerptHtml
+            ? r.excerptHtml
+            : escHtml((r.excerpt || '').substring(0, 220) + ((r.excerpt || '').length > 220 ? '…' : ''));
+
+          html += '<div class="border-t border-stone-100 dark:border-stone-800 py-4">';
+          html += '  <div class="flex items-start justify-between gap-4 mb-1">';
+          html += '    <span class="text-xs px-2 py-0.5 rounded ' + typeBadgeClass + '">' + typeLabel + '</span>';
+          html += '    <span class="text-xs px-2 py-0.5 rounded ' + matchBadgeClass + ' shrink-0">' + matchLabel + '</span>';
+          html += '  </div>';
+          html += '  <a href="' + escHtml(normalizeUrl(r.url)) + '" class="text-base font-medium text-stone-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors block mt-1">' + escHtml(r.title || 'Untitled') + '</a>';
+          if (excerptHtml) {
+            html += '  <p class="text-sm text-stone-500 dark:text-stone-400 leading-relaxed mt-1">' + excerptHtml + '</p>';
+          }
+          html += '</div>';
+        });
+        resultList.innerHTML = html;
       }
-    });
+
+      function showAiCard() {
+        if (aiCard.classList.contains('hidden')) {
+          aiCard.classList.remove('hidden');
+          requestAnimationFrame(function () {
+            aiCard.style.opacity = '1';
+          });
+        }
+      }
+
+      function renderAiSources() {
+        if (!aiSources || aiSources.length === 0) return;
+        var html = '';
+        aiSources.forEach(function (s) {
+          var label = s.type === 'journal' ? 'Week ' + s.week : 'Project';
+          html += '<a href="' + escHtml(s.url) + '" class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">';
+          html += escHtml(label) + (s.title ? ' · ' + escHtml(s.title) : '');
+          html += '</a>';
+        });
+        aiSourcesEl.innerHTML = html;
+        aiSourcesEl.classList.remove('hidden');
+      }
+
+      function escHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      async function runPagefind(query) {
+        try {
+          var pagefind = await import('/pagefind/pagefind.js');
+          var pfResults = await pagefind.search(query);
+          var results = [];
+          for (var i = 0; i < Math.min(pfResults.results.length, 10); i++) {
+            var data = await pfResults.results[i].data();
+            var type = (data.filters && data.filters.type && data.filters.type[0]) || (data.url.includes('/journal/') ? 'journal' : 'project');
+            var week = weekFromUrl(data.url);
+            results.push({
+              url: data.url,
+              title: data.meta && data.meta.title ? data.meta.title : data.title,
+              excerpt: data.excerpt,
+              excerptHtml: data.excerpt, // Pagefind excerpt already contains <mark> HTML
+              type: type,
+              week: week,
+              matchType: 'keyword',
+            });
+          }
+          keywordResults = results;
+          mergeResults();
+          renderResultList();
+        } catch (e) {
+          console.error('Pagefind error:', e);
+        }
+      }
+
+      async function runSseStream(query) {
+        try {
+          var response = await fetch('/api/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: query, context: 'site' }),
+          });
+
+          if (!response.ok || !response.body) {
+            console.error('SSE stream failed:', response.status);
+            return;
+          }
+
+          var reader = response.body.getReader();
+          currentReader = reader;
+          var decoder = new TextDecoder();
+          var buffer = '';
+
+          while (true) {
+            var chunk;
+            try {
+              chunk = await reader.read();
+            } catch (e) {
+              break;
+            }
+            if (chunk.done) break;
+
+            buffer += decoder.decode(chunk.value, { stream: true });
+
+            // Split on double newline (SSE event boundary)
+            var events = buffer.split('\n\n');
+            buffer = events.pop() || '';
+
+            for (var i = 0; i < events.length; i++) {
+              var block = events[i];
+              var eventType = '';
+              var eventData = '';
+              var lines = block.split('\n');
+              for (var j = 0; j < lines.length; j++) {
+                var line = lines[j];
+                if (line.startsWith('event: ')) {
+                  eventType = line.slice(7).trim();
+                } else if (line.startsWith('data: ')) {
+                  eventData = line.slice(6);
+                }
+              }
+              if (!eventType) continue;
+
+              if (eventType === 'semantic') {
+                try {
+                  var matches = JSON.parse(eventData);
+                  aiSources = matches;
+                  semanticResults = matches.map(function (m) {
+                    return {
+                      url: m.url,
+                      title: m.title,
+                      excerpt: m.excerpt,
+                      type: m.type,
+                      week: m.week,
+                      matchType: 'semantic',
+                    };
+                  });
+                  mergeResults();
+                  renderResultList();
+                } catch (e) {
+                  console.error('Failed to parse semantic results:', e);
+                }
+              } else if (eventType === 'ai-chunk') {
+                try {
+                  var token = JSON.parse(eventData);
+                  aiAnswer += token;
+                  showAiCard();
+                  aiAnswerText.textContent = aiAnswer;
+                } catch (e) {
+                  aiAnswer += eventData;
+                  showAiCard();
+                  aiAnswerText.textContent = aiAnswer;
+                }
+              } else if (eventType === 'ai-done') {
+                renderAiSources();
+              } else if (eventType === 'done') {
+                reader.cancel();
+                currentReader = null;
+                // Show empty state if truly no results
+                if (mergedResults.length === 0) {
+                  emptyState.classList.remove('hidden');
+                }
+                return;
+              } else if (eventType === 'error') {
+                console.error('SSE error event:', eventData);
+              }
+            }
+          }
+        } catch (e) {
+          console.error('SSE stream error:', e);
+        }
+      }
+
+      async function runSearch(query) {
+        resetState();
+        if (!query) return;
+        // Run Pagefind and SSE stream in parallel
+        await Promise.all([
+          runPagefind(query),
+          runSseStream(query),
+        ]);
+      }
+    })();
   </script>
 </BaseLayout>
