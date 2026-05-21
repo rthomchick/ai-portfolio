@@ -43,6 +43,27 @@ html.theme-transition *::after {
   color-scheme: dark;
 }
 
+/* ── Mobile overflow prevention ── */
+.prose pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.prose img,
+.prose video,
+.prose iframe {
+  max-width: 100%;
+  height: auto;
+}
+
 /* ── Effect 1: Scroll Reveal ── */
 @keyframes fadeSlideUp {
   from {
