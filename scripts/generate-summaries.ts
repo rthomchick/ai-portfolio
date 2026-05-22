@@ -13,14 +13,13 @@ fs.mkdirSync(SUMMARIES_DIR, { recursive: true });
 const client = new Anthropic();
 
 function toHeadingId(text: string): string {
+  // Matches github-slugger used by Astro/rehype-slug:
+  // strip punctuation (incl. +, :, etc.), replace each space with -, no hyphen collapsing
   return text
     .toLowerCase()
-    .replace(/[`*_[\]()]/g, '')
     .replace(/[^\w\s-]/g, '')
-    .trim()
-    .replace(/[\s_]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/\s/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 function extractHeadings(body: string): Array<{ text: string; id: string }> {

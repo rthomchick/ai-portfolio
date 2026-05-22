@@ -1,25 +1,25 @@
 {
-  "overview": "I built 9 eval modules, a 4-section Responsible AI dashboard, and a reusable governance template for my SAFe Feature Spec System.",
+  "overview": "I built 9 evaluation modules, a 4-section Responsible AI dashboard, and a reusable governance template for my SAFe Feature Spec System.",
   "keyPoints": [
     {
-      "title": "Started at 48%: 12 of 25 responsibility checks passed",
+      "title": "Started at 48% responsible AI coverage — 12 of 25 checks",
       "headingId": "day-1-responsible-ai-foundations"
     },
     {
-      "title": "Reviewer agent consumes 80% of total pipeline input tokens",
-      "headingId": "day-1-responsible-ai-foundations"
+      "title": "Reviewer agent consumes ~80% of total pipeline input tokens",
+      "headingId": "day-2-cost-guardrails--audit-trails"
     },
     {
-      "title": "Boosted inputs returned 0 inventions; bare cases had at least one",
-      "headingId": "day-3-grounding-checks-content-safety"
+      "title": "Boosted cases returned 0 inventions; every bare case had at least one",
+      "headingId": "day-3-grounding-checks--content-safety"
     },
     {
-      "title": "Claude Code proactively improved my two-cap cost guardrail design",
-      "headingId": "day-2-cost-guardrails-audit-trails"
+      "title": "Claude Code proactively fixed a per-pass vs. full-run cost cap gap",
+      "headingId": "day-2-cost-guardrails--audit-trails"
     },
     {
-      "title": "Responsible AI is a quality layer embedded in production, not a category",
-      "headingId": "responsible-ai-is-a-quality-layer-not-a-product-category"
+      "title": "Server-side verdict logic, not LLM, enforces grounding thresholds",
+      "headingId": "server-side-verdict-re-computation-is-the-correct-pattern"
     }
   ]
 }
