@@ -421,7 +421,6 @@ const hasSummary = summary !== null;
             const targetId = link.dataset.target;
             if (targetId) {
               document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-              summaryPanel.classList.add('hidden');
             }
           });
           link.addEventListener('keydown', (e: KeyboardEvent) => {
