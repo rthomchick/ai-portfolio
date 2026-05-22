@@ -82,25 +82,24 @@ ${plainText.slice(0, 8000)}`;
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 4096,
-    system: `You are a summary assistant for Richard Thomchick's AI product development journal. Generate a structured summary of the article.
+    system: `You are a summary assistant for Richard Thomchick's AI product development journal. Generate a concise structured summary of the article.
 
 Return a JSON object with this exact structure:
 {
-  "overview": "A 2-3 sentence summary of the article's main theme and outcome. Write in first person as Richard. Be specific — reference actual tools, findings, and numbers.",
+  "overview": "A 2-3 sentence summary of the article's main theme and outcome. Maximum 280 characters. Write in first person as Richard. Be specific — reference actual tools, findings, and numbers.",
   "keyPoints": [
     {
-      "title": "A specific, data-anchored finding or outcome (15 words max)",
-      "description": "One sentence elaborating with a concrete detail or number.",
-      "sectionName": "The heading text of the section this point comes from",
-      "headingId": "The id attribute of the heading this point links to"
+      "title": "A specific, data-anchored takeaway (10 words max)",
+      "headingId": "The id attribute of the most relevant heading from the provided headings list"
     }
   ]
 }
 
 Rules:
-- Generate 4-7 key points depending on article length.
-- Each key point must link to a specific heading from the provided headings list. Use the exact id from the headings array for headingId.
-- Lead with numbers and findings, not generalities.
+- The overview must be 280 characters or fewer. Be dense, not wordy.
+- Generate 3-5 key points. Never more than 5.
+- Each key point title is a single line — a finding, not a description. Lead with numbers or specifics.
+- Each key point links to one heading from the provided list. Use the exact id from the headings array.
 - Write in first person as Richard.
 - Return ONLY the JSON object, no markdown backticks, no preamble.`,
     messages: [{ role: 'user', content: userPrompt }],
@@ -110,7 +109,18 @@ Rules:
   // Strip markdown code fences if model wraps the response despite instructions
   const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '');
   try {
-    return JSON.parse(text);
+    const data = JSON.parse(text);
+    // Enforce 280-char overview limit at sentence boundary
+    if (typeof data.overview === 'string' && data.overview.length > 280) {
+      const sentences = data.overview.match(/[^.!?]+[.!?]+\s*/g) || [];
+      let trimmed = '';
+      for (const s of sentences) {
+        if ((trimmed + s).trimEnd().length <= 280) trimmed += s;
+        else break;
+      }
+      data.overview = trimmed.trimEnd() || data.overview.slice(0, 280);
+    }
+    return data;
   } catch (e) {
     // Show the problematic section to aid debugging
     if (e instanceof SyntaxError) {

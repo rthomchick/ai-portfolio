@@ -1,47 +1,25 @@
 {
-  "overview": "This week I upgraded my SAFe Feature Spec System to production on Streamlit Cloud and ran a controlled experiment with Anthropic's new advisor tool, which lets Sonnet consult Opus mid-generation. After an encouraging Day 1 result, the full golden set showed the advisor averaged -2.2 points at 4.3× the cost, so I shipped the toggle but defaulted it OFF and redirected my attention to infrastructure work that made deployment possible.",
+  "overview": "I upgraded my SAFe Feature Spec System to production on Streamlit Cloud, wired in governance modules, migrated to PostgreSQL, and tested Anthropic's advisor tool. The advisor averaged -2.2 points at 4.3\u00d7 the cost ($4.98 vs $1.17) \u2014 the data said no.",
   "keyPoints": [
     {
-      "title": "Advisor tool averaged -2.2 points at 4.3× the cost across golden set",
-      "description": "Full evaluation showed $4.98 vs $1.17 with no quality gain — the Day 1 +9 point result was an outlier, not a trend.",
-      "sectionName": "Verdict on Advisor Tool: The Data Said No (At Least for My Use Cases)",
+      "title": "Advisor tool scored -2.2 pts avg at 4.3\u00d7 cost",
       "headingId": "verdict-on-advisor-tool-the-data-said-no-at-least-for-my-use-cases"
     },
     {
-      "title": "End-to-end deployment scored 76→85, $0.72, 27 calls across 5 agents",
-      "description": "I verified the live Streamlit Cloud URL by processing a queued request through the full pipeline with boost inputs and confirmed governance data written back to PostgreSQL.",
-      "sectionName": "5. Streamlit Cloud Deployment",
+      "title": "Live deploy: 76\u219285 score, $0.72, 27 LLM calls",
       "headingId": "5-streamlit-cloud-deployment"
     },
     {
-      "title": "Wired AuditTrail, CostGuard, and TokenTracker into the live pipeline",
-      "description": "These modules existed since Weeks 9–10 but were disconnected; I connected all three to every agent call and added a flush guard to prevent duplicate database writes on Streamlit reruns.",
-      "sectionName": "Building Guardrails Is Half the Work",
-      "headingId": "building-guardrails-is-half-the-work"
-    },
-    {
-      "title": "Replaced SQLite with PostgreSQL across all six evaluation tables",
-      "description": "I implemented dual-mode connection logic — PostgreSQL via environment variable in production, SQLite fallback locally — which unlocked concurrent access from the eval runner, request queue, and live pipeline.",
-      "sectionName": "3. PostgreSQL Migration",
-      "headingId": "3-postgresql-migration"
-    },
-    {
-      "title": "Killed the Notion MCP integration and built a connector abstraction instead",
-      "description": "OAuth requirements, stdio incompatibility with Streamlit Cloud, and bridge-process limitations stacked up, so I replaced the hard dependency with a connector interface that normalizes any intake source into a standard object.",
-      "sectionName": "Don't Build for One Integration",
+      "title": "Connector abstraction replaced brittle Notion MCP dependency",
       "headingId": "dont-build-for-one-integration"
     },
     {
-      "title": "Built a Request Queue page as an alternative pipeline entry point",
-      "description": "I added a PostgreSQL-backed connector interface with create, process, and completed-request views, though I noted the UX needs significant improvement before a typical tech marketing manager could use it successfully.",
-      "sectionName": "4. Connector Interface and Request Queue",
-      "headingId": "4-connector-interface-and-request-queue"
+      "title": "PostgreSQL migration unlocked concurrent multi-surface access",
+      "headingId": "infrastructure-work-is-invisible-and-essential"
     },
     {
-      "title": "Advisor tool will return in Week 12 for the Intake Copilot's ambiguous reasoning tasks",
-      "description": "Structured rubric scoring was too well-defined for Opus consultation to help, but processing messy stakeholder input — where the model must decide what questions to ask — is the kind of open-ended task the advisor is actually designed for.",
-      "sectionName": "Final Thoughts",
-      "headingId": "final-thoughts"
+      "title": "Governance modules were built but unwired until now",
+      "headingId": "building-guardrails-is-half-the-work"
     }
   ]
 }

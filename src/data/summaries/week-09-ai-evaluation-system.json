@@ -1,40 +1,24 @@
 {
-  "overview": "This week I built a full evaluation pipeline for the SAFe Feature Spec System, turning prompt engineering from guesswork into measurable, data-driven iteration. The system includes a SQLite backend with token instrumentation across six agents, a 6-case golden set with bare/boosted variants, a five-tab Streamlit dashboard, and an AI-powered improvement suggester powered by Claude Sonnet. My first A/B test produced a data-driven Router v2 promotion that eliminated an intermittent EXPERIENCE misclassification bug.",
+  "overview": "I built a full AI eval pipeline for my SAFe Feature Spec System: SQLite storage, a 6-case golden set, A/B prompt testing, a 5-tab Streamlit dashboard, and a Claude-powered improvement suggester. Key finds: LLM-as-judge varies \u00b17pts at temp 0.",
   "keyPoints": [
     {
-      "title": "SQLite pipeline with SHA-256 content-addressing stores all prompt versions idempotently",
-      "description": "Claude Code designed the content-addressed hashing system so registering the same prompt twice returns the same ID rather than creating a duplicate — the same idempotency principle I encountered with Pinecone upserts in Week 7.",
-      "sectionName": "Day 1: SQLite Foundations + Token Instrumentation",
-      "headingId": "day-1-sqlite-foundations-token-instrumentation"
-    },
-    {
-      "title": "V1 baseline: 5/6 passed, $1.56 total, EXPERIENCE routing failed intermittently",
-      "description": "Both EXPERIENCE cases misrouted to CAPABILITY in the baseline run, making a previously hidden Week 8 bug visible in data for the first time.",
-      "sectionName": "V1 Baseline Results",
-      "headingId": "v1-baseline-results"
-    },
-    {
-      "title": "Router A/B test revealed v1 flakiness; v2 achieved consistent 6/6 correct classifications",
-      "description": "Running two rounds of 12 Haiku calls at roughly half a cent total showed v1 misfired on EXPERIENCE in one run but passed in another — intermittent failures that a single test would have missed entirely.",
-      "sectionName": "Day 3: Router A/B Test",
-      "headingId": "day-3-router-ab-test"
-    },
-    {
-      "title": "LLM-as-Judge scores varied ±7 points across identical runs at temperature 0.0",
-      "description": "Running the same evaluation three times with identical inputs and prompts produced scores of 71, 78, and 71 — proving that a single evaluation score is a data point, not a verdict.",
-      "sectionName": "LLM-as-Judge Variance Is Real (Even at Temperature 0.0)",
+      "title": "\u00b17pt judge variance persists even at temperature 0.0",
       "headingId": "llm-as-judge-variance-is-real-even-at-temperature-00"
     },
     {
-      "title": "Bare-to-boosted score spreads of +14 to +25 points quantify the value of PM context",
-      "description": "The consistent gap between minimal bare inputs and PM-enriched boosted inputs across all three feature types gave me a concrete, data-backed way to measure how much stakeholder context improves output quality.",
-      "sectionName": "The Bare/Boosted Spread Quantifies the Value of PM Input",
+      "title": "Bare\u2192boosted PM input spreads reached +25 points",
       "headingId": "the-bareboosted-spread-quantifies-the-value-of-pm-input"
     },
     {
-      "title": "Improvement Suggester proposes specific prompt edits with diffs but never auto-applies them",
-      "description": "Claude Sonnet at temperature 0.2 analyzes aggregated section scores and reviewer feedback to generate quoted, diagnosed, and rationale-backed suggestions — keeping the human-in-the-loop pattern from Week 8 applied to prompt optimization.",
-      "sectionName": "Day 5: Improvement Suggester",
+      "title": "Router v2 fixed intermittent EXPERIENCE misclassification via A/B data",
+      "headingId": "day-3-router-ab-test"
+    },
+    {
+      "title": "V1 baseline: 5/6 passed, $1.56, routing bug now measurable",
+      "headingId": "v1-baseline-results"
+    },
+    {
+      "title": "Suggester proposes prompt edits; I decide \u2014 human-in-the-loop preserved",
       "headingId": "day-5-improvement-suggester"
     }
   ]

@@ -1,41 +1,25 @@
 {
-  "overview": "This week I moved my RAG pipeline from a local ChromaDB prototype to a production-ready system backed by Pinecone, and added agentic retrieval using an MCP-pattern tool server. I also rebuilt my Personalization Strategy Assistant v3 with real Pinecone data, multi-agent architecture, and live ROI calculations — the most complex thing I've deployed so far.",
+  "overview": "I upgraded my RAG pipeline from local ChromaDB to hosted Pinecone, added agentic retrieval, and built an MCP-pattern tool server. Agentic RAG scored 4.3 vs 4.0 for standard RAG but used 66% more tokens \u2014 a real trade-off.",
   "keyPoints": [
     {
-      "title": "ChromaDB replaced by Pinecone to solve four production-blocking failures",
-      "description": "ChromaDB broke down on Streamlit Cloud due to no persistence, single-process writes, no backups, and slow metadata filtering above ~10K docs — all solved by migrating to Pinecone in 30-45 minutes.",
-      "sectionName": "Days 1-2: Pinecone Migration",
+      "title": "Pinecone replaces ChromaDB: persistent, multi-user, production-ready",
       "headingId": "days-1-2-pinecone-migration"
     },
     {
-      "title": "Agentic RAG scored 0.3 points higher but cost 66% more tokens on average",
-      "description": "My head-to-head LLM-judge comparison showed agentic RAG averaged 4.3/5 vs. standard RAG's 4.0/5, but the complex strategic question — where multi-search should shine most — was a tie despite 5 searches and +188% token overhead.",
-      "sectionName": "Day 3: Agentic RAG",
+      "title": "Agentic RAG: +0.3 quality points, +66% token cost",
       "headingId": "day-3-agentic-rag"
     },
     {
-      "title": "MCP pattern refactored tools into a single importable module for all agents",
-      "description": "I consolidated three tools — Pinecone search, temporal context, and ROI calculator — into one file with a shared tool menu and dispatcher, so any new tool I add is automatically available to every agent that imports the module.",
-      "sectionName": "Day 4: MCP-Pattern Tool Server",
+      "title": "MCP pattern: define tools once, all agents inherit them",
       "headingId": "day-4-mcp-pattern-tool-server"
     },
     {
-      "title": "Strategy Assistant v3 is my most complex deployment: three workers, real data, live ROI",
-      "description": "I rebuilt the assistant with a Planner → Workers → Synthesizer architecture where three independent worker agents run in sequence, each making their own tool use decisions against real Pinecone data and a live ROI calculator.",
-      "sectionName": "Day 5: Strategy Assistant v3",
+      "title": "Strategy Assistant v3: three worker agents with real Pinecone tools",
       "headingId": "day-5-strategy-assistant-v3"
     },
     {
-      "title": "Standard vs. agentic RAG is a product tradeoff, not a clear upgrade",
-      "description": "The quality edge of agentic RAG is real but small, and the cost difference only makes sense for genuinely complex queries — simpler use cases don't justify the token overhead.",
-      "sectionName": "Standard vs. Agentic RAG Is a Product Decision",
+      "title": "Standard vs. agentic RAG is a cost-quality product call",
       "headingId": "standard-vs-agentic-rag-is-a-product-decision"
-    },
-    {
-      "title": "Pinecone's idempotent upsert prevented duplicate vectors during migration",
-      "description": "Because Pinecone treats same-ID upserts as updates rather than inserts, I could safely re-run ingestion without polluting the index — a detail that matters far more in production than in local prototyping.",
-      "sectionName": "Idempotent Operations Matter More Than You'd Think",
-      "headingId": "idempotent-operations-matter-more-than-youd-think"
     }
   ]
 }

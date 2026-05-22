@@ -1,46 +1,24 @@
 {
-  "overview": "This week I built a PM Knowledge Assistant using Claude and ChromaDB to implement a full RAG pipeline, deployed apps to Streamlit, and began establishing evaluation baselines. I worked through Python 3.14/ChromaDB incompatibility, validated that retrieval grounding produces measurably better answers than generic model responses, and explored three retrieval quality techniques: hybrid search, re-ranking, and metadata filtering.",
+  "overview": "I built a PM Knowledge Assistant using ChromaDB and Claude, implementing a full RAG pipeline that grounds responses in my documents. RAG produced specific Q3 data (2.3% lift) vs. generic benchmarks without it.",
   "keyPoints": [
     {
-      "title": "Cosine similarity scores were nearly 3x higher for semantically related queries",
-      "description": "My first embedding script showed A vs B similarity at 0.4120 versus A vs C at 0.1437 — a 0.2684 difference achieved with zero keyword overlap.",
-      "sectionName": "Day 1: Embeddings",
-      "headingId": "day-1-embeddings"
-    },
-    {
-      "title": "RAG retrieved a specific 2.3% lift; without it, Claude gave generic benchmarks",
-      "description": "The same model and prompt produced a document-grounded Q3 figure with RAG versus a useless industry range of 5–15% without it.",
-      "sectionName": "Day 3: RAG Pipeline",
-      "headingId": "day-3-rag-pipeline"
-    },
-    {
-      "title": "Claude synthesized a novel cross-document insight without being instructed to",
-      "description": "When asked what's working in our personalization program, Claude independently connected behavioral targeting's 3:1 ratio to the signal-first architecture across two separate ingested documents.",
-      "sectionName": "Day 3: RAG Pipeline",
-      "headingId": "day-3-rag-pipeline"
-    },
-    {
-      "title": "Re-ranking with Claude Haiku correctly pruned irrelevant chunks that distance scores missed",
-      "description": "Haiku dropped an Adobe Target chunk for a user persona query but kept it for an integration query — the same chunk judged correctly in both contexts.",
-      "sectionName": "Day 4: RAG Quality Deep Dive",
-      "headingId": "day-4-rag-quality-deep-dive"
-    },
-    {
-      "title": "Metadata filtering returned the correct document where distance scores chose wrong",
-      "description": "A performance-category filter surfaced Q3 results at distance 0.662, while an unfiltered search would have preferred signal definitions at 0.590.",
-      "sectionName": "Day 4: RAG Quality Deep Dive",
-      "headingId": "day-4-rag-quality-deep-dive"
-    },
-    {
-      "title": "Python 3.14 and ChromaDB were incompatible, requiring a new 3.12 environment",
-      "description": "ChromaDB's dependency on Pydantic v1 blocked Day 1 progress until I created a separate Python 3.12 environment to proceed.",
-      "sectionName": "Python 3.14 and ChromaDB Incompatibility",
+      "title": "Python 3.14 broke ChromaDB; had to downgrade to 3.12",
       "headingId": "python-314-and-chromadb-incompatibility"
     },
     {
-      "title": "Guardrails, not RAG alone, prevented Claude from hallucinating on missing context",
-      "description": "When asked about Salesforce integration — absent from all ingested documents — Claude declined to answer only because my system prompt explicitly restricted it to retrieved context.",
-      "sectionName": "RAG Grounds Information Retrieval, But Claude Still Hallucinates",
+      "title": "Cosine similarity: A/B scored 0.41 vs. A/C at 0.14",
+      "headingId": "day-1-embeddings"
+    },
+    {
+      "title": "RAG returned specific 2.3% lift; without it, generic 5\u201315%",
+      "headingId": "day-3-rag-pipeline"
+    },
+    {
+      "title": "Re-ranking with Haiku correctly pruned irrelevant chunks by query",
+      "headingId": "day-4-rag-quality-deep-dive"
+    },
+    {
+      "title": "System prompt guardrails \u2014 not RAG alone \u2014 prevent hallucination",
       "headingId": "rag-grounds-information-retrieval-but-claude-still-hallucinates"
     }
   ]

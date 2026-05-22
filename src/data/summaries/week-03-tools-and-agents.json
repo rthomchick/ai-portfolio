@@ -1,47 +1,25 @@
 {
-  "overview": "This week I progressed from a simple calculator tool to building a fully autonomous research agent in Python, implementing 7 tools across 3 domains and ~1,500 lines of code. I learned that tool chaining lets Claude reason through multi-step workflows without any IF/THEN logic from me, but autonomy comes with real costs — in API calls, context bloat, and unpredictable failures like hallucinated URLs. By Day 5, I was writing production-grade resilience infrastructure where 80% of the code existed just to handle failure modes.",
+  "overview": "I built 7 tools across 3 domains and 4 agents in ~1,500 lines of Python, progressing from a calculator to an autonomous research agent. Key lessons: tool descriptions are prompt engineering, context fills fast (10,000+ tokens by call 5), and autonomy isn't free.",
   "keyPoints": [
     {
-      "title": "Each tool use cycle requires a minimum of 2 API calls",
-      "description": "A tool-enabled conversation costs 2–3× more than a basic exchange, and complex workflows can hit 4–6 API calls per user question — with full context sent every round trip.",
-      "sectionName": "Autonomy Comes at a Cost",
-      "headingId": "autonomy-comes-at-a-cost"
-    },
-    {
-      "title": "Week ended with ~1,500 lines of Python across 7+ scripts",
-      "description": "I implemented 7 tools across 3 domains and built 4 complete agents, plus a retry, logging, and stats framework I can reuse in every future agent.",
-      "sectionName": "Key Numbers at the End of Week",
-      "headingId": "key-numbers-at-the-end-of-week"
-    },
-    {
-      "title": "80% of Day 5 code was resilience, only 20% functionality",
-      "description": "I built a robust tool execution framework with retry logic, exponential backoff, timeout handling, error categorization, rate limit detection, token tracking, and circuit breakers.",
-      "sectionName": "Day 5: Production-Ready Resiliency and Robustness",
-      "headingId": "day-5-production-ready-resiliency-and-robustness"
-    },
-    {
-      "title": "Research agent got only 4 successful fetches out of 20 attempts",
-      "description": "Claude hallucinated plausible-sounding URLs that didn't exist, revealing that 'autonomous' doesn't mean 'omniscient' and that URL sourcing needs guardrails in production.",
-      "sectionName": "Where I Struggled",
-      "headingId": "where-i-struggled"
-    },
-    {
-      "title": "Cross-domain tool chaining produced autonomous workflows with zero orchestration logic",
-      "description": "Combining ServiceNow mock tools, a web scraper, and a file utility let Claude autonomously research a problem, create a ticket, and save a resolution file — I wrote no workflow logic.",
-      "sectionName": "Tool-Chaining Is Where Autonomous Workflows Begin",
-      "headingId": "tool-chaining-is-where-autonomous-workflows-begin"
-    },
-    {
-      "title": "A single stray character silently removed a tool from Claude's toolkit",
-      "description": "A malformed tool schema — one wrong character instead of a comma — caused Claude to tell users it lacked that capability entirely, costing me 20 minutes of debugging.",
-      "sectionName": "Tool Descriptions Are Prompt Engineering, Not Documentation",
+      "title": "Tool descriptions control Claude's behavior, not just usage",
       "headingId": "tool-descriptions-are-prompt-engineering-not-documentation"
     },
     {
-      "title": "Research agent context hit 10,000+ tokens per round trip by call five",
-      "description": "Every API call includes full context plus all tool definitions (~1,500 tokens for a modest toolkit), meaning context management with agents isn't optional — it's load-bearing.",
-      "sectionName": "Autonomy Comes at a Cost",
+      "title": "Tool use costs 2-3x more API calls than basic conversation",
       "headingId": "autonomy-comes-at-a-cost"
+    },
+    {
+      "title": "Research agent: only 4 successful fetches out of 20 attempts",
+      "headingId": "day-4-autonomous-research-agent"
+    },
+    {
+      "title": "80% of production code is resilience, 20% is functionality",
+      "headingId": "day-5-production-ready-resiliency-and-robustness"
+    },
+    {
+      "title": "Tool-chaining replaced workflow logic with runtime reasoning",
+      "headingId": "tool-chaining-is-where-autonomous-workflows-begin"
     }
   ]
 }

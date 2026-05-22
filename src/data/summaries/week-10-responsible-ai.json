@@ -1,47 +1,25 @@
 {
-  "overview": "This week I focused on building responsible AI guardrails into my SAFe Feature Spec System from a product and engineering perspective. Together with Claude, I created 9 new evaluation modules, a 4-section Responsible AI dashboard, and a reusable governance template. The process followed a deliberate arc: audit what I had, fill the gaps, validate with data, and generalize the patterns.",
+  "overview": "I built 9 eval modules, a 4-section Responsible AI dashboard, and a reusable governance template for my SAFe Feature Spec System.",
   "keyPoints": [
     {
-      "title": "Initial audit revealed only 48% responsible AI coverage across 25 checks",
-      "description": "When I ran the Responsible AI Checker against my SAFe Feature System, it passed just 12 of 25 guidelines, with gaps clustered in cost governance, audit trails, content safety, and regression baselines.",
-      "sectionName": "Day 1: Responsible AI Foundations",
+      "title": "Started at 48%: 12 of 25 responsibility checks passed",
       "headingId": "day-1-responsible-ai-foundations"
     },
     {
-      "title": "Reviewer agent consumes ~80% of total pipeline input tokens",
-      "description": "The infrastructure auditor surfaced that the Reviewer agent — not the Generator — dominates token usage because it receives the full spec, full rubric, and system prompt as input.",
-      "sectionName": "Day 1: Responsible AI Foundations",
+      "title": "Reviewer agent consumes 80% of total pipeline input tokens",
       "headingId": "day-1-responsible-ai-foundations"
     },
     {
-      "title": "Claude Code proactively improved my two-cap CostGuard design",
-      "description": "The original directive implied per-pass and per-run cost limits but didn't operationalize how to select between them; Claude Code detected this gap and added a context parameter to enforce the correct cap at call time.",
-      "sectionName": "Day 2: Cost Guardrails + Audit Trails",
-      "headingId": "day-2-cost-guardrails-audit-trails"
-    },
-    {
-      "title": "Every boosted case returned 0 invented claims; every bare case had at least one",
-      "description": "Across all 6 golden set cases, the grounding checker found that PM context boosts eliminated inventions entirely, providing the clearest quantitative signal yet for why richer input matters.",
-      "sectionName": "Day 3: Grounding Checks + Content Safety",
+      "title": "Boosted inputs returned 0 inventions; bare cases had at least one",
       "headingId": "day-3-grounding-checks-content-safety"
     },
     {
-      "title": "Same content produced different grounding verdicts on consecutive runs",
-      "description": "For web_001_bare, a batch run classified 12 Generator claims as Inventions, while a drill-down run on identical content reclassified them all as Extrapolations, highlighting the need for server-side verdict logic.",
-      "sectionName": "Day 3: Grounding Checks + Content Safety",
-      "headingId": "day-3-grounding-checks-content-safety"
-    },
-    {
-      "title": "Live bias detection flagged WEBPAGE mean at 77.0 vs. 86.6 for other feature types",
-      "description": "The bias detection script grouping eval runs by feature type surfaced a meaningful scoring gap exceeding the default 10-point threshold between WEBPAGE and other feature categories.",
-      "sectionName": "Day 4: Bias Detection + Responsible AI Dashboard",
-      "headingId": "day-4-bias-detection-responsible-ai-dashboard"
-    },
-    {
-      "title": "Audit trail CLI trace viewer saved real debugging time across Days 3 and 4",
-      "description": "The 7-event-type audit trail and its terminal trace viewer proved more valuable than expected, letting me inspect the full decision sequence while debugging grounding checker behavior without leaving the terminal.",
-      "sectionName": "Day 2: Cost Guardrails + Audit Trails",
+      "title": "Claude Code proactively improved my two-cap cost guardrail design",
       "headingId": "day-2-cost-guardrails-audit-trails"
+    },
+    {
+      "title": "Responsible AI is a quality layer embedded in production, not a category",
+      "headingId": "responsible-ai-is-a-quality-layer-not-a-product-category"
     }
   ]
 }

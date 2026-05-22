@@ -1,46 +1,24 @@
 {
-  "overview": "This week I built a conversational Feature Intake Copilot that replaces traditional feature request forms with an adaptive AI-driven conversation, transforming messy stakeholder input into structured specs ready for PM review. The system uses a two-gate architecture — Claude handles the conversational extraction, and the PM makes the final quality call — achieving 94% ground truth extraction accuracy across three test personas. I also resolved a persistent tool-call bug by splitting each turn into two separate API calls, one for language and one for structured extraction.",
+  "overview": "I built a conversational feature intake copilot using Claude that replaces PM request forms with adaptive dialogue.",
   "keyPoints": [
     {
-      "title": "94% ground truth extraction accuracy across three stakeholder personas",
-      "description": "The copilot captured an average of 5.7 out of 6 key fields compared to a hand-written skilled-PM baseline, with perfect scores for the marketing manager and engineering lead scenarios.",
-      "sectionName": "\"Ground Truth\" Quality Measurements",
+      "title": "94% ground truth extraction across 3 stakeholder personas",
       "headingId": "6-ground-truth-quality-measurements"
     },
     {
-      "title": "Adaptive questioning strategy reads signal density, not persona labels",
-      "description": "Rather than branching on predefined personas, the copilot adjusts its question strategy based on what's present or missing — vague requests get extraction questions, technically detailed ones get reverse extraction for business justification.",
-      "sectionName": "1. Conversational Intake Engine",
-      "headingId": "1-conversational-intake-engine"
-    },
-    {
-      "title": "Two-gate architecture separates stakeholder experience from PM quality decision",
-      "description": "The copilot's gate never blocks submission and treats 'I don't know' as signal, while the PM's gate is where the structured accept/reject quality call is made with full rationale and override capability.",
-      "sectionName": "3. Two-Gate Architecture",
-      "headingId": "3-two-gate-architecture"
-    },
-    {
-      "title": "A full day of debugging resolved by splitting each turn into two API calls",
-      "description": "When both a natural language response and a tool call were available in the same API call, the model consistently treated the tool call as the primary action and stubbed out the conversational text, requiring a two-call split per turn to fix.",
-      "sectionName": "The Two-Call Split: Separate What the Model Says from What It Knows",
+      "title": "Two-call split fixed model forgetting to respond conversationally",
       "headingId": "the-two-call-split-separate-what-the-model-says-from-what-it-knows"
     },
     {
-      "title": "Claude misclassified feature type in 1 of 3 test cases (67% accuracy)",
-      "description": "The sales engineer scenario produced an incorrect feature type classification, reinforcing that PM override of the copilot's pre-selected classification remains a necessary part of the review workflow.",
-      "sectionName": "Claude is Surprisingly Bad at Feature Type Classification",
+      "title": "Two-gate design: copilot optimizes UX, PM owns quality decision",
+      "headingId": "3-two-gate-architecture"
+    },
+    {
+      "title": "Claude misclassified feature type in 1 of 3 test cases",
       "headingId": "claude-is-surprisingly-bad-at-feature-type-classification"
     },
     {
-      "title": "Sonnet-to-Opus advisor tool reintroduced for ambiguous intake decisions",
-      "description": "Unlike last week where the advisor added no value for structured rubric scoring, I brought it back here because intake classification and borderline recommendations are genuinely ambiguous — though I'm still uncertain whether the cost is justified.",
-      "sectionName": "5. Advisor Tool Integration (Take Two)",
-      "headingId": "5-advisor-tool-integration-take-two"
-    },
-    {
-      "title": "Conversations accommodate incomplete knowledge where forms punish it",
-      "description": "The copilot's ability to say 'the product team can figure that part out' and move forward is a fundamental design advantage over forms, which block progress when a stakeholder can't answer a required field.",
-      "sectionName": "Pipelines and Conversations Are Fundamentally Different Products",
+      "title": "Conversations handle bad input; pipelines just produce bad output",
       "headingId": "pipelines-and-conversations-are-fundamentally-different-products"
     }
   ]

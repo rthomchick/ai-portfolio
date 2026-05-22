@@ -1,8 +1,6 @@
 ---
 interface KeyPoint {
   title: string;
-  description: string;
-  sectionName: string;
   headingId: string;
 }
 
@@ -92,46 +90,36 @@ const hasSummary = summary !== null;
   }
 
   .ca-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
+    gap: 5px;
     font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-    border-radius: 9999px;
-    border: 1px solid #d6d3d1;
-    background: #f5f5f4;
-    color: #57534e;
+    font-family: 'DM Sans', sans-serif;
+    color: #78716c;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
     cursor: pointer;
-    transition: background 150ms, color 150ms, border-color 150ms;
-    text-decoration: none;
-    white-space: nowrap;
-    line-height: 1;
+    transition: all 150ms ease;
   }
 
-  .ca-btn:hover:not(:disabled) {
-    background: #e7e5e4;
-    border-color: #a8a29e;
-    color: #0f766e;
+  .ca-btn:hover,
+  .ca-btn:focus-visible {
+    background: #f5f5f4;
+    color: #1c1917;
   }
 
-  .dark .ca-btn {
-    border-color: #44403c;
-    background: #292524;
-    color: #d6d3d1;
-  }
-
-  .dark .ca-btn:hover:not(:disabled) {
-    background: #3c3836;
-    border-color: #57534e;
-    color: #2dd4bf;
+  .dark .ca-btn:hover,
+  .dark .ca-btn:focus-visible {
+    background: #1c1917;
+    color: #f5f5f4;
   }
 
   .ca-btn.ca-disabled,
   .ca-btn:disabled {
-    opacity: 0.38;
-    cursor: not-allowed;
+    opacity: 0.35;
+    pointer-events: none;
   }
 
   /* Share dropdown */
@@ -215,7 +203,7 @@ const hasSummary = summary !== null;
   .summary-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     margin-bottom: 14px;
   }
 
@@ -233,16 +221,6 @@ const hasSummary = summary !== null;
   .dark .summary-chip {
     color: #2dd4bf;
     background: rgba(45, 212, 191, 0.12);
-  }
-
-  .summary-meta {
-    font-size: 12px;
-    color: #a8a29e;
-    flex: 1;
-  }
-
-  .dark .summary-meta {
-    color: #78716c;
   }
 
   .summary-close {
@@ -286,57 +264,42 @@ const hasSummary = summary !== null;
     color: #a8a29e;
   }
 
+  .summary-takeaways-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #a8a29e;
+    margin-bottom: 4px;
+    padding: 0 12px;
+  }
+
   .summary-link {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 120ms;
+    transition: background 120ms ease;
     text-decoration: none;
-    margin-bottom: 4px;
   }
 
   .summary-link:hover {
-    background: #f0fdf9;
+    background: #ffffff;
   }
 
   .dark .summary-link:hover {
-    background: rgba(45, 212, 191, 0.06);
+    background: #292524;
   }
 
   .summary-link-title {
     font-size: 13px;
-    font-weight: 600;
-    color: #292524;
-    margin-bottom: 2px;
-    line-height: 1.4;
+    font-weight: 500;
+    color: #0F6E56;
   }
 
   .dark .summary-link-title {
-    color: #e7e5e4;
-  }
-
-  .summary-link-desc {
-    font-size: 12px;
-    color: #78716c;
-    line-height: 1.5;
-    margin-bottom: 3px;
-  }
-
-  .dark .summary-link-desc {
-    color: #57534e;
-  }
-
-  .summary-link-section {
-    font-size: 11px;
-    color: #a8a29e;
-    font-style: italic;
-  }
-
-  .dark .summary-link-section {
-    color: #57534e;
+    color: #2dd4bf;
   }
 
   /* Mobile: icons only */
@@ -416,27 +379,20 @@ const hasSummary = summary !== null;
       summaryPanel.classList.remove('hidden');
 
       if (!rendered) {
-        const readingTimeMatch = document.querySelector('[class*="tracking-wider"]')?.textContent?.match(/\d+ min/);
-        const readingTime = readingTimeMatch ? readingTimeMatch[0] : '';
-
-        const keyPointsHtml = summary.keyPoints.map((point: { headingId: string; title: string; description: string; sectionName: string }) => `
-          <div class="summary-link" data-target="${point.headingId}" role="button" tabindex="0">
-            <i class="ti ti-arrow-right" style="color:#0F6E56;font-size:14px;margin-top:3px;flex-shrink:0;" aria-hidden="true"></i>
-            <div>
-              <div class="summary-link-title">${point.title}</div>
-              <div class="summary-link-desc">${point.description}</div>
-              <div class="summary-link-section">→ ${point.sectionName}</div>
-            </div>
-          </div>
+        const keyPointsHtml = summary.keyPoints.map((point: { headingId: string; title: string }) => `
+          <a class="summary-link" data-target="${point.headingId}">
+            <i class="ti ti-arrow-right" style="color:#0F6E56;font-size:14px;margin-top:1px;flex-shrink:0;" aria-hidden="true"></i>
+            <span class="summary-link-title">${point.title}</span>
+          </a>
         `).join('');
 
         summaryPanel.innerHTML = `
           <div class="summary-header">
             <span class="summary-chip">AI summary</span>
-            <span class="summary-meta">${summary.keyPoints.length} key points${readingTime ? ' · ' + readingTime + ' article' : ''}</span>
             <button class="summary-close" id="summary-close" aria-label="Close summary"><i class="ti ti-x" aria-hidden="true"></i></button>
           </div>
           <p class="summary-text">${summary.overview}</p>
+          <div class="summary-takeaways-label">Key takeaways</div>
           <div>${keyPointsHtml}</div>
         `;
 
