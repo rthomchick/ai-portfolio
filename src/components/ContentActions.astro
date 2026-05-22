@@ -26,7 +26,7 @@ const hasSummary = summary !== null;
       aria-label="AI summary"
       disabled={!hasSummary}
     >
-      Summary <i class="ti ti-sparkles" aria-hidden="true"></i>
+      Summarize <i class="ti ti-sparkles" aria-hidden="true"></i>
     </button>
     <button class="ca-btn ca-disabled" aria-label="Ask AI about this entry" disabled>
       Ask AI <i class="ti ti-message-question" aria-hidden="true"></i>
@@ -264,6 +264,23 @@ const hasSummary = summary !== null;
     color: #a8a29e;
   }
 
+  /* Blinking cursor during streaming */
+  .ca-streaming::after {
+    content: '▋';
+    color: #0f766e;
+    animation: ca-blink 500ms step-end infinite;
+    margin-left: 1px;
+  }
+
+  .dark .ca-streaming::after {
+    color: #2dd4bf;
+  }
+
+  @keyframes ca-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
   .summary-takeaways-label {
     font-size: 11px;
     text-transform: uppercase;
@@ -380,7 +397,7 @@ const hasSummary = summary !== null;
 
       if (!rendered) {
         const keyPointsHtml = summary.keyPoints.map((point: { headingId: string; title: string }) => `
-          <a class="summary-link" data-target="${point.headingId}">
+          <a class="summary-link" data-target="${point.headingId}" style="opacity:0;transform:translateY(5px)">
             <i class="ti ti-arrow-right" style="color:#0F6E56;font-size:14px;margin-top:1px;flex-shrink:0;" aria-hidden="true"></i>
             <span class="summary-link-title">${point.title}</span>
           </a>
@@ -391,33 +408,72 @@ const hasSummary = summary !== null;
             <span class="summary-chip">AI summary</span>
             <button class="summary-close" id="summary-close" aria-label="Close summary"><i class="ti ti-x" aria-hidden="true"></i></button>
           </div>
-          <p class="summary-text">${summary.overview}</p>
-          <div class="summary-takeaways-label">Key takeaways</div>
+          <p class="summary-text"></p>
+          <div class="summary-takeaways-label" style="opacity:0">Key takeaways</div>
           <div>${keyPointsHtml}</div>
         `;
 
         rendered = true;
+
+        // Wire interactions
+        summaryPanel.querySelectorAll<HTMLElement>('.summary-link').forEach(link => {
+          link.addEventListener('click', () => {
+            const targetId = link.dataset.target;
+            if (targetId) {
+              document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+              summaryPanel.classList.add('hidden');
+            }
+          });
+          link.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); link.click(); }
+          });
+        });
+        document.getElementById('summary-close')?.addEventListener('click', () => {
+          summaryPanel.classList.add('hidden');
+        });
+
+        // ── Streaming animation ────────────────────────────────────────────
+        const overviewEl = summaryPanel.querySelector<HTMLElement>('.summary-text');
+        const labelEl = summaryPanel.querySelector<HTMLElement>('.summary-takeaways-label');
+        const linkEls = summaryPanel.querySelectorAll<HTMLElement>('.summary-link');
+        const text = summary.overview as string;
+
+        if (!overviewEl) return;
+
+        overviewEl.classList.add('ca-streaming');
+
+        // Stream overview using rAF — time-based so it's immune to timer throttling
+        const STREAM_MS = 1100; // total duration for overview
+        const startTime = performance.now();
+
+        function streamFrame(now: number) {
+          const progress = Math.min((now - startTime) / STREAM_MS, 1);
+          const chars = Math.floor(progress * text.length);
+          overviewEl!.textContent = text.slice(0, chars);
+
+          if (progress < 1) {
+            requestAnimationFrame(streamFrame);
+          } else {
+            overviewEl!.textContent = text;
+            overviewEl!.classList.remove('ca-streaming');
+            // Reveal label then stagger in key points
+            setTimeout(() => {
+              if (labelEl) {
+                labelEl.style.transition = 'opacity 180ms ease';
+                labelEl.style.opacity = '1';
+              }
+              linkEls.forEach((el, idx) => {
+                setTimeout(() => {
+                  el.style.transition = 'opacity 200ms ease, transform 200ms ease';
+                  el.style.opacity = '1';
+                  el.style.transform = 'translateY(0)';
+                }, idx * 70);
+              });
+            }, 80);
+          }
+        }
+        requestAnimationFrame(streamFrame);
       }
-
-      summaryPanel.querySelectorAll<HTMLElement>('.summary-link').forEach(link => {
-        link.addEventListener('click', () => {
-          const targetId = link.dataset.target;
-          if (targetId) {
-            document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-            summaryPanel.classList.add('hidden');
-          }
-        });
-        link.addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            link.click();
-          }
-        });
-      });
-
-      document.getElementById('summary-close')?.addEventListener('click', () => {
-        summaryPanel.classList.add('hidden');
-      });
     });
   }
 </script>
