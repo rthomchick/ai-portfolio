@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import BackToTop from '../../components/BackToTop.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import ContentActions from '../../components/ContentActions.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -22,6 +23,11 @@ const formattedDate = entry.data.date.toLocaleDateString('en-US', {
   day: 'numeric',
   year: 'numeric',
 });
+
+// Load pre-generated summary if available
+const allSummaries = import.meta.glob<{ default: object }>('../../data/summaries/*.json', { eager: true });
+const summaryModule = allSummaries[`../../data/summaries/${entry.id}.json`];
+const summary = summaryModule?.default ?? null;
 
 const body = entry.body || '';
 const textOnly = body.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
@@ -50,6 +56,10 @@ const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
           <span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">{tag}</span>
         ))}
       </div>
+    </div>
+
+    <div class="max-w-2xl">
+      <ContentActions slug={entry.id} summary={summary as any} />
     </div>
 
     <!-- Body -->

@@ -1,0 +1,467 @@
+---
+interface KeyPoint {
+  title: string;
+  description: string;
+  sectionName: string;
+  headingId: string;
+}
+
+interface Summary {
+  overview: string;
+  keyPoints: KeyPoint[];
+}
+
+interface Props {
+  slug: string;
+  summary: Summary | null;
+}
+
+const { slug, summary } = Astro.props;
+const hasSummary = summary !== null;
+---
+
+<div class="content-actions">
+  <div class="content-actions-left">
+    <button
+      id="summary-btn"
+      class={`ca-btn${hasSummary ? '' : ' ca-disabled'}`}
+      aria-label="AI summary"
+      disabled={!hasSummary}
+    >
+      Summary <i class="ti ti-sparkles" aria-hidden="true"></i>
+    </button>
+    <button class="ca-btn ca-disabled" aria-label="Ask AI about this entry" disabled>
+      Ask AI <i class="ti ti-message-question" aria-hidden="true"></i>
+    </button>
+    <button class="ca-btn ca-disabled" aria-label="Listen to this entry" disabled>
+      Listen <i class="ti ti-headphones" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="content-actions-right">
+    <button id="share-btn" class="ca-btn" aria-label="Share">
+      Share <i class="ti ti-upload" aria-hidden="true"></i>
+    </button>
+    <div id="share-dropdown" class="share-dropdown hidden">
+      <button class="share-item" data-action="copy">
+        <i class="ti ti-link" aria-hidden="true"></i> Copy link
+      </button>
+      <div class="share-sep"></div>
+      <a class="share-item" data-action="linkedin" target="_blank" rel="noopener noreferrer">
+        <i class="ti ti-brand-linkedin" aria-hidden="true"></i> Share on LinkedIn
+      </a>
+      <a class="share-item" data-action="x" target="_blank" rel="noopener noreferrer">
+        <i class="ti ti-brand-x" aria-hidden="true"></i> Share on X
+      </a>
+      <a class="share-item" data-action="bluesky" target="_blank" rel="noopener noreferrer">
+        <i class="ti ti-brand-bluesky" aria-hidden="true"></i> Share on Bluesky
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="summary-panel" class="summary-panel hidden"></div>
+
+{hasSummary && (
+  <script id="summary-data" type="application/json" set:html={JSON.stringify(summary)} />
+)}
+
+<style is:global>
+  .content-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    margin-bottom: 24px;
+    border-top: 1px solid #e7e5e4;
+    border-bottom: 1px solid #e7e5e4;
+  }
+
+  .dark .content-actions {
+    border-top-color: #292524;
+    border-bottom-color: #292524;
+  }
+
+  .content-actions-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .content-actions-right {
+    position: relative;
+  }
+
+  .ca-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    border-radius: 9999px;
+    border: 1px solid #d6d3d1;
+    background: #f5f5f4;
+    color: #57534e;
+    cursor: pointer;
+    transition: background 150ms, color 150ms, border-color 150ms;
+    text-decoration: none;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .ca-btn:hover:not(:disabled) {
+    background: #e7e5e4;
+    border-color: #a8a29e;
+    color: #0f766e;
+  }
+
+  .dark .ca-btn {
+    border-color: #44403c;
+    background: #292524;
+    color: #d6d3d1;
+  }
+
+  .dark .ca-btn:hover:not(:disabled) {
+    background: #3c3836;
+    border-color: #57534e;
+    color: #2dd4bf;
+  }
+
+  .ca-btn.ca-disabled,
+  .ca-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+
+  /* Share dropdown */
+  .share-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    background: #ffffff;
+    border: 1px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 6px;
+    min-width: 188px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+    z-index: 50;
+  }
+
+  .dark .share-dropdown {
+    background: #1c1917;
+    border-color: #292524;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .share-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    color: #44403c;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 120ms, color 120ms;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .share-item:hover {
+    background: #f5f5f4;
+    color: #0f766e;
+  }
+
+  .dark .share-item {
+    color: #d6d3d1;
+  }
+
+  .dark .share-item:hover {
+    background: #292524;
+    color: #2dd4bf;
+  }
+
+  .share-sep {
+    height: 1px;
+    background: #e7e5e4;
+    margin: 4px 6px;
+  }
+
+  .dark .share-sep {
+    background: #292524;
+  }
+
+  /* Summary panel */
+  .summary-panel {
+    border: 1px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    background: #fafaf9;
+  }
+
+  .dark .summary-panel {
+    background: #1c1917;
+    border-color: #292524;
+  }
+
+  .summary-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .summary-chip {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 3px 8px;
+    border-radius: 9999px;
+  }
+
+  .dark .summary-chip {
+    color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.12);
+  }
+
+  .summary-meta {
+    font-size: 12px;
+    color: #a8a29e;
+    flex: 1;
+  }
+
+  .dark .summary-meta {
+    color: #78716c;
+  }
+
+  .summary-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #a8a29e;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 120ms, color 120ms;
+    padding: 0;
+  }
+
+  .summary-close:hover {
+    background: #e7e5e4;
+    color: #57534e;
+  }
+
+  .dark .summary-close {
+    color: #78716c;
+  }
+
+  .dark .summary-close:hover {
+    background: #292524;
+    color: #d6d3d1;
+  }
+
+  .summary-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #57534e;
+    margin: 0 0 16px;
+  }
+
+  .dark .summary-text {
+    color: #a8a29e;
+  }
+
+  .summary-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 120ms;
+    text-decoration: none;
+    margin-bottom: 4px;
+  }
+
+  .summary-link:hover {
+    background: #f0fdf9;
+  }
+
+  .dark .summary-link:hover {
+    background: rgba(45, 212, 191, 0.06);
+  }
+
+  .summary-link-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #292524;
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+
+  .dark .summary-link-title {
+    color: #e7e5e4;
+  }
+
+  .summary-link-desc {
+    font-size: 12px;
+    color: #78716c;
+    line-height: 1.5;
+    margin-bottom: 3px;
+  }
+
+  .dark .summary-link-desc {
+    color: #57534e;
+  }
+
+  .summary-link-section {
+    font-size: 11px;
+    color: #a8a29e;
+    font-style: italic;
+  }
+
+  .dark .summary-link-section {
+    color: #57534e;
+  }
+
+  /* Mobile: icons only */
+  @media (max-width: 639px) {
+    .ca-btn {
+      font-size: 0;
+      padding: 8px;
+      gap: 0;
+    }
+
+    .ca-btn i {
+      font-size: 19px;
+    }
+  }
+</style>
+
+<script>
+  // ── Share ──────────────────────────────────────────────────────────────────
+  const shareBtn = document.getElementById('share-btn');
+  const shareDropdown = document.getElementById('share-dropdown');
+
+  const pageUrl = window.location.href;
+  const pageTitle = document.title.replace(/\s*—.*$/, '').trim();
+
+  // Populate share links
+  const linkedinLink = shareDropdown?.querySelector('[data-action="linkedin"]') as HTMLAnchorElement | null;
+  const xLink = shareDropdown?.querySelector('[data-action="x"]') as HTMLAnchorElement | null;
+  const blueskyLink = shareDropdown?.querySelector('[data-action="bluesky"]') as HTMLAnchorElement | null;
+
+  if (linkedinLink) linkedinLink.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`;
+  if (xLink) xLink.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pageTitle)}`;
+  if (blueskyLink) blueskyLink.href = `https://bsky.app/intent/compose?text=${encodeURIComponent(pageTitle + ' ' + pageUrl)}`;
+
+  shareBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    shareDropdown?.classList.toggle('hidden');
+  });
+
+  shareDropdown?.querySelector('[data-action="copy"]')?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(pageUrl);
+      const copyBtn = shareDropdown?.querySelector('[data-action="copy"]');
+      if (copyBtn) {
+        const original = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Copied!';
+        setTimeout(() => { copyBtn.innerHTML = original; }, 2000);
+      }
+    } catch {
+      // clipboard not available
+    }
+    shareDropdown?.classList.add('hidden');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!shareDropdown?.classList.contains('hidden')) {
+      if (!shareBtn?.contains(e.target as Node) && !shareDropdown?.contains(e.target as Node)) {
+        shareDropdown?.classList.add('hidden');
+      }
+    }
+  });
+
+  // ── Summary ────────────────────────────────────────────────────────────────
+  const summaryBtn = document.getElementById('summary-btn');
+  const summaryPanel = document.getElementById('summary-panel');
+  const summaryDataEl = document.getElementById('summary-data');
+
+  if (summaryDataEl && summaryPanel && summaryBtn) {
+    const summary = JSON.parse(summaryDataEl.textContent || '{}');
+    let rendered = false;
+
+    summaryBtn.addEventListener('click', () => {
+      if (!summaryPanel.classList.contains('hidden')) {
+        summaryPanel.classList.add('hidden');
+        return;
+      }
+
+      summaryPanel.classList.remove('hidden');
+
+      if (!rendered) {
+        const readingTimeMatch = document.querySelector('[class*="tracking-wider"]')?.textContent?.match(/\d+ min/);
+        const readingTime = readingTimeMatch ? readingTimeMatch[0] : '';
+
+        const keyPointsHtml = summary.keyPoints.map((point: { headingId: string; title: string; description: string; sectionName: string }) => `
+          <div class="summary-link" data-target="${point.headingId}" role="button" tabindex="0">
+            <i class="ti ti-arrow-right" style="color:#0F6E56;font-size:14px;margin-top:3px;flex-shrink:0;" aria-hidden="true"></i>
+            <div>
+              <div class="summary-link-title">${point.title}</div>
+              <div class="summary-link-desc">${point.description}</div>
+              <div class="summary-link-section">→ ${point.sectionName}</div>
+            </div>
+          </div>
+        `).join('');
+
+        summaryPanel.innerHTML = `
+          <div class="summary-header">
+            <span class="summary-chip">AI summary</span>
+            <span class="summary-meta">${summary.keyPoints.length} key points${readingTime ? ' · ' + readingTime + ' article' : ''}</span>
+            <button class="summary-close" id="summary-close" aria-label="Close summary"><i class="ti ti-x" aria-hidden="true"></i></button>
+          </div>
+          <p class="summary-text">${summary.overview}</p>
+          <div>${keyPointsHtml}</div>
+        `;
+
+        rendered = true;
+      }
+
+      summaryPanel.querySelectorAll<HTMLElement>('.summary-link').forEach(link => {
+        link.addEventListener('click', () => {
+          const targetId = link.dataset.target;
+          if (targetId) {
+            document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+            summaryPanel.classList.add('hidden');
+          }
+        });
+        link.addEventListener('keydown', (e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            link.click();
+          }
+        });
+      });
+
+      document.getElementById('summary-close')?.addEventListener('click', () => {
+        summaryPanel.classList.add('hidden');
+      });
+    });
+  }
+</script>

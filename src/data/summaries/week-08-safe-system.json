@@ -1,0 +1,47 @@
+{
+  "overview": "This week I rebuilt my Feature Spec Generator as a six-agent Streamlit system called the SAFe Feature Spec System, replacing the three-tab, manual clipboard workflow I'd been using. The system runs a full spec pipeline — classify, clarify, generate, review, improve, polish — in 10-15 minutes per spec at $0.15-0.25 in API costs, consistently hitting 90+ out of 100 on a rubric scorecard. Across all three test cases, I saw score deltas of +14 to +23 points, hitting the 4-5 docs per hour throughput leadership was asking for.",
+  "keyPoints": [
+    {
+      "title": "Manual workflow capped me at 2-3 feature docs per week",
+      "description": "I was acting as the integration layer across three browser tabs, copying context by hand, which limited output even though my docs hit the 90% scorecard threshold.",
+      "sectionName": "The Problem I Was Solving",
+      "headingId": "the-problem-i-was-solving"
+    },
+    {
+      "title": "Six-agent system produces 4-5 specs per hour at ~$0.20 per run",
+      "description": "The pipeline uses Haiku for classification and Sonnet for the remaining five agents, completing each spec in 10-15 minutes for roughly $0.15-0.25 in API costs.",
+      "sectionName": "What I Built",
+      "headingId": "what-i-built"
+    },
+    {
+      "title": "Streamlit session state replaced me as the pipeline's integration layer",
+      "description": "Every piece of context that previously lived in my head or clipboard — feature type, interview answers, rubric decisions — became an explicit, machine-readable session variable.",
+      "sectionName": "How to Replace Myself With Session State",
+      "headingId": "how-to-replace-myself-with-session-state"
+    },
+    {
+      "title": "Two-tier improvement threshold broke the 85-88 score ceiling",
+      "description": "Tier 1 targets sections below 75% and Tier 2 auto-triggers a polish pass when the overall score lands between 80-89, pushing all three test cases to 92-94.",
+      "sectionName": "Boost Inputs and Two-Tier Improvement",
+      "headingId": "boost-inputs-and-two-tier-improvement"
+    },
+    {
+      "title": "Boost inputs are the mechanism that makes AI output PM-quality",
+      "description": "After the Reviewer scores the spec, I can paste additional domain context for sections below 75%, bridging the gap between competent AI output and a grounded specification.",
+      "sectionName": "Boost Inputs and Two-Tier Improvement",
+      "headingId": "boost-inputs-and-two-tier-improvement"
+    },
+    {
+      "title": "Parse-once dictionary architecture prevented positional corruption on edits",
+      "description": "Replacing positional string surgery with a parse-then-reassemble pattern meant editing one section by dictionary key could never cascade offsets into adjacent sections.",
+      "sectionName": "Parse Once, Edit Independently, Reassemble",
+      "headingId": "parse-once-edit-independently-reassemble"
+    },
+    {
+      "title": "Improver regression on User Stories was the hardest debug of the program",
+      "description": "The LLM's tendency to regenerate rather than edit caused scores to drop on untouched sections, and each attempted fix required a full pipeline run to validate before failing in a new way.",
+      "sectionName": "The Improver Regression Saga",
+      "headingId": "the-improver-regression-saga"
+    }
+  ]
+}

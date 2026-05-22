@@ -1,0 +1,41 @@
+{
+  "overview": "In Week 1, I set up my Python development environment, generated my first Anthropic API key, and successfully made my first Claude API call with a ~10-line 'Hello World' script. Despite a history of getting stuck on toolchain setup — like failing to install PyTorch in 2018 — Claude helped me clear that hurdle within the first five minutes. The experience revealed that building with the Claude API is surprisingly accessible, but also that the unglamorous infrastructure work is harder to shortcut than the coding itself.",
+  "keyPoints": [
+    {
+      "title": "First working Claude API call required only ~10 lines of code",
+      "description": "I wrote a simple 'Hello World' script with a single prompt and successfully received a response from the Claude API directly from my own machine.",
+      "sectionName": "Made My First API Call",
+      "headingId": "made-my-first-api-call"
+    },
+    {
+      "title": "Environment setup was still the hardest part of Week 1",
+      "description": "Getting Python, the virtual environment, the API key, and VS Code all working together remained an unglamorous prerequisite even with AI assistance.",
+      "sectionName": "Set Up the Dev Environment",
+      "headingId": "set-up-the-dev-environment"
+    },
+    {
+      "title": "API key vanished every time I closed the terminal window",
+      "description": "I learned the hard way that setting an environment variable with export is per-terminal-session — close the window, lose the key.",
+      "sectionName": "Generated My First API Key",
+      "headingId": "generated-my-first-api-key"
+    },
+    {
+      "title": "Running Claude from code exposed parameters hidden in the chat UI",
+      "description": "Controlling the system prompt, temperature, and conversation history directly made me realize that everything that felt like magic in the chat interface is just a parameter I can set.",
+      "sectionName": "What I Learned",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "venv activation tripped me up as a per-session mental model",
+      "description": "Installing a package, closing the terminal, and getting import errors taught me to think of a virtual environment like logging into a specific account — close the terminal, you're logged out.",
+      "sectionName": "What I Struggled With",
+      "headingId": "what-i-struggled-with"
+    },
+    {
+      "title": "Vibe-coding masks the harder infrastructure work beneath the surface",
+      "description": "Environment setup, deployment config, error handling, and debugging are far harder to shortcut than writing feature code, and a professional engineer's understanding of what's happening on the machine is a real advantage.",
+      "sectionName": "Key Takeaway",
+      "headingId": "key-takeaway"
+    }
+  ]
+}

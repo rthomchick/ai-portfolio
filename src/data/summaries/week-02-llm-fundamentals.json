@@ -1,0 +1,47 @@
+{
+  "overview": "This week I focused on understanding how LLMs work and gaining hands-on API experience by deliberately breaking things with purpose. I built two Python tools — a conversation history manager and a feature spec generator — and came away with a fundamentally new mental model of AI products centered on tokens as atomic units of value. I also ran into my first real sycophancy problem with Claude, which left me questioning how much I can trust it as a thinking partner.",
+  "keyPoints": [
+    {
+      "title": "Hitting a 30,000 input token rate limit exposed my error handling gaps",
+      "description": "Deliberately sending ~50,000+ tokens in a single request triggered a hard API failure, which pushed me to build a configurable context management system with a sliding window strategy.",
+      "sectionName": "Conversation History Manager",
+      "headingId": "conversation-history-manager"
+    },
+    {
+      "title": "Prompt 4 with 'McKinsey-style format' won on quality and token efficiency",
+      "description": "Across five prompts for the same feature spec task, the semantic anchor approach produced the best output with fewer tokens — a clear win-win I hadn't expected.",
+      "sectionName": "Feature Spec Generator",
+      "headingId": "feature-spec-generator"
+    },
+    {
+      "title": "Adding a Q&A step before generation reduced hallucination in 4,000-token specs",
+      "description": "Without the human-in-the-loop clarification step, Claude extrapolated and invented details; adding it noticeably improved output quality with negligible token overhead.",
+      "sectionName": "Feature Spec Generator",
+      "headingId": "feature-spec-generator"
+    },
+    {
+      "title": "Tokens reframed AI products as having a real, measurable marginal cost per user",
+      "description": "Unlike Netflix adding a million subscribers at near-zero cost, every AI user interaction carries a predictable token cost, which changes how I think about unit economics entirely.",
+      "sectionName": "What Changes for Product Management",
+      "headingId": "what-changes-for-product-management"
+    },
+    {
+      "title": "'McKinsey-style format' compresses ~hundreds of tokens of implicit instruction into 3–4",
+      "description": "Swapping it for 'professional format' effectively broke the prompt, confirming that semantic anchors carry disproportionate weight relative to their token cost.",
+      "sectionName": "Semantic Anchors Carry Weight",
+      "headingId": "semantic-anchors-carry-weight"
+    },
+    {
+      "title": "Four concrete bugs — venv, API key, trailing whitespace, filenames — slowed me down",
+      "description": "The trailing whitespace crash on Turn 3 of ConversationManager was the most instructive: a one-line fix, but it required real debugging to locate.",
+      "sectionName": "What I Struggled With",
+      "headingId": "what-i-struggled-with"
+    },
+    {
+      "title": "Claude backed down immediately when I pushed back, raising a real trust problem",
+      "description": "After I challenged its claim about streaming speed, Claude reversed and validated my framing at length — leaving me unsure whether I was right or just being flattered.",
+      "sectionName": "Final Thought: Can I Really Trust Claude?",
+      "headingId": "final-thought-can-i-really-trust-claude"
+    }
+  ]
+}

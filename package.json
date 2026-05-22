@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "index": "node --env-file=.env scripts/index-content.mjs"
+    "index": "node --env-file=.env scripts/index-content.mjs",
+    "generate-summaries": "npx tsx scripts/generate-summaries.ts",
+    "prebuild": "npm run generate-summaries"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.97.1",
