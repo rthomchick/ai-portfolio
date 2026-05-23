@@ -48,24 +48,35 @@ const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
 
     <div class="reveal">
       <p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-4">{formattedDate}{readingTime > 0 ? ` · ${readingTime} min read` : ''}</p>
-      <h1 data-pagefind-meta="title" class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-2xl leading-tight">{entry.data.headline}</h1>
+      <h1 data-pagefind-meta="title" class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-[63rem] leading-tight">{entry.data.headline}</h1>
 
-      <!-- Tags -->
-      <div data-pagefind-ignore class="flex flex-wrap gap-2 mb-8">
+      {/* Tags */}
+      {/* <div data-pagefind-ignore class="flex flex-wrap gap-2 mb-8">
         {entry.data.tags.map(tag => (
           <span class="text-xs bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-300 px-2.5 py-1 rounded-full">{tag}</span>
         ))}
-      </div>
+      </div> */}
     </div>
 
     <ContentActions slug={entry.id} summary={summary as any} />
 
-    <!-- Body -->
-    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert">
-      <Content />
+    <!-- Body + TOC side-by-side -->
+    <div class="article-content">
+      <div class="prose prose-stone max-w-[63rem] prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert">
+        <Content />
+      </div>
+      {/* <TableOfContents /> */}
     </div>
   </main>
-  <TableOfContents />
   <Footer />
   <BackToTop />
 </BaseLayout>
+
+<style>
+.article-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  position: relative;
+}
+</style>

@@ -5,9 +5,12 @@
 
 <style is:global>
 #toc {
-  position: fixed;
-  top: 8rem;   /* overridden by JS */
-  right: 1rem; /* overridden by JS */
+  position: sticky;
+  top: 72px;
+  align-self: flex-start;
+  margin-left: auto;
+  padding-left: 32px;
+  flex-shrink: 0;
   z-index: 50;
   display: flex;
   align-items: flex-start;
@@ -156,52 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
 
   if (headings.length === 0) return;
-
-  const tocEl = document.getElementById('toc');
-
-  const summaryPanel = document.getElementById('summary-panel');
-
-  function positionToc() {
-    const actionsEl = document.querySelector('.content-actions');
-
-    // Horizontal: flush with ContentActions right edge.
-    // getBoundingClientRect().right is scroll-invariant horizontally, so this is stable.
-    if (actionsEl) {
-      tocEl.style.right = Math.max(8, window.innerWidth - actionsEl.getBoundingClientRect().right) + 'px';
-    }
-
-    // Vertical: use document-absolute top = getBCR().top + scrollY.
-    // For position:fixed, setting top to a document-absolute value keeps the element
-    // pinned at the same visual viewport position regardless of scroll depth.
-    const panelOpen = summaryPanel && !summaryPanel.classList.contains('hidden');
-    if (panelOpen) {
-      // Panel is open — align with prose container top (just below the panel)
-      tocEl.style.top = (prose.getBoundingClientRect().top + window.scrollY) + 'px';
-    } else {
-      // Default — align with the first actual text in prose (the "Goal" line),
-      // not the container edge, so the visual alignment is with real content.
-      const firstEl = prose.querySelector('p, em, blockquote, h2') || prose;
-      tocEl.style.top = (firstEl.getBoundingClientRect().top + window.scrollY) + 'px';
-    }
-  }
-
-  // Double rAF ensures layout has fully settled before we measure
-  requestAnimationFrame(() => requestAnimationFrame(positionToc));
-
-  // Debounced resize
-  let resizeTimer: ReturnType<typeof setTimeout>;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(positionToc, 150);
-  });
-
-  // Track summary panel open/close and streaming height growth
-  if (summaryPanel) {
-    new MutationObserver(() => requestAnimationFrame(positionToc))
-      .observe(summaryPanel, { attributes: true, attributeFilter: ['class'] });
-    new ResizeObserver(positionToc)
-      .observe(summaryPanel);
-  }
 
   const lineWidths = { 2: 28, 3: 20 };
   const linesContainer = document.getElementById('toc-lines');
