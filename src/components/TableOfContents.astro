@@ -6,8 +6,8 @@
 <style is:global>
 #toc {
   position: fixed;
-  top: 8rem;
-  right: 1.5rem;
+  top: 8rem;   /* overridden by JS */
+  right: 1rem; /* overridden by JS */
   z-index: 50;
   display: flex;
   align-items: flex-start;
@@ -157,10 +157,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (headings.length === 0) return;
 
-  // Pin TOC top to the prose element's page-absolute top offset
   const tocEl = document.getElementById('toc');
-  const prosePageTop = prose.getBoundingClientRect().top + window.scrollY;
-  tocEl.style.top = prosePageTop + 'px';
+
+  function positionToc() {
+    const actionsEl = document.querySelector('.content-actions');
+    const anchor = actionsEl || prose;
+    const rect = anchor.getBoundingClientRect();
+    // Top: just below the ContentActions bar (viewport-relative, correct for position:fixed)
+    tocEl.style.top = (actionsEl ? rect.bottom + 12 : rect.top) + 'px';
+    // Right: align right edge of TOC with right edge of ContentActions bar
+    tocEl.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
+  }
+
+  positionToc();
+  window.addEventListener('resize', positionToc);
 
   const lineWidths = { 2: 28, 3: 20 };
   const linesContainer = document.getElementById('toc-lines');
