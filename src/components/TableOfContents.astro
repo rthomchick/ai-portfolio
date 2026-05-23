@@ -159,18 +159,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const tocEl = document.getElementById('toc');
 
+  const summaryPanel = document.getElementById('summary-panel');
+
   function positionToc() {
     const actionsEl = document.querySelector('.content-actions');
-    const anchor = actionsEl || prose;
-    const rect = anchor.getBoundingClientRect();
-    // Top: just below the ContentActions bar (viewport-relative, correct for position:fixed)
-    tocEl.style.top = (actionsEl ? rect.bottom + 12 : rect.top) + 'px';
-    // Right: align right edge of TOC with right edge of ContentActions bar
-    tocEl.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
+    const anchorEl = actionsEl || prose;
+
+    // Horizontal: always flush with the ContentActions right edge
+    tocEl.style.right = Math.max(8, window.innerWidth - anchorEl.getBoundingClientRect().right) + 'px';
+
+    // Vertical: when summary panel is visible, align with prose top (the "Goal" line);
+    // otherwise sit just below the ContentActions bar.
+    const panelOpen = summaryPanel && !summaryPanel.classList.contains('hidden');
+    if (panelOpen) {
+      tocEl.style.top = prose.getBoundingClientRect().top + 'px';
+    } else {
+      const r = anchorEl.getBoundingClientRect();
+      tocEl.style.top = (actionsEl ? r.bottom + 12 : r.top) + 'px';
+    }
   }
 
   positionToc();
   window.addEventListener('resize', positionToc);
+
+  // Track panel open/close (class toggle) and streaming height growth (ResizeObserver)
+  if (summaryPanel) {
+    new MutationObserver(() => requestAnimationFrame(positionToc))
+      .observe(summaryPanel, { attributes: true, attributeFilter: ['class'] });
+    new ResizeObserver(positionToc)
+      .observe(summaryPanel);
+  }
 
   const lineWidths = { 2: 28, 3: 20 };
   const linesContainer = document.getElementById('toc-lines');
