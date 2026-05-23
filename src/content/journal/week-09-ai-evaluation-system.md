@@ -4,6 +4,7 @@ headline: "Week 9 Journal: AI Evaluation System"
 week: 9
 date: 2026-04-27
 summary: "Built an evaluation pipeline for the SAFe Feature Spec System: SQLite persistence, prompt versioning, a golden test set, a Streamlit dashboard, and an AI improvement suggester, turning prompt engineering from guesswork into measurement."
+goal: "Build evaluation infrastructure that turns prompt engineering from guesswork into measurement. Use the SAFe Feature Spec System as the test case."
 tags:
   - evaluation
   - llm-as-judge
@@ -29,10 +30,6 @@ toolsBuilt:
   - "AI-powered Improvement Suggester"
   - "Router v2 prompt (data-driven A/B promotion)"
 status: published
----
-
-*Goal: Build evaluation infrastructure that turns prompt engineering from guesswork into measurement. Use the SAFe Feature Spec System as the test case.*
-
 ---
 
 ## What I Built

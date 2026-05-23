@@ -4,6 +4,7 @@ headline: "Week 2: LLM and API Basics"
 week: 2
 date: 2026-03-09
 summary: "Hands-on experiments with tokens, context windows, streaming, and prompting techniques reveal that AI product management requires an entirely new economic mental model."
+goal: "Understand how LLMs work and gain practical API experience."
 tags:
   - tokens
   - context-window
@@ -22,10 +23,6 @@ toolsBuilt:
   - "Conversation History Manager (with sliding-window context compression and configurable token threshold)"
   - "Feature Spec Generator (SAFe-format, with Q&A step to reduce hallucination)"
 status: published
----
-
-**Goal**: Understand how LLMs work and gain practical API experience.
-
 ---
 
 I started breaking things this week. On purpose. As it turns out, breaking things with purpose was an effective way to vibe-code a few simple Python tools and get hands-on with the basics like tokens, context windows, temperature control, and streaming vs. batch output.

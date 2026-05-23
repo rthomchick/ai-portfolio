@@ -4,6 +4,7 @@ headline: "Week 11 Journal: Anthropic Advisor Tool Experiment"
 week: 11
 date: 2026-05-11
 summary: "Took the SAFe Feature Spec System from prototype to production by wiring in governance, migrating from SQLite to PostgreSQL, building a ConnectorInterface abstraction, and deploying the full v3 system to Streamlit Cloud."
+goal: "Upgrade the SAFe Feature Spec System from prototype to production in Streamlit Cloud. Add Anthropic's new Advisor Tool and measure the impact."
 tags:
   - advisor-tool
   - postgresql
@@ -31,10 +32,6 @@ toolsBuilt:
   - "Request Queue Streamlit page — create, process, and completed-request views feeding into the existing pipeline"
   - "SAFe Feature Spec System v3 — deployed to Streamlit Cloud with end-to-end verification"
 status: published
----
-
-*Goal: Upgrade the SAFe Feature Spec System from prototype to production in Streamlit Cloud. Add Anthropic's new Advisor Tool and measure the impact.*
-
 ---
 
 ## What I Built

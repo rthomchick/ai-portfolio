@@ -4,6 +4,7 @@ headline: "Week 13 Journal: Meet Dino, Your Las Vegas Restaurant Insider"
 week: 13
 date: 2026-05-24
 summary: Built Dino, a consumer-facing AI dining concierge for Las Vegas with Rat Pack personality, real Google Maps restaurant data, mock reservation booking, and Google Calendar deep links — deployed on Railway via a FastAPI agentic architecture.
+goal: "Build a consumer-facing AI product with a conversational interface and agentic architecture using Claude Code as the primary development surface."
 tags:
   - agentic-architecture
   - fastapi
@@ -23,10 +24,6 @@ keyInsights:
 toolsBuilt:
   - "Dino — AI dining concierge for Las Vegas, deployed on Railway (web-production-c0565.up.railway.app)"
 status: published
----
-
-*Goal: Build a consumer-facing AI product with a conversational interface and agentic architecture using Claude Code as the primary development surface.*
-
 ---
 
 Digital concierges are highly prevalent in Las Vegas, serving as a primary way for resorts to handle guest requests. I've experienced a few, like [Rose, "resident mischief-maker" & digital concierge at The Cosmopolitan of Las Vegas](https://cosmopolitanlasvegas.mgmresorts.com/en/amenities/rose.html), and found them to be the modern equivalent of the printed hotel guide.

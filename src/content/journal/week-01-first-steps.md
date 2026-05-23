@@ -4,6 +4,7 @@ headline: "Week 1: First Steps"
 week: 1
 date: 2026-02-27
 summary: "A non-engineer sets up a Python dev environment, generates an API key, and makes a first Claude API call — and discovers that vibe-coding has limits."
+goal: "Set up development environment and make my first Claude API call."
 tags:
   - python
   - anthropic-sdk
@@ -18,10 +19,6 @@ keyInsights:
   - "Being a developer is more than coding: environment setup, deployment config, error handling, and cross-system debugging are hard to vibe-code through."
 toolsBuilt: []
 status: published
----
-
-**Goal**: Set up development environment and make my first Claude API call.
-
 ---
 
 I am not an engineer, but I have done enough coding in the past to get frustrated with the setup process and toolchain dependencies. I tried an AI training course in 2018 and couldn't get past the step to install PyTorch. It was downright embarrassing. So my first question was, "Can Claude get me over the hump? Can I make it work?"

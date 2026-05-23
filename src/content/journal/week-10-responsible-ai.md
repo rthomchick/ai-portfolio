@@ -4,6 +4,7 @@ headline: "Week 10 Journal: Responsible AI"
 week: 10
 date: 2026-05-04
 summary: "Built nine responsible AI modules (cost guardrails, grounding checks, content safety, bias detection, audit trails, and prompt governance), transforming the SAFe Feature Spec System into a pipeline that can be trusted in production."
+goal: "Build responsible AI guardrails, safety checks, and production-quality monitoring into the SAFe Feature Spec System, then generalize the patterns."
 tags:
   - responsible-ai
   - guardrails
@@ -35,10 +36,6 @@ toolsBuilt:
   - "prompt_governance.py — version promotion rules engine with audit logging"
   - "responsible_ai_template.py — reusable ResponsibleAIConfig data class with pre-built tool profiles"
 status: published
----
-
-*Goal: Build responsible AI guardrails, safety checks, and production-quality monitoring into the SAFe Feature Spec System, then generalize the patterns.*
-
 ---
 
 ## What I Built

@@ -50,6 +50,12 @@ const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
       <p class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-4">{formattedDate}{readingTime > 0 ? ` · ${readingTime} min read` : ''}</p>
       <h1 data-pagefind-meta="title" class="text-3xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-4 max-w-[63rem] leading-tight">{entry.data.headline}</h1>
 
+      {entry.data.goal && (
+        <p class="text-base italic text-stone-500 dark:text-stone-400 leading-relaxed mb-5 max-w-2xl">
+          Goal: {entry.data.goal}
+        </p>
+      )}
+
       {/* Tags */}
       {/* <div data-pagefind-ignore class="flex flex-wrap gap-2 mb-8">
         {entry.data.tags.map(tag => (

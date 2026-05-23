@@ -4,6 +4,7 @@ headline: "Week 12 Journal: Feature Intake Copilot"
 week: 12
 date: 2026-05-17
 summary: Built a conversational AI intake copilot that transforms messy stakeholder feature requests into structured specs using a two-gate review architecture.
+goal: "Build a conversational feature intake copilot that transforms messy stakeholder requests into structured feature specs."
 tags:
   - conversational-ai
   - claude
@@ -24,10 +25,6 @@ toolsBuilt:
   - "PM Review Interface with request queue and detail view"
   - "Two-gate intake architecture (Copilot + PM)"
 status: published
----
-
-*Goal: Build a conversational feature intake copilot that transforms messy stakeholder requests into structured feature specs.*
-
 ---
 
 ## What I Built

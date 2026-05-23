@@ -4,6 +4,7 @@ headline: "Week 6 Journal: RAG Time"
 week: 6
 date: 2026-04-06
 summary: "Built a full RAG pipeline from embeddings to deployed Knowledge Assistant, explored hybrid search and re-ranking, and established a baseline evaluation framework for the Feature Spec Generator."
+goal: "Build a RAG pipeline. Deploy more apps to Streamlit. Start evaluating output quality."
 tags:
   - rag
   - embeddings
@@ -26,10 +27,6 @@ toolsBuilt:
   - "Knowledge Assistant — RAG-powered Streamlit app deployed to Streamlit Cloud with file upload and source citations"
   - "evaluation.py — golden set evaluator with rule-based checks and LLM-as-judge scoring for the Feature Spec Generator"
 status: published
----
-
-**Goal**: Build a RAG pipeline. Deploy more apps to Streamlit. Start evaluating output quality.
-
 ---
 
 ## What I Built

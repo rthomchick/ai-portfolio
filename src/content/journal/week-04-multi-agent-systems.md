@@ -4,6 +4,7 @@ headline: "Week 4 Journal: Multi-Agent Systems"
 week: 4
 date: 2026-03-23
 summary: "A grueling but rewarding week building production-grade multi-agent systems — from a hierarchical Feature Spec Generator to an ROI Analyzer hardened with resilience patterns, cost optimization, and smart model routing."
+goal: "Build agentic systems that deliver complex outcomes. Break more stuff."
 tags:
   - multi-agent
   - tool-use
@@ -31,10 +32,6 @@ toolsBuilt:
   - "Feature Spec Generator v2 (Day 6)"
   - "Personalization Strategy Assistant (Day 6)"
 status: published
----
-
-**Goal**: Build agentic systems that deliver complex outcomes. Break more stuff.
-
 ---
 
 ## What I Built

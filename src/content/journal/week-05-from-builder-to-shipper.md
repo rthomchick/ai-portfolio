@@ -4,6 +4,7 @@ headline: "Week 5 Journal: Feature Spec Generator Ship and Share"
 week: 5
 date: 2026-03-30
 summary: "Converted the Feature Spec Generator from a CLI tool into a Streamlit web app, deployed it to Streamlit Cloud, and shipped it to real users with Teams webhook notifications."
+goal: "Deploy the Feature Spec Generator to Streamlit Cloud with a shareable URL, team notifications, and feedback collection."
 tags:
   - streamlit
   - deployment
@@ -21,10 +22,6 @@ keyInsights:
 toolsBuilt:
   - "Feature Spec Generator — Streamlit web app deployed to Streamlit Cloud with Teams webhook notifications"
 status: published
----
-
-**Goal**: Deploy the Feature Spec Generator to Streamlit Cloud with a shareable URL, team notifications, and feedback collection.
-
 ---
 
 ## What I Built

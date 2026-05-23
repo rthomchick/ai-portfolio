@@ -4,6 +4,7 @@ headline: "Week 7 Journal: Agentic RAG + MCP"
 week: 7
 date: 2026-04-13
 summary: Upgraded the Knowledge Assistant from a local ChromaDB prototype to a production-grade Pinecone-backed system, added agentic retrieval, and refactored tools into an MCP-style composable layer.
+goal: "Move RAG pipeline from local prototype to production-ready online system. Learn agentic retrieval and the MCP pattern."
 tags:
   - rag
   - pinecone
@@ -28,8 +29,6 @@ toolsBuilt:
   - "Golden Set Evaluation (golden_set_evaluation.py — 7 test cases, 100% pass rate)"
 status: published
 ---
-
-**Goal**: Move RAG pipeline from local prototype to production-ready online system. Learn agentic retrieval and the MCP pattern.
 
 > **Editorial note:** This week's entry is a little shorter. I just moved to a new Claude account and misplaced my notes from the old account!
 

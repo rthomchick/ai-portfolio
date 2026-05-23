@@ -9,6 +9,7 @@ const journal = defineCollection({
     week: z.number(),
     date: z.coerce.date(),
     summary: z.string(),
+    goal: z.string().optional(),
     tags: z.array(z.string()),
     keyInsights: z.array(z.string()).optional(),
     toolsBuilt: z.array(z.string()).optional(),

@@ -4,6 +4,7 @@ headline: "Week 8 Journal: Return of the Feature Spec Generator"
 week: 8
 date: 2026-04-20
 summary: "Built a six-agent Streamlit system that automates the full SAFe feature spec workflow — from classification to scoring to polish — replacing a multi-session manual process with a consistent, 10-15 minute pipeline."
+goal: "Automate a multi-step product management workflow with quality-critical outputs."
 tags:
   - multi-agent
   - streamlit
@@ -22,10 +23,6 @@ keyInsights:
 toolsBuilt:
   - "SAFe Feature Spec System (six-agent Streamlit application)"
 status: published
----
-
-*Goal: automate a multi-step product management workflow with quality-critical outputs.*
-
 ---
 
 Week 8 was about utilizing all the things I'd learned so far to solve a real-world problem. I decided to revisit my Feature Spec Generator and re-imagine it as a multi-agent system.
