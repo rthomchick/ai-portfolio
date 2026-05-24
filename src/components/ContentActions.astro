@@ -12,9 +12,10 @@ interface Summary {
 interface Props {
   slug: string;
   summary: Summary | null;
+  hasAudio?: boolean;
 }
 
-const { slug, summary } = Astro.props;
+const { slug, summary, hasAudio = false } = Astro.props;
 const hasSummary = summary !== null;
 ---
 
@@ -28,11 +29,16 @@ const hasSummary = summary !== null;
     >
       Summarize <i class="ti ti-sparkles" aria-hidden="true"></i>
     </button>
+    <button
+      id="listen-btn"
+      class={`ca-btn${hasAudio ? '' : ' ca-disabled'}`}
+      aria-label="Listen to this entry"
+      disabled={!hasAudio}
+    >
+      Listen <i class="ti ti-headphones" aria-hidden="true"></i>
+    </button>
     <button class="ca-btn ca-disabled" aria-label="Ask AI about this entry" disabled>
       Ask AI <i class="ti ti-message-question" aria-hidden="true"></i>
-    </button>
-    <button class="ca-btn ca-disabled" aria-label="Listen to this entry" disabled>
-      Listen <i class="ti ti-headphones" aria-hidden="true"></i>
     </button>
   </div>
   <div class="content-actions-right">
@@ -58,6 +64,13 @@ const hasSummary = summary !== null;
 </div>
 
 <div id="summary-panel" class="summary-panel hidden"></div>
+
+<!-- Listen panel: slug passed via data attribute so the client script can construct the audio URL -->
+<div
+  id="listen-panel"
+  class="listen-panel hidden"
+  data-slug={slug}
+></div>
 
 {hasSummary && (
   <script id="summary-data" type="application/json" set:html={JSON.stringify(summary)} />
@@ -320,7 +333,169 @@ const hasSummary = summary !== null;
     color: #2dd4bf;
   }
 
-  /* Mobile: icons only */
+  /* ── Listen panel ──────────────────────────────────────────────────────── */
+  .listen-panel {
+    border: 1px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    background: #fafaf9;
+  }
+
+  .dark .listen-panel {
+    background: #1c1917;
+    border-color: #292524;
+  }
+
+  .listen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .listen-chip {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 3px 8px;
+    border-radius: 9999px;
+  }
+
+  .dark .listen-chip {
+    color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.12);
+  }
+
+  /* Reuse .summary-close styles — identical close button pattern */
+
+  .listen-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .listen-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #0f766e;
+    color: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 150ms ease, transform 100ms ease;
+    padding: 0;
+    font-size: 14px;
+  }
+
+  .listen-play-btn:hover {
+    background: #0d6460;
+    transform: scale(1.05);
+  }
+
+  .listen-play-btn:active {
+    transform: scale(0.97);
+  }
+
+  .dark .listen-play-btn {
+    background: #0d9488;
+  }
+
+  .dark .listen-play-btn:hover {
+    background: #0f766e;
+  }
+
+  /* Play icon nudge for optical centering */
+  .listen-play-btn .ti-player-play {
+    margin-left: 2px;
+  }
+
+  .listen-progress-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .listen-progress-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 9999px;
+    background: #e7e5e4;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .dark .listen-progress-bar {
+    background: #44403c;
+  }
+
+  /* Webkit fill */
+  .listen-progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #0f766e;
+    cursor: pointer;
+    margin-top: -4.5px;
+    transition: transform 120ms ease;
+  }
+
+  .listen-progress-bar::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+  }
+
+  .listen-progress-bar::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 9999px;
+  }
+
+  /* Firefox */
+  .listen-progress-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #0f766e;
+    border: none;
+    cursor: pointer;
+  }
+
+  .listen-progress-bar::-moz-range-track {
+    height: 3px;
+    background: #e7e5e4;
+    border-radius: 9999px;
+  }
+
+  .dark .listen-progress-bar::-moz-range-track {
+    background: #44403c;
+  }
+
+  .listen-time {
+    font-size: 11px;
+    color: #a8a29e;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    align-self: flex-end;
+  }
+
+  .listen-error {
+    font-size: 13px;
+    color: #a8a29e;
+    padding: 4px 0;
+  }
+
+  /* Mobile: icons-only adjusts ca-btn, player stays full-width */
   @media (max-width: 639px) {
     .ca-btn {
       font-size: 0;
@@ -443,7 +618,7 @@ const hasSummary = summary !== null;
         overviewEl.classList.add('ca-streaming');
 
         // Stream overview using rAF — time-based so it's immune to timer throttling
-        const STREAM_MS = 1100; // total duration for overview
+        const STREAM_MS = 1100;
         const startTime = performance.now();
 
         function streamFrame(now: number) {
@@ -456,7 +631,6 @@ const hasSummary = summary !== null;
           } else {
             overviewEl!.textContent = text;
             overviewEl!.classList.remove('ca-streaming');
-            // Reveal label then stagger in key points
             setTimeout(() => {
               if (labelEl) {
                 labelEl.style.transition = 'opacity 180ms ease';
@@ -474,6 +648,254 @@ const hasSummary = summary !== null;
         }
         requestAnimationFrame(streamFrame);
       }
+    });
+  }
+
+  // ── Listen (Web Speech API — v0) ───────────────────────────────────────────
+  const listenBtn = document.getElementById('listen-btn');
+  const listenPanel = document.getElementById('listen-panel');
+
+  if (listenBtn && listenPanel && 'speechSynthesis' in window) {
+    let utterance: SpeechSynthesisUtterance | null = null;
+    let isPlaying = false;
+    let rendered = false;
+
+    // Extract readable text from the article body.
+    // Targets the prose container; falls back to <main> if the selector misses.
+    function getArticleText(): string {
+      const prose = document.querySelector<HTMLElement>('.prose, article, main');
+      if (!prose) return document.body.innerText;
+
+      // Clone so we can strip elements without affecting the DOM
+      const clone = prose.cloneNode(true) as HTMLElement;
+
+      // Remove elements that shouldn't be read aloud
+      clone.querySelectorAll(
+        'pre, code, .content-actions, .summary-panel, .listen-panel, nav, footer, script, style'
+      ).forEach(el => el.remove());
+
+      // Collapse excessive whitespace
+      return clone.innerText.replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    function formatTime(seconds: number): string {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // Rough word-count-based duration estimate (avg 150 wpm for TTS)
+    function estimateDuration(text: string): number {
+      return Math.ceil(text.split(/\s+/).length / 150) * 60;
+    }
+
+    function buildPanel() {
+      listenPanel.innerHTML = `
+        <div class="listen-header">
+          <span class="listen-chip">Listen</span>
+          <button class="summary-close" id="listen-close" aria-label="Close player">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="listen-controls">
+          <button class="listen-play-btn" id="listen-play" aria-label="Play">
+            <i class="ti ti-player-play" aria-hidden="true"></i>
+          </button>
+          <div class="listen-progress-wrap">
+            <input
+              type="range"
+              class="listen-progress-bar"
+              id="listen-progress"
+              min="0"
+              max="100"
+              value="0"
+              step="0.1"
+              aria-label="Playback position"
+            />
+            <span class="listen-time" id="listen-time">0:00</span>
+          </div>
+        </div>
+      `;
+      rendered = true;
+
+      const playBtn = document.getElementById('listen-play')!;
+      const progressBar = document.getElementById('listen-progress') as HTMLInputElement;
+      const timeEl = document.getElementById('listen-time')!;
+      const closeBtn = document.getElementById('listen-close')!;
+
+      const articleText = getArticleText();
+      const estimatedDuration = estimateDuration(articleText);
+
+      // speechSynthesis doesn't expose real-time position, so we simulate progress
+      // using a rAF timer that tracks elapsed wall-clock time vs estimated duration.
+      let rafId: number | null = null;
+      let startedAt: number | null = null;
+      let pausedElapsed = 0; // seconds elapsed before current pause
+
+      function startProgressTimer() {
+        startedAt = performance.now();
+        function tick() {
+          if (!isPlaying) return;
+          const elapsed = pausedElapsed + (performance.now() - startedAt!) / 1000;
+          const clamped = Math.min(elapsed, estimatedDuration);
+          const pct = (clamped / estimatedDuration) * 100;
+
+          progressBar.value = String(pct);
+          progressBar.style.setProperty('--pct', `${pct}%`);
+          timeEl.textContent = formatTime(clamped);
+
+          if (clamped < estimatedDuration) {
+            rafId = requestAnimationFrame(tick);
+          }
+        }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function stopProgressTimer() {
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        if (startedAt !== null) {
+          pausedElapsed += (performance.now() - startedAt) / 1000;
+          startedAt = null;
+        }
+      }
+
+      function setPlayIcon() {
+        playBtn.innerHTML = '<i class="ti ti-player-play" style="margin-left:2px" aria-hidden="true"></i>';
+        playBtn.setAttribute('aria-label', 'Play');
+      }
+
+      function setPauseIcon() {
+        playBtn.innerHTML = '<i class="ti ti-player-pause" aria-hidden="true"></i>';
+        playBtn.setAttribute('aria-label', 'Pause');
+      }
+
+      function resetState() {
+        stopProgressTimer();
+        pausedElapsed = 0;
+        progressBar.value = '0';
+        progressBar.style.setProperty('--pct', '0%');
+        timeEl.textContent = '0:00';
+        setPlayIcon();
+        isPlaying = false;
+        utterance = null;
+      }
+
+      playBtn.addEventListener('click', () => {
+        if (isPlaying) {
+          // Pause
+          window.speechSynthesis.pause();
+          stopProgressTimer();
+          isPlaying = false;
+          setPlayIcon();
+        } else if (window.speechSynthesis.paused && utterance) {
+          // Resume
+          window.speechSynthesis.resume();
+          isPlaying = true;
+          setPauseIcon();
+          startProgressTimer();
+        } else {
+          // Fresh start (or restart after completion)
+          window.speechSynthesis.cancel();
+          pausedElapsed = 0;
+
+          utterance = new SpeechSynthesisUtterance(articleText);
+          utterance.rate = 0.95; // Slightly slower than default — more comfortable for long reads
+          utterance.lang = 'en-US';
+
+          utterance.onstart = () => {
+            isPlaying = true;
+            setPauseIcon();
+            startProgressTimer();
+          };
+
+          utterance.onend = () => {
+            resetState();
+          };
+
+          utterance.onerror = (e) => {
+            // 'interrupted' fires on cancel() — not a real error
+            if (e.error === 'interrupted') return;
+            resetState();
+            listenPanel.innerHTML += `<p class="listen-error">Playback error: ${e.error}</p>`;
+          };
+
+          window.speechSynthesis.speak(utterance);
+        }
+      });
+
+      // Progress bar scrub: Web Speech API doesn't support seeking,
+      // so we restart from the approximate character position.
+      progressBar.addEventListener('input', () => {
+        const pct = parseFloat(progressBar.value) / 100;
+        const charOffset = Math.floor(pct * articleText.length);
+        const remainingText = articleText.slice(charOffset);
+
+        window.speechSynthesis.cancel();
+        stopProgressTimer();
+
+        pausedElapsed = pct * estimatedDuration;
+        progressBar.style.setProperty('--pct', `${pct * 100}%`);
+        timeEl.textContent = formatTime(pausedElapsed);
+
+        utterance = new SpeechSynthesisUtterance(remainingText);
+        utterance.rate = 0.95;
+        utterance.lang = 'en-US';
+
+        utterance.onstart = () => {
+          isPlaying = true;
+          setPauseIcon();
+          startProgressTimer();
+        };
+
+        utterance.onend = () => {
+          resetState();
+        };
+
+        utterance.onerror = (e) => {
+          if (e.error === 'interrupted') return;
+          resetState();
+        };
+
+        window.speechSynthesis.speak(utterance);
+      });
+
+      closeBtn.addEventListener('click', () => {
+        window.speechSynthesis.cancel();
+        resetState();
+        listenPanel.classList.add('hidden');
+      });
+
+      // Guard against Chrome's 15s utterance bug:
+      // Chrome silently stops speaking long utterances unless you call getVoices()
+      // and pause/resume periodically. The workaround: resume every 10s.
+      setInterval(() => {
+        if (isPlaying && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 10000);
+    }
+
+    listenBtn.addEventListener('click', () => {
+      // Close summary if open — only one panel at a time
+      summaryPanel?.classList.add('hidden');
+
+      if (!listenPanel.classList.contains('hidden')) {
+        window.speechSynthesis.cancel();
+        listenPanel.classList.add('hidden');
+        return;
+      }
+
+      listenPanel.classList.remove('hidden');
+      if (!rendered) buildPanel();
+    });
+
+    // Stop speech if user navigates away (SPA nav or page unload)
+    window.addEventListener('beforeunload', () => {
+      window.speechSynthesis.cancel();
     });
   }
 </script>

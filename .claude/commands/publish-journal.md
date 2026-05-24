@@ -39,6 +39,7 @@ Create a well-formed Astro content file with:
 - `week`: The week number
 - `date`: Extract from the Notion page, or infer from week number (Week 1 = 2026-01-06, each week +7 days)
 - `summary`: Write ONE sentence summarizing the entry, suitable for a listing card
+- `goal`: Extract the goal statement from the Notion content. It is typically the first line, formatted as italic text starting with "Goal:". Extract only the text after "Goal: " — do not include the "Goal:" prefix or italic markers. If no goal statement is found, omit this field.
 - `tags`: Extract technical topics mentioned in the content (lowercase, hyphenated)
 - `keyInsights`: Extract 3-5 key learnings directly stated in the content. Do NOT invent or rephrase — use Richard's own wording.
 - `toolsBuilt`: List any tools explicitly mentioned as built or shipped
@@ -50,6 +51,8 @@ Create a well-formed Astro content file with:
 - Do NOT add, remove, or rewrite any sections
 - Do NOT add a "Key Insights" or "Tools Built" section to the body — that data belongs in frontmatter only, and is not rendered on the entry page
 - Preserve all headings, code blocks, and structure exactly as authored
+- **Goal statement:** Remove the goal line from the body content — it is now rendered by the layout from frontmatter. Also remove the horizontal rule (`---`) that immediately follows the goal line, if present. Do NOT remove other horizontal rules elsewhere in the body.
+- **Heading hierarchy:** The page title is the only H1. All body headings must start at H2. If the Notion source uses H1s in the body, demote all headings by one level (H1→H2, H2→H3, H3→H4, H4→H5). Do not demote headings inside code blocks.
 - **Replace all Notion image URLs** with local paths: `![alt text](/images/journal/week-{NN}-{description}.{ext})`
 - Preserve image alt text from Notion if present; if no alt text exists, write a brief descriptive alt text based on the image context (e.g., "Eval dashboard quality scores tab showing score trends across golden set cases")
 
@@ -79,15 +82,27 @@ This re-embeds all content and upserts to the `portfolio-search` Pinecone index.
 
 If the script fails (missing API keys, Pinecone unavailable), log the error and continue with the commit/push. The keyword search (Pagefind) will still work; semantic search will pick up the new content on the next successful index run.
 
-### 8. Commit and push
+### 8. Generate AI summary
 
-Stage all changes (the markdown file AND all new images in `public/images/journal/`), commit with message "Publish Week {N} journal entry", and push to `origin/main`.
+Run the summary generation script to create the build-time summary for the new entry:
+
+```bash
+npm run generate-summaries
+```
+
+This generates `src/data/summaries/{slug}.json` for any entry that doesn't already have one (or whose markdown has changed). The summary powers the "Summarize" button on the article page.
+
+If the script fails (missing API key, API error), log the error and continue with the commit/push. The article will render without a summary — the Summarize button will be disabled.
+
+### 9. Commit and push
+
+Stage all changes (the markdown file, all new images in `public/images/journal/`, and the summary JSON in `src/data/summaries/`), commit with message "Publish Week {N} journal entry", and push to `origin/main`.
 
 ## Important rules
 
 - Do NOT rewrite Richard's prose. You are a converter, not an editor.
 - Do NOT invent editorial headlines. Use the title as-is.
-- Do NOT render keyInsights or toolsBuilt in the page body.
+- Do NOT render keyInsights, toolsBuilt, or goal in the page body — they belong in frontmatter only and are rendered by the layout.
 - Do NOT skip images. Every image in the Notion source must be downloaded and included.
 - If an image URL is expired or fails to download, log the failure and continue with the remaining images. Note any missing images in the commit message.
 - If the Notion page cannot be found, stop and ask for the Notion page ID.
