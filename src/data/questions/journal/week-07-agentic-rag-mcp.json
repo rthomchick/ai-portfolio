@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned that agentic RAG only gave a 0.3 point quality improvement on average but used 66% more tokens — what made you decide it was still worth implementing instead of sticking with standard RAG?",
+    "When you ran that head-to-head comparison and the complex strategic question tied despite the agent doing 5 searches instead of 1, did that result change how you're thinking about when agentic RAG is actually the right choice?",
+    "You called ChromaDB 'SQLite' and Pinecone 'Postgres' — what specific problem from Week 6 made you realize you'd outgrown a local solution, and how did you know it was time to migrate rather than optimize ChromaDB further?"
+  ]
+}

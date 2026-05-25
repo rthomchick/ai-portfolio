@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "How does the re-ranking step using Claude Haiku improve upon a standard top-k retrieval approach, and what were the tradeoffs you evaluated between retrieval precision and additional latency?",
+    "Walk me through your chunking strategy—what chunk size and overlap parameters did you settle on, and how did you measure their impact on answer quality compared to other approaches you tested?",
+    "In your RAG pipeline, how do you handle cases where the retrieved chunks don't contain relevant information for a user's question, and what does the system return in those scenarios?"
+  ]
+}

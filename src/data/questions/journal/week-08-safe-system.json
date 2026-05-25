@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned that you were the 'integration layer' between three chat sessions — copying and pasting between tabs. Did you realize this was a bottleneck before you started building, or did that insight only come when you were designing the system architecture?",
+    "The boost inputs feature seems to deliberately keep the PM in the loop rather than trying to automate everything away. Why did you decide that human domain knowledge should stay in the pipeline instead of trying to get the AI to figure out those details on its own?",
+    "You went from producing 2-3 specs per week manually to 4-5 per hour with the system. What surprised you most about how much time was actually being spent on the mechanical parts of the workflow versus the thinking parts?"
+  ]
+}

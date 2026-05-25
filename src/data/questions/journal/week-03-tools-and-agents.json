@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned that 80% of your production code ended up being resilience logic rather than core functionality—did that surprise you, and how does that change how you think about building agents?",
+    "When Claude hallucinated URLs on Day 4 and confidently assured you that Day 5 would fix everything, what went through your head, and did that experience change how you think about trusting AI outputs?",
+    "You built four progressively more complex agents (calculator → web → ServiceNow → research), but which one taught you the most about how Claude actually decides what to do, and why?"
+  ]
+}

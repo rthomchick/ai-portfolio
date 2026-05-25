@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned your library science colleagues would 'salivate' over the semantic matching between A and B—what was it about that 0.4120 similarity score that hit differently for you compared to just seeing the keyword overlap?",
+    "When Claude recognized the Salesforce question was out of context and listed what it did have instead, how did that change what you're thinking about for the actual PM tool you want to build?",
+    "You built guardrails to prevent hallucination on Day 2, then tested whether RAG itself prevents it on Day 3—what made you decide the system prompt constraint wasn't enough, or did that test answer a question you had?"
+  ]
+}

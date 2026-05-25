@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through how the content-addressed prompt storage (SHA-256) prevents evaluation drift across runs—what happens if a prompt is registered twice with identical text, and how does this design choice affect your ability to compare results longitudinally?",
+    "The Token Tracker wraps LLM calls but skips recording when a flag is unset. What was the backwards-compatibility constraint that drove this conditional behavior, and how do you prevent incomplete token accounting when mixing instrumented and uninstrumented runs in the same pipeline?",
+    "You observed ±7 point variance on identical inputs at temperature 0.0 from the LLM-as-judge. Given this noise floor, how did you design the golden set runner and dashboard thresholds to avoid false positives when declaring a prompt improvement significant?"
+  ]
+}

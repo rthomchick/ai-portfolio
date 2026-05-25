@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through the grounding checker's verdict recomputation pattern—why did you choose to have Claude provide structured classification data but then enforce business rules deterministically in Python rather than relying on Claude's final judgment?",
+    "The Cost Guardrails module enforces limits at $0.50/run and $0.25/improvement with a $5/day cap and max 3 iterations. How did you arrive at these specific thresholds, and how does the system handle a situation where a user hits the iteration limit mid-improvement cycle?",
+    "You mention that boost inputs eliminated hallucinations across your golden set (zero inventions in boosted cases), which led to the intake copilot. Can you show me the data structure and pipeline flow for how boosted PM context flows into the spec generation, and where in the prompt you're surfacing this enriched input?"
+  ]
+}

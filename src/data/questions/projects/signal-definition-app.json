@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through how the scoring algorithm in the Visitor Classification Simulator handles confidence level adjustments and applies decay multipliers—what's the data structure and calculation logic behind those real-time updates?",
+    "The app references 43 signals across 7 categories with fallback cascade rules and confidence thresholds. How did you structure the signal taxonomy data, and what was your approach to maintaining consistency across the Signal Explorer, Role Profiles, and Reference Guide tabs?",
+    "You made a deliberate choice not to use an LLM for this tool. What were the specific trade-offs you evaluated, and how does the deterministic, rule-based approach affect maintainability when the Signal Definition Document gets updated?"
+  ]
+}

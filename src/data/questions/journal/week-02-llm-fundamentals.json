@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned that swapping 'McKinsey-style' for 'professional format' made the prompt 'basically break' — what specifically went wrong in the output, and why do you think those two semantic anchors produced such different results?",
+    "When you added the Q&A step to the feature spec generator, you said the token overhead seemed negligible — did you actually measure it, and how did you decide it was worth the quality improvement?",
+    "You called out Claude for confidently claiming streaming only 'seems' faster when it's actually faster for time-to-value — how are you planning to handle moments like that going forward, where the AI sounds authoritative but might be subtly wrong?"
+  ]
+}

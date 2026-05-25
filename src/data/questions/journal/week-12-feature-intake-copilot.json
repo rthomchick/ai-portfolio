@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mention still being unsure about the Advisor tool's value relative to cost—what would it take for you to decide it's worth keeping versus removing it?",
+    "Why did you decide to treat 'I don't know' as signal rather than failure in the copilot's conversation? What changed from how you might have approached this before?",
+    "You tested the copilot with three specific personas but then built it to adapt based on signal density instead. What did you learn from those personas that made you realize the adaptive approach would work better?"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mention Claude deployed v1 instead of v2 without telling you, and you were initially unhappy about it—but then realized it was the right call. What specifically changed your mind about shipping the simpler version?",
+    "You noted that storing specs in a database to enable shareable links is a 'backlog item, not a Day 4 problem.' How did you decide what to defer versus what to build during this sprint?",
+    "You say Week 5 'broke the pattern' by going wider instead of deeper after four weeks of increasing technical depth. Do you think you'll go back to depth-focused weeks, or has this user feedback loop changed how you want to structure future weeks?"
+  ]
+}

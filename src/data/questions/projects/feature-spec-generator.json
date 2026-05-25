@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through your system prompt design - what specific instructions or constraints did you find most critical for Claude to generate valid SAFe specifications consistently, and how did you validate that it was actually following them?",
+    "You mentioned the production gap was mostly about resilience and input validation - can you show me a specific failure case from your team's usage and how you handled it in the code?",
+    "Given that you chose single-agent over multi-agent, what were the key decision criteria you used to determine this was actually the right tradeoff, and at what scale or complexity would you reconsider that architecture?"
+  ]
+}

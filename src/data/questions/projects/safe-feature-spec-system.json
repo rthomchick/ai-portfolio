@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through the Parse → Edit → Reassemble architecture in the Improver agent. Why was positional string surgery causing downstream corruption, and how does parsing into a section dictionary prevent that class of bugs?",
+    "You mention section-isolated re-scoring prevents score drift — can you show how the Reviewer carries forward original scores for unchanged sections rather than re-evaluating the entire spec? What bugs were you seeing before this change?",
+    "The two-tier quality loop (Reviewer → Improver for <75%, Improver → Polish for 80-89) solved a plateau problem. What specifically were specs doing in the mid-80s, and why does the Polish agent break through that ceiling when a simple threshold wouldn't?"
+  ]
+}

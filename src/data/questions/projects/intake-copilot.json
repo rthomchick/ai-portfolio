@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through why you split the LLM calls into separate conversation and extraction phases. What specific failure mode were you seeing when you tried to do both in a single call, and how did you validate that the split actually resolved it?",
+    "The Anthropic Advisor tool escalates to Opus when Sonnet lacks confidence on feature type classification. You mention this missed 'confidently wrong' classifications — can you describe a concrete example of where this failed and what signal you should have been tracking instead of confidence scores?",
+    "How does the readiness score that PMs see on the review gate get calculated from the 12 weighted fields? What's the logic for deciding which gaps are acceptable to pass through to spec generation versus which ones should trigger a reject?"
+  ]
+}

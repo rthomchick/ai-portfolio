@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You went from a 3x cost increase to saying it was 'well worth the effort'—what actually changed your mind about the multi-agent approach, or were you always planning to build it anyway?",
+    "When you discovered that passing everything as parameters became unmaintainable chaos, how did you catch that before it got worse? Was there a specific moment where you realized shared state was the better move?",
+    "That 6,150% ROI result—you called it a data issue, but how did you actually debug it? What steps did you add to catch those 'potentially unrealistic scenarios' you mention?"
+  ]
+}

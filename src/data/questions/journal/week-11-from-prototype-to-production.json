@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You said the advisor tool result on Day 1 looked like a 'clear win' but then the full golden set told a different story — what made you confident enough to run the full test instead of just shipping it based on that first win?",
+    "When you realized the Notion integration was creating hard dependencies, you pivoted to building a connector abstraction instead — how much of that pattern did you already know you'd need, versus discovering it as you hit each OAuth/MCP/Streamlit Cloud wall?",
+    "The governance modules existed since Weeks 9–10 but weren't wired into the production pipeline until this week — what was actually blocking you from connecting them earlier, and why did it suddenly become urgent?"
+  ]
+}
