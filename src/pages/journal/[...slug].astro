@@ -29,6 +29,12 @@ const allSummaries = import.meta.glob<{ default: object }>('../../data/summaries
 const summaryModule = allSummaries[`../../data/summaries/${entry.id}.json`];
 const summary = summaryModule?.default ?? null;
 
+const allQuestions = import.meta.glob<{ default: object }>(
+  '../../data/questions/journal/*.json', { eager: true }
+);
+const questionsModule = allQuestions[`../../data/questions/journal/${entry.id}.json`];
+const questions = (questionsModule?.default as any)?.questions ?? null;
+
 
 const body = entry.body || '';
 const textOnly = body.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
@@ -65,7 +71,7 @@ const readingTime = wordCount > 0 ? Math.max(1, Math.ceil(wordCount / 200)) : 0;
       </div> */}
     </div>
 
-    <ContentActions slug={entry.id} summary={summary as any} hasAudio={true} />
+    <ContentActions slug={entry.id} summary={summary as any} hasAudio={true} questions={questions} pageType="journal" />
 
     <!-- Body + TOC side-by-side -->
     <div class="article-content">

@@ -13,10 +13,13 @@ interface Props {
   slug: string;
   summary: Summary | null;
   hasAudio?: boolean;
+  questions: string[] | null;
+  pageType: 'journal' | 'project';
 }
 
-const { slug, summary, hasAudio = false } = Astro.props;
+const { slug, summary, hasAudio = false, questions, pageType } = Astro.props;
 const hasSummary = summary !== null;
+const hasQuestions = questions !== null;
 ---
 
 <div class="content-actions">
@@ -37,7 +40,12 @@ const hasSummary = summary !== null;
     >
       Listen <i class="ti ti-headphones" aria-hidden="true"></i>
     </button>
-    <button class="ca-btn ca-disabled" aria-label="Ask AI about this entry" disabled>
+    <button
+      id="ask-btn"
+      class={`ca-btn${hasQuestions ? '' : ' ca-disabled'}`}
+      aria-label="Ask AI about this entry"
+      disabled={!hasQuestions}
+    >
       Ask AI <i class="ti ti-message-question" aria-hidden="true"></i>
     </button>
   </div>
@@ -70,6 +78,15 @@ const hasSummary = summary !== null;
   id="listen-panel"
   class="listen-panel hidden"
   data-slug={slug}
+></div>
+
+<!-- Ask AI panel: data attributes carry config to client script -->
+<div
+  id="ask-panel"
+  class="ask-panel hidden"
+  data-slug={slug}
+  data-page-type={pageType}
+  data-questions={JSON.stringify(questions ?? [])}
 ></div>
 
 {hasSummary && (
@@ -495,6 +512,368 @@ const hasSummary = summary !== null;
     padding: 4px 0;
   }
 
+  /* ── Ask AI panel ──────────────────────────────────────────────────────── */
+  .ask-panel {
+    border: 1px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    background: #fafaf9;
+  }
+
+  .dark .ask-panel {
+    background: #1c1917;
+    border-color: #292524;
+  }
+
+  .ask-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .ask-chip {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 3px 8px;
+    border-radius: 9999px;
+  }
+
+  .dark .ask-chip {
+    color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.12);
+  }
+
+  .ask-starters {
+    margin-bottom: 16px;
+  }
+
+  .starters-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #a8a29e;
+    margin-bottom: 8px;
+  }
+
+  .starter-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: #44403c;
+    background: #ffffff;
+    border: 1px solid #e7e5e4;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 120ms, border-color 120ms, color 120ms;
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .starter-btn:last-child {
+    margin-bottom: 0;
+  }
+
+  .starter-btn:hover {
+    background: #f0fdf9;
+    border-color: #99f6e4;
+    color: #0f766e;
+  }
+
+  .dark .starter-btn {
+    color: #d6d3d1;
+    background: #292524;
+    border-color: #44403c;
+  }
+
+  .dark .starter-btn:hover {
+    background: #1c2523;
+    border-color: #0d9488;
+    color: #2dd4bf;
+  }
+
+  #ask-conversation {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .ask-q-bubble {
+    align-self: flex-end;
+    background: #0f766e;
+    color: #ffffff;
+    font-size: 13px;
+    line-height: 1.5;
+    border-radius: 12px 12px 2px 12px;
+    padding: 8px 12px;
+    max-width: 80%;
+  }
+
+  .dark .ask-q-bubble {
+    background: #0d9488;
+  }
+
+  .ask-answer {
+    align-self: flex-start;
+    max-width: 100%;
+  }
+
+  .ask-answer-body {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #57534e;
+  }
+
+  .dark .ask-answer-body {
+    color: #a8a29e;
+  }
+
+  .ask-answer-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ca-streaming-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #0f766e;
+    vertical-align: text-bottom;
+    margin-left: 1px;
+    animation: ca-blink 500ms step-end infinite;
+  }
+
+  .dark .ca-streaming-cursor {
+    background: #2dd4bf;
+  }
+
+  .ask-answer-loading {
+    color: #a8a29e;
+    font-style: italic;
+  }
+
+  .ask-answer-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #0f766e;
+    text-decoration: none;
+    background: #f0fdf9;
+    border: 1px solid #99f6e4;
+    border-radius: 6px;
+    padding: 3px 8px;
+    transition: background 120ms, color 120ms;
+  }
+
+  .source-link:hover {
+    background: #ccfbf1;
+    color: #0d6460;
+  }
+
+  .dark .source-link {
+    color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.08);
+    border-color: rgba(45, 212, 191, 0.2);
+  }
+
+  .dark .source-link:hover {
+    background: rgba(45, 212, 191, 0.16);
+    color: #5eead4;
+  }
+
+  .scope-note {
+    font-size: 11px;
+    color: #a8a29e;
+    margin-bottom: 12px;
+  }
+
+  .ask-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  #ask-input {
+    flex: 1;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: #1c1917;
+    background: #ffffff;
+    border: 1px solid #e7e5e4;
+    border-radius: 8px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 150ms;
+  }
+
+  #ask-input:focus {
+    border-color: #0d9488;
+  }
+
+  .dark #ask-input {
+    color: #f5f5f4;
+    background: #292524;
+    border-color: #44403c;
+  }
+
+  .dark #ask-input:focus {
+    border-color: #0d9488;
+  }
+
+  #ask-input::placeholder {
+    color: #a8a29e;
+  }
+
+  #ask-send {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    background: #0f766e;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 150ms;
+  }
+
+  #ask-send:hover {
+    background: #0d6460;
+  }
+
+  #ask-send:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .dark #ask-send {
+    background: #0d9488;
+  }
+
+  .dark #ask-send:hover {
+    background: #0f766e;
+  }
+
+  /* Code blocks in answers */
+  .code-block {
+    border: 1px solid #e7e5e4;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+
+  .dark .code-block {
+    border-color: #292524;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f5f5f4;
+    padding: 6px 12px;
+    border-bottom: 1px solid #e7e5e4;
+  }
+
+  .dark .code-header {
+    background: #292524;
+    border-bottom-color: #44403c;
+  }
+
+  .code-filename {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #78716c;
+    font-family: monospace;
+  }
+
+  .dark .code-filename {
+    color: #a8a29e;
+  }
+
+  .code-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    color: #78716c;
+    background: transparent;
+    border: 1px solid #e7e5e4;
+    border-radius: 5px;
+    padding: 3px 7px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 120ms, color 120ms;
+  }
+
+  .code-btn:hover {
+    background: #e7e5e4;
+    color: #1c1917;
+  }
+
+  .dark .code-btn {
+    color: #a8a29e;
+    border-color: #44403c;
+  }
+
+  .dark .code-btn:hover {
+    background: #44403c;
+    color: #f5f5f4;
+  }
+
+  .code-body {
+    margin: 0;
+    padding: 14px 16px;
+    background: #fafaf9;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #44403c;
+  }
+
+  .dark .code-body {
+    background: #1c1917;
+    color: #d6d3d1;
+  }
+
+  .code-body code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
   /* Mobile: icons-only adjusts ca-btn, player stays full-width */
   @media (max-width: 639px) {
     .ca-btn {
@@ -505,6 +884,10 @@ const hasSummary = summary !== null;
 
     .ca-btn i {
       font-size: 19px;
+    }
+
+    .ask-q-bubble {
+      max-width: 92%;
     }
   }
 </style>
@@ -517,7 +900,6 @@ const hasSummary = summary !== null;
   const pageUrl = window.location.href;
   const pageTitle = document.title.replace(/\s*—.*$/, '').trim();
 
-  // Populate share links
   const linkedinLink = shareDropdown?.querySelector('[data-action="linkedin"]') as HTMLAnchorElement | null;
   const xLink = shareDropdown?.querySelector('[data-action="x"]') as HTMLAnchorElement | null;
   const blueskyLink = shareDropdown?.querySelector('[data-action="bluesky"]') as HTMLAnchorElement | null;
@@ -569,6 +951,10 @@ const hasSummary = summary !== null;
         return;
       }
 
+      // One-panel rule: close others
+      document.getElementById('listen-panel')?.classList.add('hidden');
+      document.getElementById('ask-panel')?.classList.add('hidden');
+
       summaryPanel.classList.remove('hidden');
 
       if (!rendered) {
@@ -591,7 +977,6 @@ const hasSummary = summary !== null;
 
         rendered = true;
 
-        // Wire interactions
         summaryPanel.querySelectorAll<HTMLElement>('.summary-link').forEach(link => {
           link.addEventListener('click', () => {
             const targetId = link.dataset.target;
@@ -607,7 +992,6 @@ const hasSummary = summary !== null;
           summaryPanel.classList.add('hidden');
         });
 
-        // ── Streaming animation ────────────────────────────────────────────
         const overviewEl = summaryPanel.querySelector<HTMLElement>('.summary-text');
         const labelEl = summaryPanel.querySelector<HTMLElement>('.summary-takeaways-label');
         const linkEls = summaryPanel.querySelectorAll<HTMLElement>('.summary-link');
@@ -617,7 +1001,6 @@ const hasSummary = summary !== null;
 
         overviewEl.classList.add('ca-streaming');
 
-        // Stream overview using rAF — time-based so it's immune to timer throttling
         const STREAM_MS = 1100;
         const startTime = performance.now();
 
@@ -660,21 +1043,15 @@ const hasSummary = summary !== null;
     let isPlaying = false;
     let rendered = false;
 
-    // Extract readable text from the article body.
-    // Targets the prose container; falls back to <main> if the selector misses.
     function getArticleText(): string {
       const prose = document.querySelector<HTMLElement>('.prose, article, main');
       if (!prose) return document.body.innerText;
 
-      // Clone so we can strip elements without affecting the DOM
       const clone = prose.cloneNode(true) as HTMLElement;
-
-      // Remove elements that shouldn't be read aloud
       clone.querySelectorAll(
-        'pre, code, .content-actions, .summary-panel, .listen-panel, nav, footer, script, style'
+        'pre, code, .content-actions, .summary-panel, .listen-panel, .ask-panel, nav, footer, script, style'
       ).forEach(el => el.remove());
 
-      // Collapse excessive whitespace
       return clone.innerText.replace(/\n{3,}/g, '\n\n').trim();
     }
 
@@ -684,12 +1061,11 @@ const hasSummary = summary !== null;
       return `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    // Rough word-count-based duration estimate (avg 150 wpm for TTS)
     function estimateDuration(text: string): number {
       return Math.ceil(text.split(/\s+/).length / 150) * 60;
     }
 
-    function buildPanel() {
+    function buildListenPanel() {
       listenPanel.innerHTML = `
         <div class="listen-header">
           <span class="listen-chip">Listen</span>
@@ -726,11 +1102,9 @@ const hasSummary = summary !== null;
       const articleText = getArticleText();
       const estimatedDuration = estimateDuration(articleText);
 
-      // speechSynthesis doesn't expose real-time position, so we simulate progress
-      // using a rAF timer that tracks elapsed wall-clock time vs estimated duration.
       let rafId: number | null = null;
       let startedAt: number | null = null;
-      let pausedElapsed = 0; // seconds elapsed before current pause
+      let pausedElapsed = 0;
 
       function startProgressTimer() {
         startedAt = performance.now();
@@ -785,26 +1159,22 @@ const hasSummary = summary !== null;
 
       playBtn.addEventListener('click', () => {
         if (isPlaying) {
-          // Pause
           window.speechSynthesis.pause();
           stopProgressTimer();
           isPlaying = false;
           setPlayIcon();
         } else if (window.speechSynthesis.paused && utterance) {
-          // Resume
           window.speechSynthesis.resume();
           isPlaying = true;
           setPauseIcon();
           startProgressTimer();
         } else {
-          // Fresh start (or restart after completion)
-          // Detach stale callbacks before cancel() so they can't fire after the new utterance starts
           if (utterance) { utterance.onstart = null; utterance.onend = null; utterance.onerror = null; }
           window.speechSynthesis.cancel();
           pausedElapsed = 0;
 
           utterance = new SpeechSynthesisUtterance(articleText);
-          utterance.rate = 0.95; // Slightly slower than default — more comfortable for long reads
+          utterance.rate = 0.95;
           utterance.lang = 'en-US';
 
           utterance.onstart = () => {
@@ -813,12 +1183,9 @@ const hasSummary = summary !== null;
             startProgressTimer();
           };
 
-          utterance.onend = () => {
-            resetState();
-          };
+          utterance.onend = () => { resetState(); };
 
           utterance.onerror = (e) => {
-            // 'interrupted' fires on cancel() — not a real error
             if (e.error === 'interrupted') return;
             resetState();
             listenPanel.innerHTML += `<p class="listen-error">Playback error: ${e.error}</p>`;
@@ -828,16 +1195,11 @@ const hasSummary = summary !== null;
         }
       });
 
-      // Progress bar scrub: Web Speech API doesn't support seeking,
-      // so we restart from the approximate character position.
       progressBar.addEventListener('input', () => {
         const pct = parseFloat(progressBar.value) / 100;
         const charOffset = Math.floor(pct * articleText.length);
         const remainingText = articleText.slice(charOffset);
 
-        // Detach stale callbacks before cancel() — otherwise the old utterance's
-        // onend fires async *after* the new utterance's onstart, calling resetState()
-        // and setting isPlaying=false while audio is actively playing.
         if (utterance) { utterance.onstart = null; utterance.onend = null; utterance.onerror = null; }
         window.speechSynthesis.cancel();
         stopProgressTimer();
@@ -856,10 +1218,7 @@ const hasSummary = summary !== null;
           startProgressTimer();
         };
 
-        utterance.onend = () => {
-          resetState();
-        };
-
+        utterance.onend = () => { resetState(); };
         utterance.onerror = (e) => {
           if (e.error === 'interrupted') return;
           resetState();
@@ -874,9 +1233,6 @@ const hasSummary = summary !== null;
         listenPanel.classList.add('hidden');
       });
 
-      // Guard against Chrome's 15s utterance bug:
-      // Chrome silently stops speaking long utterances unless you call getVoices()
-      // and pause/resume periodically. The workaround: resume every 10s.
       setInterval(() => {
         if (isPlaying && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
           window.speechSynthesis.pause();
@@ -886,8 +1242,9 @@ const hasSummary = summary !== null;
     }
 
     listenBtn.addEventListener('click', () => {
-      // Close summary if open — only one panel at a time
+      // One-panel rule: close others
       summaryPanel?.classList.add('hidden');
+      document.getElementById('ask-panel')?.classList.add('hidden');
 
       if (!listenPanel.classList.contains('hidden')) {
         window.speechSynthesis.cancel();
@@ -896,12 +1253,351 @@ const hasSummary = summary !== null;
       }
 
       listenPanel.classList.remove('hidden');
-      if (!rendered) buildPanel();
+      if (!rendered) buildListenPanel();
     });
 
-    // Stop speech if user navigates away (SPA nav or page unload)
     window.addEventListener('beforeunload', () => {
       window.speechSynthesis.cancel();
+    });
+  }
+
+  // ── Ask AI ─────────────────────────────────────────────────────────────────
+  const askBtn = document.getElementById('ask-btn');
+  const askPanel = document.getElementById('ask-panel');
+
+  if (askBtn && askPanel && !askBtn.hasAttribute('disabled')) {
+    const askSlug = askPanel.dataset.slug!;
+    const askPageType = askPanel.dataset.pageType as 'journal' | 'project';
+    const starterQuestions: string[] = JSON.parse(askPanel.dataset.questions || '[]');
+
+    const entityLabel = askPageType === 'journal' ? 'entry' : 'project';
+    let panelBuilt = false;
+    let history: Array<{ q: string; a: string }> = [];
+    let answerCount = 0;
+    let streamingInProgress = false;
+
+    function escHtml(s: string): string {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function processAnswerText(text: string): string {
+      const codeRe = /```(\w*)\n([\s\S]*?)```/g;
+      const parts: string[] = [];
+      let last = 0;
+      let m: RegExpExecArray | null;
+
+      while ((m = codeRe.exec(text)) !== null) {
+        parts.push(`<span class="ask-answer-text" style="white-space:pre-wrap">${escHtml(text.slice(last, m.index))}</span>`);
+        const lang = m[1] || 'code';
+        const code = m[2];
+        parts.push(`<div class="code-block">
+          <div class="code-header">
+            <span class="code-filename"><i class="ti ti-file-code"></i> ${escHtml(lang)}</span>
+            <div class="code-actions">
+              <button class="code-btn copy-btn"><i class="ti ti-copy"></i> Copy</button>
+            </div>
+          </div>
+          <pre class="code-body"><code>${escHtml(code)}</code></pre>
+        </div>`);
+        last = m.index + m[0].length;
+      }
+
+      if (last === 0) {
+        // No code blocks — plain text span
+        return `<span class="ask-answer-text" style="white-space:pre-wrap">${escHtml(text)}</span>`;
+      }
+
+      parts.push(`<span class="ask-answer-text" style="white-space:pre-wrap">${escHtml(text.slice(last))}</span>`);
+      return parts.join('');
+    }
+
+    function wireCodeCopyBtns(container: HTMLElement, fullText: string) {
+      const codeBlocks = container.querySelectorAll<HTMLElement>('.code-block');
+      const codeRe = /```\w*\n([\s\S]*?)```/g;
+      const codes: string[] = [];
+      let m: RegExpExecArray | null;
+      while ((m = codeRe.exec(fullText)) !== null) {
+        codes.push(m[1]);
+      }
+      codeBlocks.forEach((block, idx) => {
+        const btn = block.querySelector<HTMLButtonElement>('.copy-btn');
+        if (!btn) return;
+        const code = codes[idx] ?? '';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code);
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-check"></i> Copied!';
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
+          } catch { /* clipboard not available */ }
+        });
+      });
+    }
+
+    function renderSourcesFooter(
+      sources: Array<{
+        type: string;
+        heading_id?: string;
+        heading_text?: string;
+        related_slug?: string;
+        related_title?: string;
+        related_type?: string;
+      }>
+    ): string {
+      if (!sources || sources.length === 0) return '';
+
+      const links = sources.map(s => {
+        if (s.type === 'section' && s.heading_id && s.heading_text) {
+          return `<a class="source-link" href="#${escHtml(s.heading_id)}">↗ Jump to: ${escHtml(s.heading_text)}</a>`;
+        }
+        if (s.type === 'related' && s.related_slug) {
+          if (askPageType === 'journal') {
+            return `<a class="source-link" href="/projects/${escHtml(s.related_slug)}">Go to project details</a>`;
+          } else {
+            const weekMatch = s.related_slug.match(/week-(\d+)/);
+            const weekNum = weekMatch ? weekMatch[1] : '';
+            const label = weekNum ? `Week ${weekNum} journal →` : `${escHtml(s.related_title || s.related_slug)} →`;
+            return `<a class="source-link" href="/journal/${escHtml(s.related_slug)}">${label}</a>`;
+          }
+        }
+        return '';
+      }).filter(Boolean);
+
+      if (links.length === 0) return '';
+      return `<div class="ask-answer-footer">${links.join('')}</div>`;
+    }
+
+    async function submitQuestion(question: string) {
+      if (streamingInProgress || !question.trim()) return;
+
+      const conversationEl = document.getElementById('ask-conversation')!;
+      const startersEl = askPanel.querySelector<HTMLElement>('.ask-starters');
+      const inputEl = document.getElementById('ask-input') as HTMLInputElement | null;
+      const sendBtn = document.getElementById('ask-send') as HTMLButtonElement | null;
+
+      // Hide starters after first question
+      if (startersEl) {
+        startersEl.style.transition = 'opacity 200ms';
+        startersEl.style.opacity = '0';
+        setTimeout(() => { startersEl.style.display = 'none'; }, 200);
+      }
+
+      // Append question bubble
+      const qBubble = document.createElement('div');
+      qBubble.className = 'ask-q-bubble';
+      qBubble.textContent = question;
+      conversationEl.appendChild(qBubble);
+
+      // Append answer container
+      const n = ++answerCount;
+      const answerEl = document.createElement('div');
+      answerEl.className = 'ask-answer';
+      answerEl.id = `ask-answer-${n}`;
+      answerEl.innerHTML = `
+        <div class="ask-answer-body">
+          <span class="ask-answer-text ask-answer-loading">Searching this ${entityLabel}…</span><span class="ca-streaming-cursor"></span>
+        </div>`;
+      conversationEl.appendChild(answerEl);
+      answerEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      const textEl = answerEl.querySelector<HTMLElement>('.ask-answer-text')!;
+      const cursorEl = answerEl.querySelector<HTMLElement>('.ca-streaming-cursor')!;
+      const bodyEl = answerEl.querySelector<HTMLElement>('.ask-answer-body')!;
+
+      if (inputEl) inputEl.value = '';
+      if (sendBtn) sendBtn.disabled = true;
+      streamingInProgress = true;
+
+      // SSE stream state
+      let receivedText = '';
+      let firstToken = true;
+      let pendingFlush = '';
+      let rafQueued = false;
+
+      function flushToDOM() {
+        if (pendingFlush) {
+          if (firstToken) {
+            textEl.classList.remove('ask-answer-loading');
+            textEl.textContent = '';
+            firstToken = false;
+          }
+          textEl.textContent = (textEl.textContent || '') + pendingFlush;
+          pendingFlush = '';
+          answerEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        rafQueued = false;
+      }
+
+      let sseBuffer = '';
+      let currentEvent = '';
+
+      function handleSseLine(line: string) {
+        if (line.startsWith('event: ')) {
+          currentEvent = line.slice(7).trim();
+        } else if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (currentEvent === 'ai-chunk') {
+            const text: string = JSON.parse(data);
+            receivedText += text;
+            pendingFlush += text;
+            if (!rafQueued) {
+              rafQueued = true;
+              requestAnimationFrame(flushToDOM);
+            }
+          } else if (currentEvent === 'sources') {
+            const sources = JSON.parse(data);
+            const footerHtml = renderSourcesFooter(sources);
+            if (footerHtml) {
+              const footer = document.createElement('div');
+              footer.innerHTML = footerHtml;
+              answerEl.appendChild(footer.firstElementChild!);
+            }
+          } else if (currentEvent === 'error') {
+            textEl.classList.remove('ask-answer-loading');
+            textEl.textContent = 'Something went wrong. Please try again.';
+            cursorEl.remove();
+          }
+          currentEvent = '';
+        }
+      }
+
+      try {
+        const response = await fetch('/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: question,
+            context: askPageType,
+            slug: askSlug,
+            history,
+            stream: true,
+          }),
+        });
+
+        if (!response.ok || !response.body) throw new Error('Stream failed');
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          sseBuffer += decoder.decode(value, { stream: true });
+          const lines = sseBuffer.split('\n');
+          sseBuffer = lines.pop() ?? '';
+
+          for (const line of lines) {
+            handleSseLine(line);
+          }
+        }
+
+        // Final flush
+        if (pendingFlush) flushToDOM();
+
+        // Replace textContent with processed HTML (handles code blocks)
+        if (receivedText) {
+          const hasCodeBlock = /```/.test(receivedText);
+          if (hasCodeBlock) {
+            bodyEl.innerHTML = processAnswerText(receivedText);
+            wireCodeCopyBtns(bodyEl, receivedText);
+          }
+          // Re-find cursor after potential innerHTML swap
+          bodyEl.querySelector('.ca-streaming-cursor')?.remove();
+        } else {
+          cursorEl.remove();
+        }
+
+      } catch {
+        textEl.classList.remove('ask-answer-loading');
+        textEl.textContent = 'Something went wrong. Please try again.';
+        cursorEl.remove();
+      }
+
+      // Append to history
+      history.push({ q: question, a: receivedText });
+
+      streamingInProgress = false;
+      if (sendBtn) sendBtn.disabled = false;
+      if (inputEl) {
+        inputEl.focus();
+      }
+    }
+
+    function buildAskPanel() {
+      const startersHtml = starterQuestions.map(q =>
+        `<button class="starter-btn">${escHtml(q)}</button>`
+      ).join('');
+
+      askPanel.innerHTML = `
+        <div class="ask-header">
+          <span class="ask-chip">Ask AI</span>
+          <button class="summary-close" id="ask-close" aria-label="Close Ask AI"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="ask-starters">
+          <div class="starters-label">Suggested questions</div>
+          ${startersHtml}
+        </div>
+        <div id="ask-conversation"></div>
+        <p class="scope-note">Answers are scoped to this ${entityLabel}.</p>
+        <div class="ask-input-row">
+          <input type="text" id="ask-input" placeholder="Ask about this ${entityLabel}…" autocomplete="off" />
+          <button id="ask-send">→</button>
+        </div>
+      `;
+
+      panelBuilt = true;
+
+      // Stagger starters in
+      const starterBtns = askPanel.querySelectorAll<HTMLElement>('.starter-btn');
+      starterBtns.forEach((btn, idx) => {
+        setTimeout(() => {
+          btn.style.transition = 'opacity 200ms ease, transform 200ms ease';
+          btn.style.opacity = '1';
+          btn.style.transform = 'translateY(0)';
+        }, 60 + idx * 70);
+      });
+
+      // Wire starter buttons
+      starterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          submitQuestion(btn.textContent?.trim() ?? '');
+        });
+      });
+
+      // Wire close button
+      document.getElementById('ask-close')?.addEventListener('click', () => {
+        askPanel.classList.add('hidden');
+      });
+
+      // Wire input + send
+      const inputEl = document.getElementById('ask-input') as HTMLInputElement;
+      const sendBtn = document.getElementById('ask-send') as HTMLButtonElement;
+
+      inputEl?.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          submitQuestion(inputEl.value.trim());
+        }
+      });
+
+      sendBtn?.addEventListener('click', () => {
+        submitQuestion(inputEl?.value.trim() ?? '');
+      });
+    }
+
+    askBtn.addEventListener('click', () => {
+      // One-panel rule: close others
+      summaryPanel?.classList.add('hidden');
+      listenPanel?.classList.add('hidden');
+
+      if (!askPanel.classList.contains('hidden')) {
+        askPanel.classList.add('hidden');
+        return;
+      }
+
+      askPanel.classList.remove('hidden');
+      if (!panelBuilt) buildAskPanel();
     });
   }
 </script>

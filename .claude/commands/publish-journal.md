@@ -78,25 +78,28 @@ Run the content indexing script to update the Pinecone search index with the new
 node --env-file=.env scripts/index-content.mjs
 ```
 
-This re-embeds all content and upserts to the `portfolio-search` Pinecone index. It's idempotent — existing entries get updated, not duplicated.
+This re-embeds all content and upserts to the `portfolio-search` Pinecone index. It's idempotent — existing entries get updated, not duplicated. Journal entry chunks are indexed with `page_type: 'journal'` and a `related_slug` pointing to the matching project page if one exists (matched by `weekBuilt`).
 
-If the script fails (missing API keys, Pinecone unavailable), log the error and continue with the commit/push. The keyword search (Pagefind) will still work; semantic search will pick up the new content on the next successful index run.
+If the script fails (missing API keys, Pinecone unavailable), log the error and continue with the commit/push. Keyword search (Pagefind) will still work; semantic search will pick up the new content on the next successful index run.
 
-### 8. Generate AI summary
+### 8. Generate AI summary and questions
 
-Run the summary generation script to create the build-time summary for the new entry:
+Run both generation scripts:
 
 ```bash
 npm run generate-summaries
+npm run generate-questions
 ```
 
-This generates `src/data/summaries/{slug}.json` for any entry that doesn't already have one (or whose markdown has changed). The summary powers the "Summarize" button on the article page.
+`generate-summaries` creates `src/data/summaries/{slug}.json` — powers the Summarize button on the article page.
 
-If the script fails (missing API key, API error), log the error and continue with the commit/push. The article will render without a summary — the Summarize button will be disabled.
+`generate-questions` creates `src/data/questions/journal/{slug}.json` — powers the Ask AI suggested questions. Questions for journal entries are reflective in tone: what did you learn, what surprised you, why did you choose X.
+
+Both scripts are incremental — they only regenerate files whose source markdown has changed. If either script fails (missing API key, API error), log the error and continue with the commit/push. The corresponding toolbar button will be disabled on the article page until the next successful run.
 
 ### 9. Commit and push
 
-Stage all changes (the markdown file, all new images in `public/images/journal/`, and the summary JSON in `src/data/summaries/`), commit with message "Publish Week {N} journal entry", and push to `origin/main`.
+Stage all changes: the markdown file, all new images in `public/images/journal/`, the summary JSON in `src/data/summaries/`, and the questions JSON in `src/data/questions/journal/`. Commit with message "Publish Week {N} journal entry" and push to `origin/main`.
 
 ## Important rules
 
