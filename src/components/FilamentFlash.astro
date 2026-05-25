@@ -20,8 +20,8 @@
       [251, 191, 36],   // gold
     ];
 
-    const NODE_COUNT = 40;
-    const CONSTELLATION_REACH = 220;
+    const NODE_COUNT = 60;
+    const CONSTELLATION_REACH = 240;
 
     type Node = {
       x: number; y: number;
@@ -43,9 +43,9 @@
 
     // Tier config: [period_ms, opMin, opMax]
     const TIERS: [number, number, number][] = [
-      [3000, 0.15, 0.50],
-      [4500, 0.18, 0.60],
-      [6000, 0.12, 0.42],
+      [3000, 0.35, 0.75],
+      [4500, 0.40, 0.85],
+      [6000, 0.28, 0.68],
     ];
 
     let nodes: Node[] = [];
@@ -80,11 +80,11 @@
       nodes = [];
       connections = [];
       for (let i = 0; i < NODE_COUNT; i++) {
-        const small = Math.random() < 0.8;
+        const small = Math.random() < 0.7;
         nodes.push({
           x: rand(0, w),
           y: rand(0, h),
-          radius: small ? 0.8 + Math.random() * 0.7 : 1.2 + Math.random() * 0.3,
+          radius: small ? 2.0 + Math.random() * 1.5 : 3.5 + Math.random() * 1.5,
           color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
           tier: [0, 1, 2][Math.floor(Math.random() * 3)] as 0 | 1 | 2,
           phase: rand(0, Math.PI * 2),
@@ -99,7 +99,7 @@
     }
 
     function spawnConstellation(now: number) {
-      const targetEdges = randInt(2, 4); // 3–5 nodes
+      const targetEdges = randInt(3, 5); // 4–6 nodes
       const seedIdx = Math.floor(Math.random() * nodes.length);
       const inCluster = new Set<number>([seedIdx]);
       const frontier = [seedIdx];
@@ -130,7 +130,7 @@
 
         const to = nodes[bestIdx];
         const edgeDelay = delay;
-        const duration = rand(3200, 4500);
+        const duration = rand(2800, 4000);
 
         setTimeout(() => {
           connections.push({
@@ -140,12 +140,12 @@
             nodeA: from, nodeB: to,
             startTime: performance.now(),
             duration,
-            peakOpacity: rand(0.30, 0.45),
+            peakOpacity: rand(0.55, 0.80),
             drawProgress: 0,
           });
         }, edgeDelay);
 
-        delay += rand(300, 550);
+        delay += rand(200, 400);
         edgesCreated++;
       }
     }
@@ -154,7 +154,7 @@
       constellationTimer = setTimeout(() => {
         spawnConstellation(performance.now());
         scheduleConstellation();
-      }, rand(5000, 9000));
+      }, rand(2000, 4500));
     }
 
     function connectionOpacity(c: Connection, now: number): number {
@@ -200,10 +200,10 @@
 
         // Boost node A always; node B only once line is 80% drawn
         const currentA = nodeBoost.get(c.nodeA) || 0;
-        nodeBoost.set(c.nodeA, Math.max(currentA, opacity / c.peakOpacity * 0.50));
+        nodeBoost.set(c.nodeA, Math.max(currentA, opacity / c.peakOpacity * 0.70));
         if (drawFrac >= 0.8) {
           const currentB = nodeBoost.get(c.nodeB) || 0;
-          nodeBoost.set(c.nodeB, Math.max(currentB, opacity / c.peakOpacity * 0.50));
+          nodeBoost.set(c.nodeB, Math.max(currentB, opacity / c.peakOpacity * 0.70));
         }
       }
 
@@ -214,10 +214,10 @@
         const opacity = Math.min(base + boost, 0.9);
         const [r, g, b] = node.color;
 
-        // Glow halo when boosted above 0.2
-        if (opacity > 0.2 && boost > 0) {
-          const haloRadius = node.radius * 4;
-          const haloOpacity = opacity * 0.30;
+        // Glow halo when opacity is sufficient
+        if (opacity > 0.25) {
+          const haloRadius = node.radius * 6;
+          const haloOpacity = opacity * 0.35;
           const grd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, haloRadius);
           grd.addColorStop(0, `rgba(${r},${g},${b},${haloOpacity})`);
           grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
@@ -256,7 +256,7 @@
         ctx.moveTo(c.ax, c.ay);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = grad;
-        ctx.lineWidth = 0.75;
+        ctx.lineWidth = 1.2;
         ctx.stroke();
       }
     }
@@ -274,6 +274,8 @@
         rafId = requestAnimationFrame(draw);
       }
       if (constellationTimer === null) {
+        // Fire one immediately, then settle into the recurring schedule
+        setTimeout(() => spawnConstellation(performance.now()), 800);
         scheduleConstellation();
       }
     }
