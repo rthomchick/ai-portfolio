@@ -1,0 +1,323 @@
+<canvas
+  id="filament-canvas"
+  style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:0;transition:opacity 1s ease;"
+></canvas>
+
+<script>
+  (function () {
+    const canvas = document.getElementById('filament-canvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    const dpr = window.devicePixelRatio || 1;
+
+    const PALETTE = [
+      [13, 148, 136],   // teal
+      [99, 102, 241],   // indigo
+      [244, 114, 182],  // pink
+      [251, 146, 60],   // amber
+      [52, 211, 153],   // emerald
+      [139, 92, 246],   // violet
+      [56, 189, 248],   // sky
+      [251, 191, 36],   // gold
+    ];
+
+    const NODE_COUNT = 40;
+    const CONSTELLATION_REACH = 220;
+
+    type Node = {
+      x: number; y: number;
+      radius: number;
+      color: number[];
+      tier: 0 | 1 | 2;
+      phase: number;
+    };
+
+    type Connection = {
+      ax: number; ay: number; bx: number; by: number;
+      colorA: number[]; colorB: number[];
+      nodeA: Node; nodeB: Node;
+      startTime: number;
+      duration: number;
+      peakOpacity: number;
+      drawProgress: number; // 0..1 for progressive draw
+    };
+
+    // Tier config: [period_ms, opMin, opMax]
+    const TIERS: [number, number, number][] = [
+      [3000, 0.15, 0.50],
+      [4500, 0.18, 0.60],
+      [6000, 0.12, 0.42],
+    ];
+
+    let nodes: Node[] = [];
+    let connections: Connection[] = [];
+    let rafId: number | null = null;
+    let constellationTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastTimestamp: number | null = null;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function rand(min: number, max: number) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function randInt(min: number, max: number) {
+      return Math.floor(rand(min, max + 1));
+    }
+
+    function resize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      initNodes();
+    }
+
+    function initNodes() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      nodes = [];
+      connections = [];
+      for (let i = 0; i < NODE_COUNT; i++) {
+        const small = Math.random() < 0.8;
+        nodes.push({
+          x: rand(0, w),
+          y: rand(0, h),
+          radius: small ? 0.8 + Math.random() * 0.7 : 1.2 + Math.random() * 0.3,
+          color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+          tier: [0, 1, 2][Math.floor(Math.random() * 3)] as 0 | 1 | 2,
+          phase: rand(0, Math.PI * 2),
+        });
+      }
+    }
+
+    function nodeBaseOpacity(node: Node, now: number): number {
+      const [period, opMin, opMax] = TIERS[node.tier];
+      const t = (now % period) / period;
+      return opMin + (opMax - opMin) * (0.5 + 0.5 * Math.sin(t * Math.PI * 2 + node.phase));
+    }
+
+    function spawnConstellation(now: number) {
+      const targetEdges = randInt(2, 4); // 3–5 nodes
+      const seedIdx = Math.floor(Math.random() * nodes.length);
+      const inCluster = new Set<number>([seedIdx]);
+      const frontier = [seedIdx];
+      let edgesCreated = 0;
+      let delay = 0;
+
+      while (edgesCreated < targetEdges && frontier.length > 0) {
+        const fromIdx = frontier[Math.floor(Math.random() * frontier.length)];
+        const from = nodes[fromIdx];
+
+        // find nearest not-in-cluster node within reach
+        let bestIdx = -1;
+        let bestDist = Infinity;
+        for (let i = 0; i < nodes.length; i++) {
+          if (inCluster.has(i)) continue;
+          const dx = nodes[i].x - from.x;
+          const dy = nodes[i].y - from.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONSTELLATION_REACH && dist < bestDist) {
+            bestDist = dist;
+            bestIdx = i;
+          }
+        }
+        if (bestIdx === -1) break;
+
+        inCluster.add(bestIdx);
+        frontier.push(bestIdx);
+
+        const to = nodes[bestIdx];
+        const edgeDelay = delay;
+        const duration = rand(3200, 4500);
+
+        setTimeout(() => {
+          connections.push({
+            ax: from.x, ay: from.y,
+            bx: to.x, by: to.y,
+            colorA: from.color, colorB: to.color,
+            nodeA: from, nodeB: to,
+            startTime: performance.now(),
+            duration,
+            peakOpacity: rand(0.30, 0.45),
+            drawProgress: 0,
+          });
+        }, edgeDelay);
+
+        delay += rand(300, 550);
+        edgesCreated++;
+      }
+    }
+
+    function scheduleConstellation() {
+      constellationTimer = setTimeout(() => {
+        spawnConstellation(performance.now());
+        scheduleConstellation();
+      }, rand(5000, 9000));
+    }
+
+    function connectionOpacity(c: Connection, now: number): number {
+      const t = Math.min((now - c.startTime) / c.duration, 1);
+      if (t < 0.18) return (t / 0.18) * c.peakOpacity;
+      if (t < 0.65) return c.peakOpacity;
+      return ((1 - t) / 0.35) * c.peakOpacity;
+    }
+
+    function connectionDrawFraction(c: Connection, now: number): number {
+      const t = Math.min((now - c.startTime) / c.duration, 1);
+      if (t < 0.18) return t / 0.18;
+      return 1;
+    }
+
+    function draw(timestamp: number) {
+      rafId = requestAnimationFrame(draw);
+
+      if (parseFloat(canvas.style.opacity) <= 0) {
+        lastTimestamp = null;
+        return;
+      }
+
+      lastTimestamp = timestamp;
+      const now = performance.now();
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Compute per-node boost from active connections
+      const nodeBoost = new Map<Node, number>();
+
+      for (let i = connections.length - 1; i >= 0; i--) {
+        const c = connections[i];
+        const elapsed = now - c.startTime;
+        if (elapsed >= c.duration) {
+          connections.splice(i, 1);
+          continue;
+        }
+        const opacity = connectionOpacity(c, now);
+        const drawFrac = connectionDrawFraction(c, now);
+
+        // Boost node A always; node B only once line is 80% drawn
+        const currentA = nodeBoost.get(c.nodeA) || 0;
+        nodeBoost.set(c.nodeA, Math.max(currentA, opacity / c.peakOpacity * 0.50));
+        if (drawFrac >= 0.8) {
+          const currentB = nodeBoost.get(c.nodeB) || 0;
+          nodeBoost.set(c.nodeB, Math.max(currentB, opacity / c.peakOpacity * 0.50));
+        }
+      }
+
+      // Draw nodes
+      for (const node of nodes) {
+        const base = nodeBaseOpacity(node, now);
+        const boost = nodeBoost.get(node) || 0;
+        const opacity = Math.min(base + boost, 0.9);
+        const [r, g, b] = node.color;
+
+        // Glow halo when boosted above 0.2
+        if (opacity > 0.2 && boost > 0) {
+          const haloRadius = node.radius * 4;
+          const haloOpacity = opacity * 0.30;
+          const grd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, haloRadius);
+          grd.addColorStop(0, `rgba(${r},${g},${b},${haloOpacity})`);
+          grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, haloRadius, 0, Math.PI * 2);
+          ctx.fillStyle = grd;
+          ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
+        ctx.fill();
+      }
+
+      // Draw connections
+      for (const c of connections) {
+        const now2 = performance.now();
+        const elapsed = now2 - c.startTime;
+        if (elapsed < 0 || elapsed >= c.duration) continue;
+
+        const opacity = connectionOpacity(c, now2);
+        const drawFrac = connectionDrawFraction(c, now2);
+
+        const endX = c.ax + (c.bx - c.ax) * drawFrac;
+        const endY = c.ay + (c.by - c.ay) * drawFrac;
+
+        const [ra, ga, ba] = c.colorA;
+        const [rb, gb, bb] = c.colorB;
+
+        const grad = ctx.createLinearGradient(c.ax, c.ay, endX, endY);
+        grad.addColorStop(0, `rgba(${ra},${ga},${ba},${opacity})`);
+        grad.addColorStop(1, `rgba(${rb},${gb},${bb},${opacity})`);
+
+        ctx.beginPath();
+        ctx.moveTo(c.ax, c.ay);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 0.75;
+        ctx.stroke();
+      }
+    }
+
+    function isDark() {
+      return document.documentElement.classList.contains('dark');
+    }
+
+    function setOpacity(dark: boolean) {
+      canvas.style.opacity = dark ? '0' : '1';
+    }
+
+    function start() {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(draw);
+      }
+      if (constellationTimer === null) {
+        scheduleConstellation();
+      }
+    }
+
+    function stop() {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      if (constellationTimer !== null) {
+        clearTimeout(constellationTimer);
+        constellationTimer = null;
+      }
+    }
+
+    // Init
+    resize();
+    setOpacity(isDark());
+    start();
+
+    // Debounced resize
+    const resizeObs = new ResizeObserver(() => {
+      if (resizeTimer !== null) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    });
+    resizeObs.observe(document.body);
+
+    // Theme: localStorage changes (cross-tab)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'theme') {
+        const dark =
+          e.newValue === 'dark' ||
+          (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        setOpacity(dark);
+        dark ? stop() : start();
+      }
+    });
+
+    // Theme: same-tab class mutations (toggle button + OS changes)
+    const mutObs = new MutationObserver(() => {
+      const dark = isDark();
+      setOpacity(dark);
+      dark ? stop() : start();
+    });
+    mutObs.observe(document.documentElement, { attributeFilter: ['class'] });
+  })();
+</script>
