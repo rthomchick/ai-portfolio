@@ -80,11 +80,11 @@
       nodes = [];
       connections = [];
       for (let i = 0; i < NODE_COUNT; i++) {
-        const small = Math.random() < 0.7;
+        const small = Math.random() < 0.8;
         nodes.push({
           x: rand(0, w),
           y: rand(0, h),
-          radius: small ? 2.0 + Math.random() * 1.5 : 3.5 + Math.random() * 1.5,
+          radius: small ? 0.8 + Math.random() * 0.7 : 1.2 + Math.random() * 0.3,
           color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
           tier: [0, 1, 2][Math.floor(Math.random() * 3)] as 0 | 1 | 2,
           phase: rand(0, Math.PI * 2),
@@ -216,8 +216,8 @@
 
         // Glow halo when opacity is sufficient
         if (opacity > 0.25) {
-          const haloRadius = node.radius * 6;
-          const haloOpacity = opacity * 0.35;
+          const haloRadius = node.radius * 4;
+          const haloOpacity = opacity * 0.30;
           const grd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, haloRadius);
           grd.addColorStop(0, `rgba(${r},${g},${b},${haloOpacity})`);
           grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
@@ -256,7 +256,7 @@
         ctx.moveTo(c.ax, c.ay);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 0.75;
         ctx.stroke();
       }
     }
