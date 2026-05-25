@@ -82,8 +82,8 @@
       for (let i = 0; i < NODE_COUNT; i++) {
         const small = Math.random() < 0.8;
         nodes.push({
-          x: Math.random() < 0.70
-            ? (Math.random() < 0.5 ? rand(0, w * 0.15) : rand(w * 0.85, w))
+          x: Math.random() < 0.60
+            ? (Math.random() < 0.5 ? rand(0, w * 0.20) : rand(w * 0.80, w))
             : rand(0, w),
           y: rand(0, h),
           radius: small ? 0.8 + Math.random() * 0.7 : 1.2 + Math.random() * 0.3,
