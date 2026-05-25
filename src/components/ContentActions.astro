@@ -798,6 +798,8 @@ const hasSummary = summary !== null;
           startProgressTimer();
         } else {
           // Fresh start (or restart after completion)
+          // Detach stale callbacks before cancel() so they can't fire after the new utterance starts
+          if (utterance) { utterance.onstart = null; utterance.onend = null; utterance.onerror = null; }
           window.speechSynthesis.cancel();
           pausedElapsed = 0;
 
@@ -833,6 +835,10 @@ const hasSummary = summary !== null;
         const charOffset = Math.floor(pct * articleText.length);
         const remainingText = articleText.slice(charOffset);
 
+        // Detach stale callbacks before cancel() — otherwise the old utterance's
+        // onend fires async *after* the new utterance's onstart, calling resetState()
+        // and setting isPlaying=false while audio is actively playing.
+        if (utterance) { utterance.onstart = null; utterance.onend = null; utterance.onerror = null; }
         window.speechSynthesis.cancel();
         stopProgressTimer();
 
