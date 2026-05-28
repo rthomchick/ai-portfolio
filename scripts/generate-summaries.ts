@@ -16,8 +16,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const JOURNAL_DIR = path.join(ROOT, 'src/content/journal');
 const SUMMARIES_DIR = path.join(ROOT, 'src/data/summaries');
+const PROJECTS_DIR = path.join(ROOT, 'src/content/projects');
+const PROJECT_SUMMARIES_DIR = path.join(ROOT, 'src/data/summaries/projects');
 
 fs.mkdirSync(SUMMARIES_DIR, { recursive: true });
+fs.mkdirSync(PROJECT_SUMMARIES_DIR, { recursive: true });
 
 const client = new Anthropic();
 
@@ -142,6 +145,73 @@ Rules:
   }
 }
 
+async function generateProjectSummary(slug: string, content: string): Promise<object> {
+  const title = getFrontmatterField(content, 'title');
+  const body = getBody(content);
+  const headings = extractHeadings(body);
+  const plainText = extractPlainText(body);
+
+  const safeHeadings = headings.map(h => ({ ...h, text: h.text.replace(/"/g, '\x27') }));
+
+  const userPrompt = `Title: ${title}
+
+Headings (use these exact ids for headingId):
+${safeHeadings.map(h => `- "${h.text}" (id: "${h.id}")`).join('\n')}
+
+Project description:
+${plainText.slice(0, 8000)}`;
+
+  const response = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1024,
+    system: `You are a summary assistant for Richard Thomchick's AI product portfolio. Generate a concise structured summary of the project page.
+
+Return a JSON object with this exact structure:
+{
+  "overview": "A 2-3 sentence summary of what the project does, how it works, and what makes it interesting. Maximum 280 characters. Be specific — reference the architecture, tech stack, and key decisions.",
+  "keyPoints": [
+    {
+      "title": "A specific technical takeaway or decision (10 words max)",
+      "headingId": "The id attribute of the most relevant heading from the provided headings list"
+    }
+  ]
+}
+
+Rules:
+- The overview must be 280 characters or fewer.
+- Generate 3-5 key points. Never more than 5.
+- Each key point is a specific architectural decision, pattern, or outcome — not a generic description.
+- Each key point links to one heading from the provided list. Use the exact id.
+- Return ONLY the JSON object, no markdown backticks, no preamble.`,
+    messages: [{ role: 'user', content: userPrompt }],
+  });
+
+  const raw = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '');
+  try {
+    const data = JSON.parse(text);
+    if (typeof data.overview === 'string' && data.overview.length > 280) {
+      const sentences = data.overview.match(/[^.!?]+[.!?]+\s*/g) || [];
+      let trimmed = '';
+      for (const s of sentences) {
+        if ((trimmed + s).trimEnd().length <= 280) trimmed += s;
+        else break;
+      }
+      data.overview = trimmed.trimEnd() || data.overview.slice(0, 280);
+    }
+    return data;
+  } catch (e) {
+    if (e instanceof SyntaxError) {
+      const match = e.message.match(/position (\d+)/);
+      if (match) {
+        const pos = parseInt(match[1]);
+        console.error('Raw response excerpt:', JSON.stringify(text.slice(Math.max(0, pos - 60), pos + 60)));
+      }
+    }
+    throw e;
+  }
+}
+
 const files = fs.readdirSync(JOURNAL_DIR).filter(f => f.endsWith('.md')).sort();
 
 for (const file of files) {
@@ -167,5 +237,33 @@ for (const file of files) {
     console.log(`✓  Generated summary for ${slug}`);
   } catch (err) {
     console.error(`✗  Failed ${slug}:`, err);
+  }
+}
+
+const projectFiles = fs.readdirSync(PROJECTS_DIR).filter(f => f.endsWith('.md')).sort();
+
+for (const file of projectFiles) {
+  const slug = file.replace('.md', '');
+  const mdPath = path.join(PROJECTS_DIR, file);
+  const jsonPath = path.join(PROJECT_SUMMARIES_DIR, `${slug}.json`);
+
+  const mdStat = fs.statSync(mdPath);
+
+  if (fs.existsSync(jsonPath)) {
+    const jsonStat = fs.statSync(jsonPath);
+    if (jsonStat.mtimeMs > mdStat.mtimeMs) {
+      console.log(`⏭  Skipped project ${slug} (unchanged)`);
+      continue;
+    }
+  }
+
+  const content = fs.readFileSync(mdPath, 'utf-8');
+
+  try {
+    const summary = await generateProjectSummary(slug, content);
+    fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
+    console.log(`✓  Generated summary for project ${slug}`);
+  } catch (err) {
+    console.error(`✗  Failed project ${slug}:`, err);
   }
 }

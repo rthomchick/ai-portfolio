@@ -1,0 +1,21 @@
+{
+  "overview": "Multi-agent ROI analyzer that decomposes personalization investment scenarios into specialist tasks (data lookup, calculation, research, synthesis), producing executive summaries across conservative/moderate/aggressive projections with conversion lift, revenue impact, and risk as",
+  "keyPoints": [
+    {
+      "title": "Supervisor pattern delegates tasks to single-tool specialists",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Constraining tools per agent prevents autonomous decision drift",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "AI financial projections need domain expertise validation",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Structure enables analysis; human judgment validates inputs/outputs",
+      "headingId": "what-i-learned"
+    }
+  ]
+}

@@ -1,24 +1,24 @@
 {
-  "overview": "I built a conversational feature intake copilot using Claude that replaces PM request forms with adaptive dialogue.",
+  "overview": "I built a conversational Feature Intake Copilot replacing PM request forms. Using Claude Sonnet/Opus with a two-gate architecture, it achieved 94% ground truth extraction accuracy across 3 personas, averaging 6 conversation turns and a 21.3/24 readiness score.",
   "keyPoints": [
     {
-      "title": "94% ground truth extraction across 3 stakeholder personas",
+      "title": "94% ground truth extraction accuracy across 3 personas",
       "headingId": "6-ground-truth-quality-measurements"
     },
     {
-      "title": "Two-call split fixed model forgetting to respond conversationally",
-      "headingId": "the-two-call-split-separate-what-the-model-says-from-what-it-knows"
-    },
-    {
-      "title": "Two-gate design: copilot optimizes UX, PM owns quality decision",
+      "title": "Two-gate design: copilot extracts, PM decides quality",
       "headingId": "3-two-gate-architecture"
     },
     {
-      "title": "Claude misclassified feature type in 1 of 3 test cases",
+      "title": "Two-call split fixed model skipping natural language responses",
+      "headingId": "the-two-call-split-separate-what-the-model-says-from-what-it-knows"
+    },
+    {
+      "title": "Claude misclassified feature type in 1 of 3 cases",
       "headingId": "claude-is-surprisingly-bad-at-feature-type-classification"
     },
     {
-      "title": "Conversations handle bad input; pipelines just produce bad output",
+      "title": "Conversations handle bad input; pipelines fail on it",
       "headingId": "pipelines-and-conversations-are-fundamentally-different-products"
     }
   ]

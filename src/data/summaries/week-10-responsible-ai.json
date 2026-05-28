@@ -1,25 +1,25 @@
 {
-  "overview": "I built 9 evaluation modules, a 4-section Responsible AI dashboard, and a reusable governance template for my SAFe Feature Spec System.",
+  "overview": "I built 9 eval modules and a 4-section Responsible AI dashboard for my SAFe Feature System, starting from 48% compliance (12/25 checks). Key wins: cost guardrails, audit trails, grounding checks, bias detection, and a reusable governance template.",
   "keyPoints": [
     {
-      "title": "Started at 48% responsible AI coverage — 12 of 25 checks",
+      "title": "Started at 48% — only 12 of 25 responsible AI checks passed",
       "headingId": "day-1-responsible-ai-foundations"
     },
     {
-      "title": "Reviewer agent consumes ~80% of total pipeline input tokens",
-      "headingId": "day-2-cost-guardrails--audit-trails"
+      "title": "Reviewer agent consumes 80% of total pipeline input tokens",
+      "headingId": "day-1-responsible-ai-foundations"
     },
     {
       "title": "Boosted cases returned 0 inventions; every bare case had at least one",
       "headingId": "day-3-grounding-checks--content-safety"
     },
     {
-      "title": "Claude Code proactively fixed a per-pass vs. full-run cost cap gap",
-      "headingId": "day-2-cost-guardrails--audit-trails"
+      "title": "WEBPAGE scores 9.6 points below EXPERIENCE — bias threshold nearly breached",
+      "headingId": "day-4-bias-detection--responsible-ai-dashboard"
     },
     {
-      "title": "Server-side verdict logic, not LLM, enforces grounding thresholds",
-      "headingId": "server-side-verdict-re-computation-is-the-correct-pattern"
+      "title": "Audit trail CLI saved real debugging time across Days 3 and 4",
+      "headingId": "the-audit-trail-is-a-debugging-superpower"
     }
   ]
 }

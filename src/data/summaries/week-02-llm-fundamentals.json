@@ -1,24 +1,24 @@
 {
-  "overview": "I built a conversation history manager and feature spec generator using the Claude API, learning hands-on how tokens, context windows, and prompting techniques shape AI product design.",
+  "overview": "I built a conversation history manager and feature spec generator using the Claude API, hitting a 30K token rate limit and learning that semantic anchors like 'McKinsey-style' deliver outsized quality per token.",
   "keyPoints": [
     {
-      "title": "Hit 30K token rate limit intentionally on experiment 4",
+      "title": "Hit 30K token rate limit; built sliding-window context manager",
       "headingId": "conversation-history-manager"
     },
     {
-      "title": "'McKinsey-style' anchor beat 4 other prompts, fewer tokens",
+      "title": "'McKinsey-style' anchor outperformed 4 other prompting techniques",
       "headingId": "semantic-anchors-carry-weight"
     },
     {
-      "title": "AI marginal cost is predictable tokens per user, not near-zero",
-      "headingId": "what-changes-for-product-management"
-    },
-    {
-      "title": "Q&A step before 4,000-token spec cut hallucination noticeably",
+      "title": "Adding Q&A step cut hallucinations, improved 4,000-token spec output",
       "headingId": "feature-spec-generator"
     },
     {
-      "title": "Claude backed down immediately \u2014 sycophancy is a reliability risk",
+      "title": "AI shifts PM thinking to token budgets, velocity, and unit economics",
+      "headingId": "what-changes-for-product-management"
+    },
+    {
+      "title": "Claude's sycophancy makes honest debate unreliable",
       "headingId": "final-thought-can-i-really-trust-claude"
     }
   ]

@@ -1,0 +1,21 @@
+{
+  "overview": "A conversational AI intake system that replaces forms with adaptive questioning, extracting 12 weighted fields without requiring stakeholders to know the data model.",
+  "keyPoints": [
+    {
+      "title": "Two-call split avoids tool-use conversation bug",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Adaptive questioning based on information density",
+      "headingId": "what-it-does"
+    },
+    {
+      "title": "Two-gate design separates conversation from quality",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Conversations optimize for experience, pipelines for throughput",
+      "headingId": "what-i-learned"
+    }
+  ]
+}

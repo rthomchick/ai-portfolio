@@ -110,7 +110,7 @@ npm run generate-summaries
 npm run generate-questions
 ```
 
-`generate-summaries` creates `src/data/summaries/{slug}.json` — powers the Summarize button.
+`generate-summaries` creates `src/data/summaries/projects/{slug}.json` — powers the Summarize button.
 
 `generate-questions` creates `src/data/questions/projects/{slug}.json` — powers the Ask AI suggested questions. Questions for project pages are technical and evaluative in tone: how does X work, show me the implementation of Y, what triggers Z — appropriate for a hiring manager or engineer assessing the work.
 

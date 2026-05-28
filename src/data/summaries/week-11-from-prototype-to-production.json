@@ -1,25 +1,25 @@
 {
-  "overview": "I upgraded my SAFe Feature Spec System to production on Streamlit Cloud, wired in governance modules, migrated to PostgreSQL, and tested Anthropic's advisor tool. The advisor averaged -2.2 points at 4.3\u00d7 the cost ($4.98 vs $1.17) \u2014 the data said no.",
+  "overview": "I tested Anthropic's advisor tool on my SAFe Feature Spec System, ran a full golden set, and found it averaged -2.2 points at 4.3× cost ($4.98 vs $1.17). Rest of week: PostgreSQL migration, governance wiring, connector abstraction, and Streamlit Cloud deploy.",
   "keyPoints": [
     {
-      "title": "Advisor tool scored -2.2 pts avg at 4.3\u00d7 cost",
+      "title": "Advisor tool scored -2.2 pts avg at 4.3× cost",
       "headingId": "verdict-on-advisor-tool-the-data-said-no-at-least-for-my-use-cases"
     },
     {
-      "title": "Live deploy: 76\u219285 score, $0.72, 27 LLM calls",
-      "headingId": "5-streamlit-cloud-deployment"
+      "title": "Governance modules were built but unconnected until now",
+      "headingId": "building-guardrails-is-half-the-work"
     },
     {
-      "title": "Connector abstraction replaced brittle Notion MCP dependency",
+      "title": "Connector abstraction replaced fragile single-tool Notion dependency",
       "headingId": "dont-build-for-one-integration"
     },
     {
-      "title": "PostgreSQL migration unlocked concurrent multi-surface access",
+      "title": "PostgreSQL migration unlocked Streamlit Cloud deployment",
       "headingId": "infrastructure-work-is-invisible-and-essential"
     },
     {
-      "title": "Governance modules were built but unwired until now",
-      "headingId": "building-guardrails-is-half-the-work"
+      "title": "Live deploy scored 76→85, $0.72, 27 calls across 5 agents",
+      "headingId": "5-streamlit-cloud-deployment"
     }
   ]
 }

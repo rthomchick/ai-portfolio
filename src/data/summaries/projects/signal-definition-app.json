@@ -1,0 +1,21 @@
+{
+  "overview": "Interactive Streamlit app that makes signal definitions tangible through four tabs: a real-time visitor classification simulator, filterable signal explorer, role profiles, and reference guide. Deliberately eschews AI in favor of deterministic scoring rules encoded as data.",
+  "keyPoints": [
+    {
+      "title": "Real-time scoring algorithm simulator with decay multipliers",
+      "headingId": "what-it-does"
+    },
+    {
+      "title": "Deterministic rules over AI—pure data-driven classification",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Accessibility trumps complexity—no LLM needed",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "43 signals across 7 categories with confidence thresholds",
+      "headingId": "what-it-does"
+    }
+  ]
+}

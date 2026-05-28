@@ -1,25 +1,25 @@
 {
-  "overview": "I upgraded my RAG pipeline from local ChromaDB to hosted Pinecone, added agentic retrieval, and built an MCP-pattern tool server. Agentic RAG scored 4.3 vs 4.0 for standard RAG but used 66% more tokens \u2014 a real trade-off.",
+  "overview": "I upgraded my RAG pipeline by migrating from ChromaDB to Pinecone, adding agentic retrieval, and building an MCP-style tool server. Agentic RAG scored 4.3 vs 4.0 but cost 66% more tokens.",
   "keyPoints": [
     {
-      "title": "Pinecone replaces ChromaDB: persistent, multi-user, production-ready",
+      "title": "Pinecone solves ChromaDB's 3 production failures",
       "headingId": "days-1-2-pinecone-migration"
     },
     {
-      "title": "Agentic RAG: +0.3 quality points, +66% token cost",
+      "title": "Agentic RAG: +0.3 quality, +66% token cost",
       "headingId": "day-3-agentic-rag"
     },
     {
-      "title": "MCP pattern: define tools once, all agents inherit them",
+      "title": "MCP: one tool file, every agent benefits automatically",
       "headingId": "day-4-mcp-pattern-tool-server"
     },
     {
-      "title": "Strategy Assistant v3: three worker agents with real Pinecone tools",
-      "headingId": "day-5-strategy-assistant-v3"
+      "title": "Agentic vs. standard RAG is a cost-benefit tradeoff",
+      "headingId": "standard-vs-agentic-rag-is-a-product-decision"
     },
     {
-      "title": "Standard vs. agentic RAG is a cost-quality product call",
-      "headingId": "standard-vs-agentic-rag-is-a-product-decision"
+      "title": "Idempotent upserts prevent duplicate vectors silently",
+      "headingId": "idempotent-operations-matter-more-than-youd-think"
     }
   ]
 }

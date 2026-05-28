@@ -1,0 +1,17 @@
+{
+  "overview": "Converts natural language feature descriptions into complete SAFe specifications with benefit hypotheses, acceptance criteria, and stakeholder analysis. Uses single-agent architecture with Claude to avoid multi-agent overhead, optimizing cost and quality for a well-scoped task.",
+  "keyPoints": [
+    {
+      "title": "Single-agent beats multi-agent for well-scoped tasks",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Production readiness is 80% resilience engineering",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Generates SAFe specs from natural language input",
+      "headingId": "what-it-does"
+    }
+  ]
+}

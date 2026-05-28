@@ -1,0 +1,25 @@
+{
+  "overview": "Dino is a conversational AI dining concierge for Las Vegas that recommends restaurants with opinions, checks availability, books tables, and adds reservations to Google Calendar.",
+  "keyPoints": [
+    {
+      "title": "Single FastAPI service with mock booking abstraction",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Calendar integration via deep links instead of OAuth",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "System prompt as product specification mapping to user behavior",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Character-driven personality layer differentiates from search",
+      "headingId": "personality-engineering"
+    },
+    {
+      "title": "Claude Code shifts focus from implementation to specification testing",
+      "headingId": "what-i-learned"
+    }
+  ]
+}

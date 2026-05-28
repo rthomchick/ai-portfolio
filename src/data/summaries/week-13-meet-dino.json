@@ -1,24 +1,24 @@
 {
-  "overview": "I built Dino, a Dean Martin-inspired AI dining concierge for Las Vegas using FastAPI, Google Maps Places API, and Claude Code. Shifted fully from writing Python to writing specs — Claude Code handled all implementation across a 5-day build ending in a live Railway deployment.",
+  "overview": "I built Dino, a Dean Martin-inspired AI dining concierge for Las Vegas using FastAPI, Google Maps Places API, and Claude Code. Going all-in on Claude Code shifted my role from writing bad Python to writing specs.",
   "keyPoints": [
     {
-      "title": "Claude Code shifted my role from coder to spec writer",
+      "title": "Claude Code shifted my role to spec-writing, not coding",
       "headingId": "claude-code-changes-the-job-not-just-the-workflow"
     },
     {
-      "title": "CLAUDE.md at 75 lines drove entire project architecture",
-      "headingId": "the-claude-code-build"
-    },
-    {
-      "title": "Google Calendar deep links beat OAuth — zero auth infrastructure",
-      "headingId": "google-calendar-deep-links"
-    },
-    {
-      "title": "System prompt defines Dino's voice, flow, and edge cases",
+      "title": "CLAUDE.md at 75 lines drove the entire build",
       "headingId": "the-system-prompt-is-the-product-spec"
     },
     {
-      "title": "Railway required for persistent FastAPI process — not Streamlit",
+      "title": "Google Calendar deep links beat OAuth — zero auth, two clicks",
+      "headingId": "google-calendar-deep-links"
+    },
+    {
+      "title": "Claude-in-Claude artifacts bypassed tools entirely — real backend required",
+      "headingId": "the-artifact-tool-loop"
+    },
+    {
+      "title": "Railway, not Streamlit, needed for persistent FastAPI process",
       "headingId": "deployment-to-railway"
     }
   ]

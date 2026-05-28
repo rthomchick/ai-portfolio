@@ -1,0 +1,25 @@
+{
+  "overview": "Complete evaluation infrastructure for the SAFe Feature Spec System using content-addressed prompt storage, token tracking per LLM call, and a 5-tab dashboard with golden set testing, cost breakdown, and Claude-powered prompt improvement suggestions.",
+  "keyPoints": [
+    {
+      "title": "Content-addressed prompt storage prevents duplicate versions",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "SQLite three-table schema balances simplicity and queryability",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "LLM-as-judge variance requires multiple runs for reliable baselines",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Claude analyzes weak sections and proposes targeted prompt edits",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Bare/boosted spread quantifies value of stakeholder-provided context",
+      "headingId": "what-i-learned"
+    }
+  ]
+}

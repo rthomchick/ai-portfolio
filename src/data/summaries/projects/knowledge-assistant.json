@@ -1,0 +1,21 @@
+{
+  "overview": "A RAG-based knowledge assistant that answers natural language questions using semantic search over team documents. Uses ChromaDB for retrieval and Claude for generation, with a Haiku re-ranking step to improve precision before final response generation.",
+  "keyPoints": [
+    {
+      "title": "Added re-ranking step between retrieval and generation",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Chunking strategy matters more than model choice",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Grounded responses with document citations",
+      "headingId": "what-it-does"
+    },
+    {
+      "title": "Standard RAG pipeline with semantic embeddings",
+      "headingId": "architecture-decisions"
+    }
+  ]
+}

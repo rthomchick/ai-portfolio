@@ -1,24 +1,24 @@
 {
-  "overview": "I built a PM Knowledge Assistant using ChromaDB and Claude, implementing a full RAG pipeline that grounds responses in my documents. RAG produced specific Q3 data (2.3% lift) vs. generic benchmarks without it.",
+  "overview": "I built a PM Knowledge Assistant using Claude + ChromaDB, implementing a full RAG pipeline with hybrid search, re-ranking, and metadata filtering. RAG grounded Claude to my Q3 data (2.3% lift) vs.",
   "keyPoints": [
     {
-      "title": "Python 3.14 broke ChromaDB; had to downgrade to 3.12",
+      "title": "Python 3.14 broke ChromaDB; downgraded to 3.12",
       "headingId": "python-314-and-chromadb-incompatibility"
     },
     {
-      "title": "Cosine similarity: A/B scored 0.41 vs. A/C at 0.14",
-      "headingId": "day-1-embeddings"
-    },
-    {
-      "title": "RAG returned specific 2.3% lift; without it, generic 5\u201315%",
+      "title": "RAG cited specific 2.3% lift vs. generic 5-15% benchmarks",
       "headingId": "day-3-rag-pipeline"
     },
     {
-      "title": "Re-ranking with Haiku correctly pruned irrelevant chunks by query",
+      "title": "Embeddings cost near-zero; cosine similarity 3x higher for related topics",
+      "headingId": "embeddings-are-inexpensive"
+    },
+    {
+      "title": "Re-ranking with Haiku pruned irrelevant chunks distance scores missed",
       "headingId": "day-4-rag-quality-deep-dive"
     },
     {
-      "title": "System prompt guardrails \u2014 not RAG alone \u2014 prevent hallucination",
+      "title": "System prompt guardrails prevent hallucination — not RAG alone",
       "headingId": "rag-grounds-information-retrieval-but-claude-still-hallucinates"
     }
   ]

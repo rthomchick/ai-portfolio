@@ -1,25 +1,25 @@
 {
-  "overview": "I rebuilt my Feature Spec Generator as a six-agent Streamlit system to hit leadership's target of 4-5 docs/week at 90+ quality. Using Claude Haiku and Sonnet, the pipeline runs in 10-15 minutes per spec at ~$0.",
+  "overview": "I rebuilt my Feature Spec Generator as a six-agent Streamlit system using Claude Haiku and Sonnet. It replaced my manual 3-tab clipboard workflow and now produces specs scoring 90+ out of 100 in 10-15 minutes at ~$0.20 each — hitting 4-5 docs/hour vs. my old 2-3/week.",
   "keyPoints": [
     {
-      "title": "Session state replaced me as the human integration layer",
+      "title": "Session state replaced me as the integration layer",
       "headingId": "how-to-replace-myself-with-session-state"
     },
     {
-      "title": "Two-tier improvement threshold broke the 85-88 score ceiling",
+      "title": "Two-tier improvement threshold pushed all 3 specs to 92-94",
       "headingId": "boost-inputs-and-two-tier-improvement"
     },
     {
-      "title": "All 3 test cases jumped from ~73 avg to 93 avg score",
-      "headingId": "boost-inputs-and-two-tier-improvement"
-    },
-    {
-      "title": "Parse-once dictionary pattern stopped positional splice corruption",
+      "title": "Parse-once dictionary pattern eliminated positional corruption",
       "headingId": "parse-once-edit-independently-reassemble"
     },
     {
-      "title": "Improver regression was the hardest bug: LLMs regenerate, not edit",
+      "title": "Improver regression: LLMs regenerate, not edit — lesson learned",
       "headingId": "the-improver-regression-saga"
+    },
+    {
+      "title": "$0.15-0.25 per spec; ~$100/year vs. 10-20 hrs/week PM time",
+      "headingId": "what-i-built"
     }
   ]
 }

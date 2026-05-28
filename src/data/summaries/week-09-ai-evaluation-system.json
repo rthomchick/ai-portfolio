@@ -1,24 +1,24 @@
 {
-  "overview": "I built a full AI eval pipeline for my SAFe Feature Spec System: SQLite storage, a 6-case golden set, A/B prompt testing, a 5-tab Streamlit dashboard, and a Claude-powered improvement suggester. Key finds: LLM-as-judge varies \u00b17pts at temp 0.",
+  "overview": "I built a full AI eval pipeline this week: SQLite storage, a 6-case golden set, A/B prompt testing, a 5-tab Streamlit dashboard, and a Claude-powered improvement suggester. Key findings: LLM-as-judge varies ±7pts at temp 0.",
   "keyPoints": [
     {
-      "title": "\u00b17pt judge variance persists even at temperature 0.0",
+      "title": "LLM judge varies ±7pts even at temperature 0.0",
       "headingId": "llm-as-judge-variance-is-real-even-at-temperature-00"
     },
     {
-      "title": "Bare\u2192boosted PM input spreads reached +25 points",
+      "title": "PM context boosts scores +13–25pts across all feature types",
       "headingId": "the-bareboosted-spread-quantifies-the-value-of-pm-input"
     },
     {
-      "title": "Router v2 fixed intermittent EXPERIENCE misclassification via A/B data",
+      "title": "Router v2 fixed intermittent EXPERIENCE misclassification via A/B test",
       "headingId": "day-3-router-ab-test"
     },
     {
-      "title": "V1 baseline: 5/6 passed, $1.56, routing bug now measurable",
+      "title": "5/6 baseline cases passed at $1.56 total in 20 minutes",
       "headingId": "v1-baseline-results"
     },
     {
-      "title": "Suggester proposes prompt edits; I decide \u2014 human-in-the-loop preserved",
+      "title": "Improvement Suggester proposes edits; I decide whether to apply",
       "headingId": "day-5-improvement-suggester"
     }
   ]

@@ -1,20 +1,20 @@
 {
-  "overview": "I set up a Python dev environment, generated my first Anthropic API key, and made my first Claude API call in ~10 lines of code. Despite struggling with venv activation and CLI basics, Claude got me past the setup wall that stopped me cold in 2018.",
+  "overview": "I got Claude working from my own machine in Week 1 — something I couldn't do with PyTorch in 2018. Set up Python, venv, VS Code, and the Anthropic SDK, then made my first API call in ~10 lines of code. The entry point is accessible, but setup was still the hardest part.",
   "keyPoints": [
     {
-      "title": "First working API call took only 10\u201315 lines of code",
+      "title": "First working API call took only ~10 lines of code",
       "headingId": "made-my-first-api-call"
     },
     {
-      "title": "venv activation resets every terminal session \u2014 a costly surprise",
+      "title": "venv activation resets each terminal session — easy gotcha",
       "headingId": "what-i-struggled-with"
     },
     {
-      "title": "Running Claude via API exposes every parameter the chat UI hides",
+      "title": "Running Claude via code exposes system prompt, temperature, history",
       "headingId": "what-i-learned"
     },
     {
-      "title": "Real dev work \u2014 setup, deployment, debugging \u2014 resists vibe-coding",
+      "title": "Vibe-coding masks hard work: config, errors, debugging, evals",
       "headingId": "key-takeaway"
     }
   ]

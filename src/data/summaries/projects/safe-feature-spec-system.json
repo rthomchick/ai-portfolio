@@ -1,0 +1,25 @@
+{
+  "overview": "Six-agent pipeline transforms raw feature requests into polished SAFe specifications across three types, scoring on a 100-point rubric. Linear architecture with two conditional loops (Reviewer→Improver for sections <75%, Improver→Polish for 80-89 range) prevents mid-80s plateau.",
+  "keyPoints": [
+    {
+      "title": "Linear pipeline reflects true dependency chain",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Two-tier conditional loops break score ceiling patterns",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Parse→Edit→Reassemble prevents structural corruption",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Golden test set required for reliable prompt evaluation",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Section-isolated rescoring eliminates mysterious score drift",
+      "headingId": "architecture-decisions"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "overview": "Nine evaluation modules that embed responsible AI checks directly into the SAFe Feature Spec pipeline.",
+  "keyPoints": [
+    {
+      "title": "Embedded quality layer, not separate product",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Server-side verdict recomputation enforces deterministic business rules",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Boosted PM context eliminates hallucinations in golden set",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Tool-specific risk profiles outperform one-size-fits-all governance",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Nine modules evaluate cost, grounding, safety, bias, and audit trails",
+      "headingId": "what-it-does"
+    }
+  ]
+}
