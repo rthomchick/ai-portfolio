@@ -11,6 +11,7 @@ html {
   font-family: 'DM Sans', sans-serif;
   background-color: #FFFFFF;
   color: #1C1917;
+  scroll-behavior: smooth;
 }
 
 /* Smooth theme transition — applied only after initial load to prevent flash */
