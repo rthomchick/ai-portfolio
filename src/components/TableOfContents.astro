@@ -244,42 +244,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Sidebar active-section tracking (desktop only) ──
   if (!window.matchMedia('(min-width: 1088px)').matches) return;
 
-  const proseHeadings = Array.from(
-    document.querySelectorAll<HTMLElement>('.prose h2[id]')
-  );
-  const tocItems = document.querySelectorAll<HTMLElement>('.toc-item');
-  if (!proseHeadings.length || !tocItems.length) return;
-
-  let activeId = '';
-
-  function setActive(id: string) {
-    if (id === activeId) return;
-    activeId = id;
-    tocItems.forEach(item => {
-      item.classList.toggle('active', item.getAttribute('href') === `#${id}`);
+  function setActiveFromHash() {
+    const hash = window.location.hash.slice(1);
+    document.querySelectorAll('.toc-item').forEach(item => {
+      const itemHash = item.getAttribute('href')?.slice(1);
+      item.classList.toggle('active', itemHash === hash);
     });
   }
 
-  function updateActive() {
+  // Activate on hash change (TOC click, back/forward, direct URL)
+  window.addEventListener('hashchange', setActiveFromHash);
+
+  // Set initial state on load
+  setActiveFromHash();
+
+  // Update hash on scroll to keep it in sync
+  const proseHeadings = Array.from(document.querySelectorAll('.prose h2'));
+
+  function updateHashOnScroll() {
     const threshold = window.innerHeight * 0.30;
-
-    // Bottom-of-page: if we're within 2px of the bottom, activate the last heading
-    const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 2);
-    if (atBottom && proseHeadings.length > 0) {
-      setActive(proseHeadings[proseHeadings.length - 1].id);
-      return;
-    }
-
     let current = null;
     for (const h of proseHeadings) {
       if (h.getBoundingClientRect().top <= threshold) {
         current = h;
       }
     }
-    if (current) setActive(current.id);
+    if (current && current.id !== window.location.hash.slice(1)) {
+      history.replaceState(null, '', `#${current.id}`);
+      setActiveFromHash();
+    }
   }
 
-  window.addEventListener('scroll', updateActive, { passive: true });
-  updateActive(); // set correct active heading on initial load / hash navigation
+  window.addEventListener('scroll', updateHashOnScroll, { passive: true });
 });
 </script>
