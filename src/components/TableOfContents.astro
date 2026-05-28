@@ -261,11 +261,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateActive() {
-    // Threshold: a heading is "active" once its top edge crosses 30% down the viewport
-    const threshold = window.scrollY + window.innerHeight * 0.30;
-    let current = proseHeadings[0];
+    const threshold = window.innerHeight * 0.30;
+    let current = null;
     for (const h of proseHeadings) {
-      if (h.offsetTop <= threshold) {
+      if (h.getBoundingClientRect().top <= threshold) {
         current = h;
       }
     }
