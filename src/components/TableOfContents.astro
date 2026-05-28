@@ -262,6 +262,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateActive() {
     const threshold = window.innerHeight * 0.30;
+
+    // Bottom-of-page: if we're within 2px of the bottom, activate the last heading
+    const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 2);
+    if (atBottom && proseHeadings.length > 0) {
+      setActive(proseHeadings[proseHeadings.length - 1].id);
+      return;
+    }
+
     let current = null;
     for (const h of proseHeadings) {
       if (h.getBoundingClientRect().top <= threshold) {
