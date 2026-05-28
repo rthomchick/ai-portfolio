@@ -9,7 +9,7 @@ const navLinks = [
 const currentPath = Astro.url.pathname;
 ---
 
-<header data-pagefind-ignore class="relative border-b border-stone-200 dark:border-stone-800 dark:bg-stone-950">
+<header data-pagefind-ignore class="site-header">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
     <a href="/" class="text-stone-900 dark:text-stone-100 font-medium text-base no-underline hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
       Richard Thomchick
@@ -102,6 +102,43 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 </header>
+
+<style is:global>
+  /* ── Frosted glass navigation ─────────────────────────────────────────────── */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    /* Safari: force compositing layer so backdrop-filter works on sticky */
+    transform: translateZ(0);
+
+    /* Fallback: solid opaque background when backdrop-filter unsupported */
+    background: #FAFAF9;
+    border-bottom: 0.5px solid rgba(28, 25, 23, 0.08);
+  }
+
+  @supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
+    .site-header {
+      background: rgba(250, 250, 249, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+  }
+
+  /* Dark mode fallback */
+  .dark .site-header {
+    background: #0c0a09;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+  }
+
+  @supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
+    .dark .site-header {
+      background: rgba(12, 10, 9, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+  }
+</style>
 
 <script is:inline>
   (function() {

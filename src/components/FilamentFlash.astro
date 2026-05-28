@@ -9,58 +9,188 @@
     const ctx = canvas.getContext('2d')!;
     const dpr = window.devicePixelRatio || 1;
 
-    const PALETTE = [
-      [13, 148, 136],   // teal
-      [99, 102, 241],   // indigo
-      [244, 114, 182],  // pink
-      [251, 146, 60],   // amber
-      [52, 211, 153],   // emerald
-      [139, 92, 246],   // violet
-      [56, 189, 248],   // sky
-      [251, 191, 36],   // gold
+    // 14-color palette as hex strings
+    const PALETTE_HEX = [
+      '#0D9488', '#14B8A6', '#5EEAD4',
+      '#6366F1', '#818CF8', '#A78BFA',
+      '#F59E0B', '#FCD34D',
+      '#EC4899', '#F9A8D4',
+      '#10B981', '#34D399',
+      '#3B82F6', '#93C5FD',
     ];
 
-    const NODE_COUNT = 60;
-    const CONSTELLATION_REACH = 240;
+    // Pre-parse to [r, g, b] tuples
+    type RGB = [number, number, number];
+    const PALETTE: RGB[] = PALETTE_HEX.map(h => {
+      const v = parseInt(h.slice(1), 16);
+      return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+    });
 
-    type Node = {
-      x: number; y: number;
-      radius: number;
-      color: number[];
-      tier: 0 | 1 | 2;
-      phase: number;
+    const NODE_COUNT = 40;
+
+    type NodeState = 'waiting' | 'rising' | 'holding' | 'falling';
+
+    type FFNode = {
+      x: number;
+      y: number;
+      baseRadius: number;
+      color: RGB;
+      targetOpacity: number;
+      opacity: number;
+      state: NodeState;
+      waitFrames: number;
+      holdFrames: number;
+      riseRate: number;
+      fallRate: number;
+      pulse: number; // extra opacity from vector activation, decays at 0.025/frame
     };
 
-    type Connection = {
-      ax: number; ay: number; bx: number; by: number;
-      colorA: number[]; colorB: number[];
-      nodeA: Node; nodeB: Node;
-      startTime: number;
-      duration: number;
-      peakOpacity: number;
-      drawProgress: number; // 0..1 for progressive draw
+    type Vector = {
+      path: [number, number][];
+      segLengths: number[];
+      totalLength: number;
+      traveled: number;
+      speed: number; // px per frame
+      color: RGB;
+      activatedNodes: Set<number>;
     };
 
-    // Tier config: [period_ms, opMin, opMax]
-    const TIERS: [number, number, number][] = [
-      [3000, 0.35, 0.75],
-      [4500, 0.40, 0.85],
-      [6000, 0.28, 0.68],
-    ];
-
-    let nodes: Node[] = [];
-    let connections: Connection[] = [];
+    let nodes: FFNode[] = [];
+    let vectors: Vector[] = [];
+    let vectorCountdown = 180 + Math.floor(Math.random() * 300);
     let rafId: number | null = null;
-    let constellationTimer: ReturnType<typeof setTimeout> | null = null;
-    let lastTimestamp: number | null = null;
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
 
-    function rand(min: number, max: number) {
-      return Math.random() * (max - min) + min;
+    // ── Helpers ────────────────────────────────────────────────────────────────
+
+    function randColor(): RGB {
+      return PALETTE[Math.floor(Math.random() * PALETTE.length)];
     }
 
-    function randInt(min: number, max: number) {
-      return Math.floor(rand(min, max + 1));
+    function makeNode(w: number, h: number, preInit: boolean): FFNode {
+      const baseRadius = Math.random() * 1.6 + 0.8;
+      const targetOpacity = Math.random() * 0.55 + 0.15;
+      const riseRate = 0.006 + Math.random() * 0.006;
+      const fallRate = 0.004 + Math.random() * 0.004;
+
+      let state: NodeState;
+      let opacity: number;
+      let waitFrames = 0;
+      let holdFrames = 0;
+
+      if (preInit) {
+        // ~50% start mid-lifecycle so canvas is populated on load
+        const r = Math.random();
+        if (r < 0.35) {
+          state = 'rising';
+          opacity = Math.random() * targetOpacity;
+        } else if (r < 0.75) {
+          state = 'holding';
+          opacity = targetOpacity;
+          holdFrames = Math.floor(Math.random() * 180);
+        } else {
+          state = 'waiting';
+          opacity = 0;
+          waitFrames = Math.floor(Math.random() * 120);
+        }
+      } else {
+        state = 'waiting';
+        opacity = 0;
+        waitFrames = Math.floor(Math.random() * 240);
+      }
+
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        baseRadius,
+        color: randColor(),
+        targetOpacity,
+        opacity,
+        state,
+        waitFrames,
+        holdFrames,
+        riseRate,
+        fallRate,
+        pulse: 0,
+      };
+    }
+
+    function buildVectorPath(w: number, h: number): { path: [number, number][]; segLengths: number[]; totalLength: number } {
+      const segCount = 5 + Math.floor(Math.random() * 4); // 5–8
+      const startY = h * (0.15 + Math.random() * 0.70);
+      const path: [number, number][] = [[-20, startY]];
+
+      const xStep = (w + 60) / segCount;
+      let curY = startY;
+      for (let i = 0; i < segCount; i++) {
+        const nextX = path[path.length - 1][0] + xStep;
+        const rawY = curY + (Math.random() - 0.5) * h * 0.35;
+        const nextY = Math.max(10, Math.min(h - 10, rawY));
+        path.push([nextX, nextY]);
+        curY = nextY;
+      }
+
+      // Compute cumulative segment lengths
+      const segLengths: number[] = [];
+      let totalLength = 0;
+      for (let i = 1; i < path.length; i++) {
+        const dx = path[i][0] - path[i - 1][0];
+        const dy = path[i][1] - path[i - 1][1];
+        const len = Math.sqrt(dx * dx + dy * dy);
+        segLengths.push(len);
+        totalLength += len;
+      }
+
+      return { path, segLengths, totalLength };
+    }
+
+    function posOnPath(
+      path: [number, number][],
+      segLengths: number[],
+      totalLength: number,
+      dist: number
+    ): [number, number] {
+      const clamped = Math.max(0, Math.min(dist, totalLength));
+      let remaining = clamped;
+      for (let i = 0; i < segLengths.length; i++) {
+        if (remaining <= segLengths[i] || i === segLengths.length - 1) {
+          const t = segLengths[i] > 0 ? Math.min(remaining / segLengths[i], 1) : 0;
+          const a = path[i];
+          const b = path[i + 1];
+          return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+        }
+        remaining -= segLengths[i];
+      }
+      return path[path.length - 1];
+    }
+
+    function spawnVector() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const { path, segLengths, totalLength } = buildVectorPath(w, h);
+      vectors.push({
+        path,
+        segLengths,
+        totalLength,
+        traveled: 0,
+        speed: totalLength / 45,
+        color: randColor(),
+        activatedNodes: new Set(),
+      });
+    }
+
+    // ── Init / Resize ──────────────────────────────────────────────────────────
+
+    function initNodes() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      nodes = [];
+      vectors = [];
+      const preInitCount = Math.floor(NODE_COUNT * 0.5);
+      for (let i = 0; i < NODE_COUNT; i++) {
+        nodes.push(makeNode(w, h, i < preInitCount));
+      }
+      vectorCountdown = 180 + Math.floor(Math.random() * 300);
     }
 
     function resize() {
@@ -74,194 +204,162 @@
       initNodes();
     }
 
-    function initNodes() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      nodes = [];
-      connections = [];
-      for (let i = 0; i < NODE_COUNT; i++) {
-        const small = Math.random() < 0.8;
-        nodes.push({
-          x: Math.random() < 0.60
-            ? (Math.random() < 0.5 ? rand(0, w * 0.20) : rand(w * 0.80, w))
-            : rand(0, w),
-          y: rand(0, h),
-          radius: small ? 0.8 + Math.random() * 0.7 : 1.2 + Math.random() * 0.3,
-          color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-          tier: [0, 1, 2][Math.floor(Math.random() * 3)] as 0 | 1 | 2,
-          phase: rand(0, Math.PI * 2),
-        });
-      }
-    }
+    // ── Draw loop ──────────────────────────────────────────────────────────────
 
-    function nodeBaseOpacity(node: Node, now: number): number {
-      const [period, opMin, opMax] = TIERS[node.tier];
-      const t = (now % period) / period;
-      return opMin + (opMax - opMin) * (0.5 + 0.5 * Math.sin(t * Math.PI * 2 + node.phase));
-    }
-
-    function spawnConstellation(now: number) {
-      const targetEdges = randInt(3, 5); // 4–6 nodes
-      const seedIdx = Math.floor(Math.random() * nodes.length);
-      const inCluster = new Set<number>([seedIdx]);
-      const frontier = [seedIdx];
-      let edgesCreated = 0;
-      let delay = 0;
-
-      while (edgesCreated < targetEdges && frontier.length > 0) {
-        const fromIdx = frontier[Math.floor(Math.random() * frontier.length)];
-        const from = nodes[fromIdx];
-
-        // find nearest not-in-cluster node within reach
-        let bestIdx = -1;
-        let bestDist = Infinity;
-        for (let i = 0; i < nodes.length; i++) {
-          if (inCluster.has(i)) continue;
-          const dx = nodes[i].x - from.x;
-          const dy = nodes[i].y - from.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < CONSTELLATION_REACH && dist < bestDist) {
-            bestDist = dist;
-            bestIdx = i;
-          }
-        }
-        if (bestIdx === -1) break;
-
-        inCluster.add(bestIdx);
-        frontier.push(bestIdx);
-
-        const to = nodes[bestIdx];
-        const edgeDelay = delay;
-        const duration = rand(2800, 4000);
-
-        setTimeout(() => {
-          connections.push({
-            ax: from.x, ay: from.y,
-            bx: to.x, by: to.y,
-            colorA: from.color, colorB: to.color,
-            nodeA: from, nodeB: to,
-            startTime: performance.now(),
-            duration,
-            peakOpacity: rand(0.55, 0.80),
-            drawProgress: 0,
-          });
-        }, edgeDelay);
-
-        delay += rand(200, 400);
-        edgesCreated++;
-      }
-    }
-
-    function scheduleConstellation() {
-      constellationTimer = setTimeout(() => {
-        spawnConstellation(performance.now());
-        scheduleConstellation();
-      }, rand(2000, 4500));
-    }
-
-    function connectionOpacity(c: Connection, now: number): number {
-      const t = Math.min((now - c.startTime) / c.duration, 1);
-      if (t < 0.18) return (t / 0.18) * c.peakOpacity;
-      if (t < 0.65) return c.peakOpacity;
-      return ((1 - t) / 0.35) * c.peakOpacity;
-    }
-
-    function connectionDrawFraction(c: Connection, now: number): number {
-      const t = Math.min((now - c.startTime) / c.duration, 1);
-      if (t < 0.18) return t / 0.18;
-      return 1;
-    }
-
-    function draw(timestamp: number) {
+    function draw() {
       rafId = requestAnimationFrame(draw);
 
-      if (parseFloat(canvas.style.opacity) <= 0) {
-        lastTimestamp = null;
-        return;
-      }
+      if (parseFloat(canvas.style.opacity) <= 0) return;
 
-      lastTimestamp = timestamp;
-      const now = performance.now();
       const w = window.innerWidth;
       const h = window.innerHeight;
-
       ctx.clearRect(0, 0, w, h);
 
-      // Compute per-node boost from active connections
-      const nodeBoost = new Map<Node, number>();
+      // ── Update + draw nodes ──────────────────────────────────────────────────
+      for (let ni = 0; ni < nodes.length; ni++) {
+        const node = nodes[ni];
 
-      for (let i = connections.length - 1; i >= 0; i--) {
-        const c = connections[i];
-        const elapsed = now - c.startTime;
-        if (elapsed >= c.duration) {
-          connections.splice(i, 1);
-          continue;
+        // Decay pulse
+        if (node.pulse > 0) {
+          node.pulse = Math.max(0, node.pulse - 0.025);
         }
-        const opacity = connectionOpacity(c, now);
-        const drawFrac = connectionDrawFraction(c, now);
 
-        // Boost node A always; node B only once line is 80% drawn
-        const currentA = nodeBoost.get(c.nodeA) || 0;
-        nodeBoost.set(c.nodeA, Math.max(currentA, opacity / c.peakOpacity * 0.70));
-        if (drawFrac >= 0.8) {
-          const currentB = nodeBoost.get(c.nodeB) || 0;
-          nodeBoost.set(c.nodeB, Math.max(currentB, opacity / c.peakOpacity * 0.70));
+        // State machine
+        switch (node.state) {
+          case 'waiting':
+            node.waitFrames--;
+            if (node.waitFrames <= 0) node.state = 'rising';
+            break;
+
+          case 'rising':
+            node.opacity = Math.min(node.targetOpacity, node.opacity + node.riseRate);
+            if (node.opacity >= node.targetOpacity) {
+              node.opacity = node.targetOpacity;
+              node.state = 'holding';
+              node.holdFrames = 60 + Math.floor(Math.random() * 180);
+            }
+            break;
+
+          case 'holding':
+            node.holdFrames--;
+            if (node.holdFrames <= 0) node.state = 'falling';
+            break;
+
+          case 'falling':
+            node.opacity = Math.max(0, node.opacity - node.fallRate);
+            if (node.opacity <= 0) {
+              // Relocate to a new random position and restart
+              node.x = Math.random() * w;
+              node.y = Math.random() * h;
+              node.color = randColor();
+              node.baseRadius = Math.random() * 1.6 + 0.8;
+              node.targetOpacity = Math.random() * 0.55 + 0.15;
+              node.riseRate = 0.006 + Math.random() * 0.006;
+              node.fallRate = 0.004 + Math.random() * 0.004;
+              node.opacity = 0;
+              node.pulse = 0;
+              node.state = 'waiting';
+              node.waitFrames = Math.floor(Math.random() * 240);
+            }
+            break;
         }
-      }
 
-      // Draw nodes
-      for (const node of nodes) {
-        const base = nodeBaseOpacity(node, now);
-        const boost = nodeBoost.get(node) || 0;
-        const opacity = Math.min(base + boost, 0.9);
+        // Draw node — pure solid fill, no glow
+        const totalOpacity = Math.min(1.0, node.opacity + node.pulse);
+        if (totalOpacity <= 0.005) continue;
+
         const [r, g, b] = node.color;
-
-        // Glow halo when opacity is sufficient
-        if (opacity > 0.25) {
-          const haloRadius = node.radius * 4;
-          const haloOpacity = opacity * 0.30;
-          const grd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, haloRadius);
-          grd.addColorStop(0, `rgba(${r},${g},${b},${haloOpacity})`);
-          grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, haloRadius, 0, Math.PI * 2);
-          ctx.fillStyle = grd;
-          ctx.fill();
-        }
+        const radius = node.baseRadius + node.pulse * 1.5;
 
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
+        ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${totalOpacity})`;
         ctx.fill();
       }
 
-      // Draw connections
-      for (const c of connections) {
-        const now2 = performance.now();
-        const elapsed = now2 - c.startTime;
-        if (elapsed < 0 || elapsed >= c.duration) continue;
+      // ── Vector countdown + spawn ─────────────────────────────────────────────
+      vectorCountdown--;
+      if (vectorCountdown <= 0) {
+        spawnVector();
+        vectorCountdown = 180 + Math.floor(Math.random() * 300);
+      }
 
-        const opacity = connectionOpacity(c, now2);
-        const drawFrac = connectionDrawFraction(c, now2);
+      // ── Update + draw vectors ────────────────────────────────────────────────
+      const TRAIL_SEGMENTS = 24;
 
-        const endX = c.ax + (c.bx - c.ax) * drawFrac;
-        const endY = c.ay + (c.by - c.ay) * drawFrac;
+      for (let vi = vectors.length - 1; vi >= 0; vi--) {
+        const vec = vectors[vi];
+        vec.traveled += vec.speed;
 
-        const [ra, ga, ba] = c.colorA;
-        const [rb, gb, bb] = c.colorB;
+        const trailLength = vec.totalLength * 0.35;
+        const headDist = vec.traveled;
+        const tailDist = vec.traveled - trailLength;
 
-        const grad = ctx.createLinearGradient(c.ax, c.ay, endX, endY);
-        grad.addColorStop(0, `rgba(${ra},${ga},${ba},${opacity})`);
-        grad.addColorStop(1, `rgba(${rb},${gb},${bb},${opacity})`);
+        // Activate nodes near the head
+        const [hx, hy] = posOnPath(vec.path, vec.segLengths, vec.totalLength, headDist);
+        for (let ni = 0; ni < nodes.length; ni++) {
+          if (vec.activatedNodes.has(ni)) continue;
+          const node = nodes[ni];
+          const dx = node.x - hx;
+          const dy = node.y - hy;
+          if (dx * dx + dy * dy <= 2500) { // 50px radius
+            node.pulse = 0.7 + Math.random() * 0.3;
+            vec.activatedNodes.add(ni);
+          }
+        }
 
-        ctx.beginPath();
-        ctx.moveTo(c.ax, c.ay);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 0.75;
-        ctx.stroke();
+        // Draw comet trail — 24 gradient segments from tail (transparent) to head
+        const [r, g, b] = vec.color;
+        ctx.lineWidth = 1.2;
+
+        for (let s = 0; s < TRAIL_SEGMENTS; s++) {
+          const t0 = s / TRAIL_SEGMENTS;
+          const t1 = (s + 1) / TRAIL_SEGMENTS;
+
+          const d0 = tailDist + t0 * trailLength;
+          const d1 = tailDist + t1 * trailLength;
+
+          // Skip if entirely before path start or after head
+          if (d1 <= 0 || d0 >= headDist) continue;
+
+          const cd0 = Math.max(0, Math.min(d0, vec.totalLength));
+          const cd1 = Math.max(0, Math.min(d1, vec.totalLength));
+          if (cd0 >= cd1) continue;
+
+          const [x0, y0] = posOnPath(vec.path, vec.segLengths, vec.totalLength, cd0);
+          const [x1, y1] = posOnPath(vec.path, vec.segLengths, vec.totalLength, cd1);
+
+          // Opacity: 0 at tail end, 1 at head end
+          const op0 = t0;
+          const op1 = t1;
+
+          const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+          grad.addColorStop(0, `rgba(${r},${g},${b},${op0})`);
+          grad.addColorStop(1, `rgba(${r},${g},${b},${op1})`);
+
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.strokeStyle = grad;
+          ctx.stroke();
+        }
+
+        // Draw leading dot (slightly dimmer than full opacity)
+        if (headDist <= vec.totalLength) {
+          ctx.beginPath();
+          ctx.arc(hx, hy, 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},0.9)`;
+          ctx.fill();
+        }
+
+        // Remove once tail has fully cleared the path end
+        if (tailDist > vec.totalLength) {
+          vectors.splice(vi, 1);
+        }
       }
     }
+
+    // ── Theme helpers ──────────────────────────────────────────────────────────
 
     function isDark() {
       return document.documentElement.classList.contains('dark');
@@ -272,14 +370,7 @@
     }
 
     function start() {
-      if (rafId === null) {
-        rafId = requestAnimationFrame(draw);
-      }
-      if (constellationTimer === null) {
-        // Fire one immediately, then settle into the recurring schedule
-        setTimeout(() => spawnConstellation(performance.now()), 800);
-        scheduleConstellation();
-      }
+      if (rafId === null) rafId = requestAnimationFrame(draw);
     }
 
     function stop() {
@@ -287,25 +378,22 @@
         cancelAnimationFrame(rafId);
         rafId = null;
       }
-      if (constellationTimer !== null) {
-        clearTimeout(constellationTimer);
-        constellationTimer = null;
-      }
     }
 
-    // Init
+    // ── Bootstrap ──────────────────────────────────────────────────────────────
+
     resize();
     setOpacity(isDark());
     start();
 
-    // Debounced resize
+    // Debounced resize via ResizeObserver
     const resizeObs = new ResizeObserver(() => {
       if (resizeTimer !== null) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(resize, 150);
     });
     resizeObs.observe(document.body);
 
-    // Theme: localStorage changes (cross-tab)
+    // Cross-tab theme changes
     window.addEventListener('storage', (e) => {
       if (e.key === 'theme') {
         const dark =
@@ -316,7 +404,7 @@
       }
     });
 
-    // Theme: same-tab class mutations (toggle button + OS changes)
+    // Same-tab theme toggle (class mutation on <html>)
     const mutObs = new MutationObserver(() => {
       const dark = isDark();
       setOpacity(dark);
