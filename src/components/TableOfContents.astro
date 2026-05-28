@@ -55,6 +55,9 @@ const h2s = headings.filter(h => h.depth === 2);
     order: 2;
     width: 200px;
     flex-shrink: 0;
+    position: sticky;
+    top: 80px;
+    align-self: start;
   }
 }
 
@@ -66,8 +69,6 @@ const h2s = headings.filter(h => h.depth === 2);
 @media (min-width: 1088px) {
   .toc-sidebar {
     display: block;
-    position: sticky;
-    top: 80px;
   }
 
   .toc-inline {
