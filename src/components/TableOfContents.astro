@@ -244,31 +244,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Sidebar active-section tracking (desktop only) ──
   if (!window.matchMedia('(min-width: 1088px)').matches) return;
 
-  const proseHeadings = document.querySelectorAll<HTMLElement>('.prose h2[id]');
+  const proseHeadings = Array.from(
+    document.querySelectorAll<HTMLElement>('.prose h2[id]')
+  );
   const tocItems = document.querySelectorAll<HTMLElement>('.toc-item');
   if (!proseHeadings.length || !tocItems.length) return;
 
   let activeId = '';
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = (entry.target as HTMLElement).id;
-        if (id === activeId) return;
-        activeId = id;
-        tocItems.forEach(item => {
-          item.classList.toggle('active', item.getAttribute('href') === `#${id}`);
-        });
-      }
+  function setActive(id: string) {
+    if (id === activeId) return;
+    activeId = id;
+    tocItems.forEach(item => {
+      item.classList.toggle('active', item.getAttribute('href') === `#${id}`);
     });
-  }, { rootMargin: '-20% 0px -70% 0px' });
-
-  proseHeadings.forEach(h => observer.observe(h));
-
-  // Activate first item on initial load if near top
-  if (window.scrollY < 120 && tocItems.length > 0) {
-    tocItems[0].classList.add('active');
-    activeId = tocItems[0].getAttribute('href')?.slice(1) ?? '';
   }
+
+  function updateActive() {
+    // Threshold: a heading is "active" once its top edge crosses 30% down the viewport
+    const threshold = window.scrollY + window.innerHeight * 0.30;
+    let current = proseHeadings[0];
+    for (const h of proseHeadings) {
+      if (h.offsetTop <= threshold) {
+        current = h;
+      }
+    }
+    if (current) setActive(current.id);
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive(); // set correct active heading on initial load / hash navigation
 });
 </script>
