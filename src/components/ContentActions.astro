@@ -13,11 +13,12 @@ interface Props {
   slug: string;
   summary: Summary | null;
   hasAudio?: boolean;
+  showListen?: boolean;
   questions: string[] | null;
   pageType: 'journal' | 'project';
 }
 
-const { slug, summary, hasAudio = false, questions, pageType } = Astro.props;
+const { slug, summary, hasAudio = false, showListen = true, questions, pageType } = Astro.props;
 const hasSummary = summary !== null;
 const hasQuestions = questions !== null;
 ---
@@ -32,14 +33,16 @@ const hasQuestions = questions !== null;
     >
       Summarize <i class="ti ti-sparkles" aria-hidden="true"></i>
     </button>
-    <button
-      id="listen-btn"
-      class={`ca-btn${hasAudio ? '' : ' ca-disabled'}`}
-      aria-label="Listen to this entry"
-      disabled={!hasAudio}
-    >
-      Listen <i class="ti ti-headphones" aria-hidden="true"></i>
-    </button>
+    {showListen && (
+      <button
+        id="listen-btn"
+        class={`ca-btn${hasAudio ? '' : ' ca-disabled'}`}
+        aria-label="Listen to this entry"
+        disabled={!hasAudio}
+      >
+        Listen <i class="ti ti-headphones" aria-hidden="true"></i>
+      </button>
+    )}
     <button
       id="ask-btn"
       class={`ca-btn${hasQuestions ? '' : ' ca-disabled'}`}
