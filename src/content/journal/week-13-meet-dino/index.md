@@ -36,13 +36,13 @@ What I'm looking for is more like the digital embodiment of Dean Martin from the
 
 Dino is a conversational interface with an underlying agentic architecture. The user sees a conversation. Under the hood, there's a tool loop where Claude decides which tools to call, processes the results, and decides what to do next (search → check availability → book → calendar). The user never sees the agent reasoning. They just talk to Dino and things happen.
 
-![Dino chat interface showing a conversation with restaurant recommendations in dark theme with gold accents](/images/journal/week-13-dino-chat-interface.png)
+![Dino chat interface showing a conversation with restaurant recommendations in dark theme with gold accents](./images/week-13-dino-chat-interface.png)
 
 Dino has Rat Pack-era charm, knows the Vegas dining scene cold, and never sounds like a chatbot. He also takes care of all the details. Tell him you're looking for a great steakhouse for two on Saturday night, and he recommends places with strong opinions ("If Sinatra were alive, this is where he'd eat on a Tuesday"), checks availability, books a table, and puts the reservation on your calendar with an insider tip about what to order or where to sit.
 
 The technical stack was new territory for me: FastAPI backend serving both a REST API and a vanilla HTML/JS frontend, Google Maps Places API for real restaurant discovery, a mock booking service with a real API contract, and Google Calendar deep links for reservation events. Deployed to Railway (Dino needs a persistent Python process, which Streamlit can't provide).
 
-![Dino app overview showing the FastAPI backend architecture and frontend chat interface](/images/journal/week-13-dino-app-overview.png)
+![Dino app overview showing the FastAPI backend architecture and frontend chat interface](./images/week-13-dino-app-overview.png)
 
 ### The Claude Code Build
 
@@ -50,7 +50,7 @@ I finally gave up the ghost of trying to become a Python ninja and went all-in o
 
 The project scaffold tells Claude Code who Dino is, how the code should be structured, and what not to do. `CLAUDE.md` is 75 lines (well under the recommended 200-line cap) covering project identity, architecture decisions, code conventions, and voice guidelines. A separate skill file at `.claude/skills/dino-personality/SKILL.md` handles the detailed personality rules and conversation flow patterns. A slash command at `.claude/commands/run-server.md` starts the backend with one keystroke.
 
-![Claude Code project setup showing CLAUDE.md and project structure in the terminal](/images/journal/week-13-claude-code-setup.png)
+![Claude Code project setup showing CLAUDE.md and project structure in the terminal](./images/week-13-claude-code-setup.png)
 
 This was obviously faster than trying to write code in Visual Studio with Claude's help. Now, I'm writing specs. Claude Code writes all the code. My job shifted from "write (bad) Python (slowly) with (constant) guidance" to "define what the system should do and verify that it does it."
 
@@ -58,19 +58,19 @@ This was obviously faster than trying to write code in Visual Studio with Claude
 
 Dino was the most fun I've had with prompt engineering. The system prompt built a rich representation of Dean Martin's locution: he calls people "pal" and "friend," has strong opinions about every restaurant, tells you which table to request and what to order, and knows when a place is overhyped.
 
-![Dino personality prompt showing the system prompt structure and Dean Martin character definition](/images/journal/week-13-dino-personality-prompt.png)
+![Dino personality prompt showing the system prompt structure and Dean Martin character definition](./images/week-13-dino-personality-prompt.png)
 
 The personality prompt uses a structured conversation flow (greet → understand → recommend → confirm → book → calendar) with explicit edge case handling. When someone asks about nightclubs or shows, Dino stays honest: "That's not my department, pal. I'm your dinner guy."
 
 The voice held up across dozens of test conversations. When I gave the name "Frank Sinatra" for a reservation, Dino played along and referred to me as "Chairman" once or twice. And when the place he recommended wasn't available, he came clean about it instead of hallucinating.
 
-![Dino booking flow conversation showing Dino confirming a reservation and handling an unavailability gracefully](/images/journal/week-13-dino-booking-flow.png)
+![Dino booking flow conversation showing Dino confirming a reservation and handling an unavailability gracefully](./images/week-13-dino-booking-flow.png)
 
 ### Rich Card UI
 
 The frontend renders structured data as rich cards inline with the chat: restaurant cards with real Google Maps photos, ratings, price badges, and Dino's personal take on each place. Booking confirmation cards with a green accent, 2x2 detail grid, and monospace confirmation number in gold. Calendar event cards that link directly to Google Calendar with the reservation pre-filled.
 
-![Dino rich card UI showing restaurant cards with Google Maps photos, ratings, and Dino's personal commentary](/images/journal/week-13-dino-rich-cards.png)
+![Dino rich card UI showing restaurant cards with Google Maps photos, ratings, and Dino's personal commentary](./images/week-13-dino-rich-cards.png)
 
 Getting here required an artifact POC first. I built a self-contained React artifact using the Claude-in-Claude pattern to validate the visual design and personality. The POC confirmed the dark theme with gold accents works, the chat bubble layout is clean, and Dino's voice is consistent. But it also revealed that Claude-in-Claude artifacts don't reliably fire tools. The model bypassed `search_restaurants` entirely and answered from its own knowledge. Ugh.
 
@@ -84,13 +84,13 @@ This felt like a compromise but it was the right decision for three reasons. Fir
 
 OAuth calendar integration is still on the table as a v2 feature for when there are actual users who want frictionless booking. But I'd need to test the assumption that people are comfortable allowing Dino to book reservations on their behalf and add items to their calendars.
 
-![Google Calendar deep link showing a reservation event pre-filled with Dino's insider tip in the description](/images/journal/week-13-dino-calendar-deep-link.png)
+![Google Calendar deep link showing a reservation event pre-filled with Dino's insider tip in the description](./images/week-13-dino-calendar-deep-link.png)
 
 ### Deployment to Railway
 
 Dino is the first tool I've deployed to an application platform (Railway) instead of Streamlit Cloud. The distinction matters: Streamlit Cloud runs scripts. Railway runs applications. Dino's architecture called for a persistent FastAPI process that handles concurrent requests, makes outbound API calls, and maintains conversation state. Not a script.
 
-![Railway deployment dashboard showing Dino running as a live service](/images/journal/week-13-railway-deployment.png)
+![Railway deployment dashboard showing Dino running as a live service](./images/week-13-railway-deployment.png)
 
 Dino is now live at `web-production-c0565.up.railway.app`.
 
@@ -117,7 +117,7 @@ Automating the "jobs" of finding a restaurant, booking a table, and adding it to
 
 And every detail must support the experience. The suggestion pills on the welcome screen, the loading states ("Checking with the maître d'..."), the gold-accented booking confirmation card aren't polish. They're on-brand elements of a Dean Martin Rat Pack aura that evokes the golden age of Las Vegas.
 
-![Dino welcome screen with suggestion pills and dark theme gold-accented design](/images/journal/week-13-dino-welcome-screen.png)
+![Dino welcome screen with suggestion pills and dark theme gold-accented design](./images/week-13-dino-welcome-screen.png)
 
 ### The System Prompt Is the Product Spec
 
@@ -143,7 +143,7 @@ This wasn't a bug in my code. It's a fundamental limitation of the pattern. The 
 
 My "favorite" debugging story of the week. Restaurant cards were rendering with broken image placeholders instead of photos.
 
-![Restaurant cards showing broken image placeholders before the photo_url fix](/images/journal/week-13-photo-bug-broken-images.png)
+![Restaurant cards showing broken image placeholders before the photo_url fix](./images/week-13-photo-bug-broken-images.png)
 
 I traced the data through the entire backend pipeline: Google Maps Places API returns photo references, `places.py` constructs the photo URL, the `Restaurant` model includes `photo_url`, `dino.py` passes it to Claude in the tool results. Every layer had the data. The problem was the system prompt. The `[RESTAURANT_CARD]` schema in `personality.py` listed the fields Claude should include in structured output: name, cuisine, location, price, rating, dino_take. No `photo_url`. The data was sitting right there in the tool results, but the schema didn't tell Claude to carry it through, so it didn't.
 

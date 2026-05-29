@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.97.1",
+    "@astrojs/mdx": "^6.0.1",
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/vercel": "^10.0.4",
     "@pinecone-database/pinecone": "^7.2.0",
@@ -26,6 +27,7 @@
     "astro": "^6.1.5",
     "astro-pagefind": "^2.0.0",
     "openai": "^6.38.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {

@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  size?: 'sm' | 'md' | 'lg';
+  caption?: string;
+}
+
+const { src, alt, size = 'lg', caption } = Astro.props;
+
+const maxWidths = {
+  sm: '360px',
+  md: '540px',
+  lg: '100%',
+};
+---
+
+<figure class:list={['figure', `figure-${size}`]} style={`max-width: ${maxWidths[size]}; margin-left: auto; margin-right: auto;`}>
+  <Image src={src} alt={alt} loading="lazy" class="rounded-md" />
+  {caption && (
+    <figcaption class="mt-2 text-center text-sm text-stone-500 dark:text-stone-400">
+      {caption}
+    </figcaption>
+  )}
+</figure>
