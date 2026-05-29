@@ -24,5 +24,8 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# Obsidian editor config
+.obsidian/
+
 # Claude Code worktrees
 .claude/worktrees/
