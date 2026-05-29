@@ -1353,7 +1353,8 @@ const hasQuestions = questions !== null;
       const links = sources.flatMap(s => {
         const result: string[] = [];
 
-        if (s.type === 'section' && s.heading_id && s.heading_text) {
+        // Section anchor links: journal only (project pages are short, scrolling is trivial)
+        if (askPageType === 'journal' && s.type === 'section' && s.heading_id && s.heading_text) {
           result.push(`<a class="source-link" href="#${escHtml(s.heading_id)}">↗ Jump to: ${escHtml(s.heading_text)}</a>`);
         } else if (s.type === 'related' && s.related_slug) {
           if (askPageType === 'journal') {
@@ -1366,16 +1367,26 @@ const hasQuestions = questions !== null;
           }
         }
 
-        if (s.githubUrl) {
-          const sourceFile = s.githubUrl.split('/blob/main/')[1] || s.githubUrl;
-          result.push(`<a class="source-link source-link-github" href="${escHtml(s.githubUrl)}" target="_blank" rel="noopener noreferrer"><i class="ti ti-brand-github" aria-hidden="true"></i> ${escHtml(sourceFile)}</a>`);
-        }
-
         return result;
       }).filter(Boolean);
 
       if (links.length === 0) return '';
       return `<div class="ask-answer-footer">${links.join('')}</div>`;
+    }
+
+    function injectGithubButtons(container: HTMLElement, githubUrls: string[]) {
+      if (githubUrls.length === 0) return;
+      const url = githubUrls[0];
+      container.querySelectorAll<HTMLElement>('.code-actions').forEach(actions => {
+        if (actions.querySelector('.github-btn')) return;
+        const btn = document.createElement('a');
+        btn.className = 'code-btn github-btn';
+        btn.href = url;
+        btn.target = '_blank';
+        btn.rel = 'noopener noreferrer';
+        btn.innerHTML = '<i class="ti ti-brand-github"></i> View on GitHub';
+        actions.appendChild(btn);
+      });
     }
 
     async function submitQuestion(question: string) {
@@ -1424,6 +1435,7 @@ const hasQuestions = questions !== null;
       let firstToken = true;
       let pendingFlush = '';
       let rafQueued = false;
+      let pendingGithubUrls: string[] = [];
 
       function flushToDOM() {
         if (pendingFlush) {
@@ -1457,6 +1469,14 @@ const hasQuestions = questions !== null;
             }
           } else if (currentEvent === 'sources') {
             const sources = JSON.parse(data);
+            // Collect deduplicated GitHub URLs for code block injection
+            const seen = new Set<string>();
+            for (const s of sources) {
+              if (s.githubUrl && !seen.has(s.githubUrl)) {
+                seen.add(s.githubUrl);
+                pendingGithubUrls.push(s.githubUrl);
+              }
+            }
             const footerHtml = renderSourcesFooter(sources);
             if (footerHtml) {
               const footer = document.createElement('div');
@@ -1512,6 +1532,7 @@ const hasQuestions = questions !== null;
           if (hasCodeBlock) {
             bodyEl.innerHTML = processAnswerText(receivedText);
             wireCodeCopyBtns(bodyEl, receivedText);
+            injectGithubButtons(bodyEl, pendingGithubUrls);
           }
           // Re-find cursor after potential innerHTML swap
           bodyEl.querySelector('.ca-streaming-cursor')?.remove();
