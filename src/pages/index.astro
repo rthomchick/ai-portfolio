@@ -31,7 +31,7 @@ const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sort
   description="Senior product manager documenting a 6-month journey from zero AI experience to shipping production-grade tools. Weekly journal and live demos."
 >
   <Header />
-  <main class="max-w-5xl mx-auto px-4 sm:px-6">
+  <main id="main-content" class="max-w-5xl mx-auto px-4 sm:px-6">
     {/* <HeroPlaceholder /> */}
 
     {featured && (
@@ -64,7 +64,7 @@ const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sort
           ))}
         </div>
         <div class="mt-6">
-          <a href="/journal" class="text-sm text-teal-600 dark:text-teal-400 link-slide font-medium">All entries →</a>
+          <a href="/journal" class="text-sm text-teal-700 dark:text-teal-400 link-slide font-medium">All entries →</a>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ const sortedProjects = allProjects.sort((a, b) => a.data.sortOrder - b.data.sort
           ))}
         </div>
         <div class="mt-6">
-          <a href="/projects" class="text-sm text-teal-600 dark:text-teal-400 link-slide font-medium">All projects →</a>
+          <a href="/projects" class="text-sm text-teal-700 dark:text-teal-400 link-slide font-medium">All projects →</a>
         </div>
       </div>
     </div>

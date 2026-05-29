@@ -77,6 +77,9 @@ const canonical = canonicalUrl || Astro.url.href;
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans antialiased min-h-screen flex flex-col overflow-x-clip">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-stone-900 focus:text-stone-900 dark:focus:text-stone-100 focus:rounded focus:ring-2 focus:ring-teal-600">
+      Skip to main content
+    </a>
     <Starfield />
     <FilamentFlash />
     <!-- relative + z-[1] ensures content stacks above the z-index:0 canvas -->

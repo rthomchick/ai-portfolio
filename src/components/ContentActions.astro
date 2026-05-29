@@ -53,21 +53,21 @@ const hasQuestions = questions !== null;
     </button>
   </div>
   <div class="content-actions-right">
-    <button id="share-btn" class="ca-btn" aria-label="Share">
+    <button id="share-btn" class="ca-btn" aria-label="Share" aria-expanded="false" aria-haspopup="true">
       Share <i class="ti ti-upload" aria-hidden="true"></i>
     </button>
-    <div id="share-dropdown" class="share-dropdown hidden">
-      <button class="share-item" data-action="copy">
+    <div id="share-dropdown" class="share-dropdown hidden" role="menu">
+      <button class="share-item" role="menuitem" data-action="copy">
         <i class="ti ti-link" aria-hidden="true"></i> Copy link
       </button>
-      <div class="share-sep"></div>
-      <a class="share-item" data-action="linkedin" target="_blank" rel="noopener noreferrer">
+      <div class="share-sep" role="separator"></div>
+      <a class="share-item" role="menuitem" data-action="linkedin" target="_blank" rel="noopener noreferrer">
         <i class="ti ti-brand-linkedin" aria-hidden="true"></i> Share on LinkedIn
       </a>
-      <a class="share-item" data-action="x" target="_blank" rel="noopener noreferrer">
+      <a class="share-item" role="menuitem" data-action="x" target="_blank" rel="noopener noreferrer">
         <i class="ti ti-brand-x" aria-hidden="true"></i> Share on X
       </a>
-      <a class="share-item" data-action="bluesky" target="_blank" rel="noopener noreferrer">
+      <a class="share-item" role="menuitem" data-action="bluesky" target="_blank" rel="noopener noreferrer">
         <i class="ti ti-brand-bluesky" aria-hidden="true"></i> Share on Bluesky
       </a>
     </div>
@@ -913,7 +913,9 @@ const hasQuestions = questions !== null;
 
   shareBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
+    const willOpen = shareDropdown?.classList.contains('hidden');
     shareDropdown?.classList.toggle('hidden');
+    shareBtn?.setAttribute('aria-expanded', String(willOpen));
   });
 
   shareDropdown?.querySelector('[data-action="copy"]')?.addEventListener('click', async () => {
@@ -935,6 +937,7 @@ const hasQuestions = questions !== null;
     if (!shareDropdown?.classList.contains('hidden')) {
       if (!shareBtn?.contains(e.target as Node) && !shareDropdown?.contains(e.target as Node)) {
         shareDropdown?.classList.add('hidden');
+        shareBtn?.setAttribute('aria-expanded', 'false');
       }
     }
   });
@@ -962,10 +965,10 @@ const hasQuestions = questions !== null;
 
       if (!rendered) {
         const keyPointsHtml = summary.keyPoints.map((point: { headingId: string; title: string }) => `
-          <a class="summary-link" data-target="${point.headingId}" style="opacity:0;transform:translateY(5px)">
+          <button type="button" class="summary-link" data-target="${point.headingId}" style="opacity:0;transform:translateY(5px);width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:0;font:inherit;color:inherit;display:flex;align-items:center;gap:8px;">
             <i class="ti ti-arrow-right" style="color:#0F6E56;font-size:14px;margin-top:1px;flex-shrink:0;" aria-hidden="true"></i>
             <span class="summary-link-title">${point.title}</span>
-          </a>
+          </button>
         `).join('');
 
         summaryPanel.innerHTML = `
@@ -986,9 +989,6 @@ const hasQuestions = questions !== null;
             if (targetId) {
               document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
             }
-          });
-          link.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); link.click(); }
           });
         });
         document.getElementById('summary-close')?.addEventListener('click', () => {
@@ -1295,9 +1295,9 @@ const hasQuestions = questions !== null;
         const code = m[2];
         parts.push(`<div class="code-block">
           <div class="code-header">
-            <span class="code-filename"><i class="ti ti-file-code"></i> ${escHtml(lang)}</span>
+            <span class="code-filename"><i class="ti ti-file-code" aria-hidden="true"></i> ${escHtml(lang)}</span>
             <div class="code-actions">
-              <button class="code-btn copy-btn"><i class="ti ti-copy"></i> Copy</button>
+              <button class="code-btn copy-btn"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
             </div>
           </div>
           <pre class="code-body"><code>${escHtml(code)}</code></pre>
@@ -1386,7 +1386,7 @@ const hasQuestions = questions !== null;
         btn.href = url;
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
-        btn.innerHTML = '<i class="ti ti-brand-github"></i> View on GitHub';
+        btn.innerHTML = '<i class="ti ti-brand-github" aria-hidden="true"></i> View on GitHub';
         actions.appendChild(btn);
         if (sourceFile) {
           const filenameEl = block.querySelector<HTMLElement>('.code-filename');
@@ -1581,8 +1581,9 @@ const hasQuestions = questions !== null;
         <div id="ask-conversation"></div>
         <p class="scope-note">Answers are scoped to this ${entityLabel}.</p>
         <div class="ask-input-row">
+          <label for="ask-input" class="sr-only">Ask a question about this ${entityLabel}</label>
           <input type="text" id="ask-input" placeholder="Ask about this ${entityLabel}…" autocomplete="off" />
-          <button id="ask-send">→</button>
+          <button id="ask-send" aria-label="Send question">→</button>
         </div>
       `;
 

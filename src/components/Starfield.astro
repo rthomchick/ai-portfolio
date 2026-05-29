@@ -1,5 +1,6 @@
 <canvas
   id="starfield-canvas"
+  aria-hidden="true"
   style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:0;transition:opacity 1s ease;"
 ></canvas>
 
@@ -116,6 +117,8 @@
     }
 
     // Init canvas dimensions and stars
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     resize();
     setOpacity(isDark());
 
@@ -140,7 +143,9 @@
     const mutObs = new MutationObserver(() => setOpacity(isDark()));
     mutObs.observe(document.documentElement, { attributeFilter: ['class'] });
 
-    scheduleNextShoot();
-    requestAnimationFrame(draw);
+    if (!prefersReducedMotion) {
+      scheduleNextShoot();
+      requestAnimationFrame(draw);
+    }
   })();
 </script>

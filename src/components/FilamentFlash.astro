@@ -1,5 +1,6 @@
 <canvas
   id="filament-canvas"
+  aria-hidden="true"
   style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:0;transition:opacity 1s ease;"
 ></canvas>
 
@@ -382,9 +383,13 @@
 
     // ── Bootstrap ──────────────────────────────────────────────────────────────
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     resize();
     setOpacity(isDark());
-    start();
+    if (!prefersReducedMotion) {
+      start();
+    }
 
     // Debounced resize via ResizeObserver
     const resizeObs = new ResizeObserver(() => {
@@ -400,7 +405,9 @@
           e.newValue === 'dark' ||
           (!e.newValue && window.matchMedia('(prefers-color-scheme: dark)').matches);
         setOpacity(dark);
-        dark ? stop() : start();
+        if (!prefersReducedMotion) {
+          dark ? stop() : start();
+        }
       }
     });
 
@@ -408,7 +415,9 @@
     const mutObs = new MutationObserver(() => {
       const dark = isDark();
       setOpacity(dark);
-      dark ? stop() : start();
+      if (!prefersReducedMotion) {
+        dark ? stop() : start();
+      }
     });
     mutObs.observe(document.documentElement, { attributeFilter: ['class'] });
   })();

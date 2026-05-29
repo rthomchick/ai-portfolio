@@ -6,11 +6,14 @@ import Footer from '../components/Footer.astro';
 
 <BaseLayout title="Search" description="Search journal entries and project pages.">
   <Header />
-  <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-12 w-full">
+  <main id="main-content" class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-12 w-full">
+
+    <h1 class="text-2xl font-medium tracking-tight text-stone-900 dark:text-stone-100 mb-6">Search</h1>
 
     <!-- Search bar -->
     <form id="search-form" class="relative mb-6" autocomplete="off">
-      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <label for="search-input" class="sr-only">Search journal entries and projects</label>
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
       </svg>
       <input
@@ -25,9 +28,9 @@ import Footer from '../components/Footer.astro';
 
     <!-- Filter pills -->
     <div class="flex gap-2 mb-8" id="filter-pills">
-      <button data-filter="all" class="filter-pill active px-4 py-1.5 text-sm rounded-full border transition-colors">All</button>
-      <button data-filter="journal" class="filter-pill px-4 py-1.5 text-sm rounded-full border transition-colors">Journal</button>
-      <button data-filter="project" class="filter-pill px-4 py-1.5 text-sm rounded-full border transition-colors">Projects</button>
+      <button data-filter="all" aria-pressed="true" class="filter-pill active px-4 py-1.5 text-sm rounded-full border transition-colors">All</button>
+      <button data-filter="journal" aria-pressed="false" class="filter-pill px-4 py-1.5 text-sm rounded-full border transition-colors">Journal</button>
+      <button data-filter="project" aria-pressed="false" class="filter-pill px-4 py-1.5 text-sm rounded-full border transition-colors">Projects</button>
     </div>
 
     <!-- AI answer card (hidden until streaming begins) -->
@@ -36,9 +39,12 @@ import Footer from '../components/Footer.astro';
         <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300">AI answer</span>
         <span class="text-xs text-stone-400 dark:text-stone-500">from your portfolio</span>
       </div>
-      <div id="ai-answer-text" class="text-sm leading-relaxed text-stone-700 dark:text-stone-300 whitespace-pre-wrap"></div>
+      <div id="ai-answer-text" class="text-sm leading-relaxed text-stone-700 dark:text-stone-300 whitespace-pre-wrap" aria-live="polite" aria-atomic="false"></div>
       <div id="ai-sources" class="mt-4 flex flex-wrap gap-2 hidden"></div>
     </div>
+
+    <!-- Screen reader announcements for search results -->
+    <div id="search-status" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
     <!-- Result list -->
     <div id="result-list"></div>
@@ -51,9 +57,9 @@ import Footer from '../components/Footer.astro';
 
   <style>
     .filter-pill.active {
-      background-color: #0D9488;
+      background-color: #0F766E;
       color: white;
-      border-color: #0D9488;
+      border-color: #0F766E;
     }
     .dark .filter-pill.active {
       background-color: #2DD4BF;
@@ -101,14 +107,19 @@ import Footer from '../components/Footer.astro';
       var aiSourcesEl = document.getElementById('ai-sources');
       var resultList = document.getElementById('result-list');
       var emptyState = document.getElementById('empty-state');
+      var searchStatus = document.getElementById('search-status');
       var filterPills = document.querySelectorAll('.filter-pill');
 
       // Filter pills
       filterPills.forEach(function (pill) {
         pill.addEventListener('click', function () {
           activeFilter = pill.dataset.filter;
-          filterPills.forEach(function (p) { p.classList.remove('active'); });
+          filterPills.forEach(function (p) {
+            p.classList.remove('active');
+            p.setAttribute('aria-pressed', 'false');
+          });
           pill.classList.add('active');
+          pill.setAttribute('aria-pressed', 'true');
           renderResultList();
         });
       });
@@ -185,6 +196,7 @@ import Footer from '../components/Footer.astro';
         if (filtered.length === 0 && mergedResults.length > 0) {
           resultList.innerHTML = '<p class="text-sm text-stone-400 dark:text-stone-500 py-4">No ' + activeFilter + ' results.</p>';
           emptyState.classList.add('hidden');
+          if (searchStatus) searchStatus.textContent = 'No ' + activeFilter + ' results.';
           return;
         }
 
@@ -195,6 +207,11 @@ import Footer from '../components/Footer.astro';
         }
 
         emptyState.classList.add('hidden');
+        if (searchStatus) {
+          searchStatus.textContent = filtered.length === 1
+            ? '1 result found.'
+            : filtered.length + ' results found.';
+        }
         var html = '';
         filtered.forEach(function (r) {
           var typeBadgeClass = r.type === 'journal'

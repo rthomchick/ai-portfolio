@@ -43,10 +43,10 @@ const badgeLabel: Record<string, string> = {
   description={project.data.description}
 >
   <Header />
-  <main data-pagefind-body class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+  <main id="main-content" data-pagefind-body class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
     <meta data-pagefind-meta="description" content={project.data.description} />
     <meta data-pagefind-filter="type" content="project" />
-    <a href="/projects" class="text-sm text-teal-600 dark:text-teal-400 link-slide transition-colors no-underline mb-8 inline-block">← Projects</a>
+    <a href="/projects" class="text-sm text-teal-700 dark:text-teal-400 link-slide transition-colors no-underline mb-8 inline-block">← Projects</a>
 
     <div class="reveal">
       <div class="flex items-center gap-3 mb-4">
@@ -95,7 +95,7 @@ const badgeLabel: Record<string, string> = {
           <dd>
             <a
               href={project.data.journalSlug ? `/journal/${project.data.journalSlug}` : `/journal`}
-              class="text-sm text-teal-600 dark:text-teal-400 hover:underline"
+              class="text-sm text-teal-700 dark:text-teal-400 hover:underline"
             >Week {project.data.weekBuilt}</a>
           </dd>
         </div>
@@ -105,12 +105,12 @@ const badgeLabel: Record<string, string> = {
             <dt class="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-2">Links</dt>
             <dd class="flex flex-wrap gap-4">
               {project.data.deployUrl && (
-                <a href={project.data.deployUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 dark:text-teal-400 hover:underline">
+                <a href={project.data.deployUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-700 dark:text-teal-400 hover:underline">
                   Live app ↗
                 </a>
               )}
               {project.data.repoUrl && (
-                <a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 dark:text-teal-400 hover:underline">
+                <a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="text-sm text-teal-700 dark:text-teal-400 hover:underline">
                   GitHub ↗
                 </a>
               )}
@@ -122,7 +122,7 @@ const badgeLabel: Record<string, string> = {
     </div>
 
     <!-- Body -->
-    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline dark:prose-invert reveal">
+    <div class="prose prose-stone max-w-2xl prose-headings:font-medium prose-headings:tracking-tight prose-a:text-teal-700 prose-a:no-underline hover:prose-a:underline dark:prose-invert reveal">
       <Content />
     </div>
   </main>
