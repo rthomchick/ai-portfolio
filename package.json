@@ -13,7 +13,7 @@
     "index": "node --env-file=.env scripts/index-content.mjs",
     "generate-summaries": "npx tsx scripts/generate-summaries.ts",
     "generate-questions": "npx tsx scripts/generate-questions.ts",
-    "prebuild": "npm run generate-summaries"
+    "prebuild": "npm run generate-summaries && npx tsx scripts/generate-questions.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.97.1",

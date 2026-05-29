@@ -212,58 +212,64 @@ Rules:
   }
 }
 
-const files = fs.readdirSync(JOURNAL_DIR).filter(f => f.endsWith('.md')).sort();
+try {
+  const files = fs.readdirSync(JOURNAL_DIR).filter(f => f.endsWith('.md')).sort();
 
-for (const file of files) {
-  const slug = file.replace('.md', '');
-  const mdPath = path.join(JOURNAL_DIR, file);
-  const jsonPath = path.join(SUMMARIES_DIR, `${slug}.json`);
+  for (const file of files) {
+    const slug = file.replace('.md', '');
+    const mdPath = path.join(JOURNAL_DIR, file);
+    const jsonPath = path.join(SUMMARIES_DIR, `${slug}.json`);
 
-  const mdStat = fs.statSync(mdPath);
+    const mdStat = fs.statSync(mdPath);
 
-  if (fs.existsSync(jsonPath)) {
-    const jsonStat = fs.statSync(jsonPath);
-    if (jsonStat.mtimeMs > mdStat.mtimeMs) {
-      console.log(`⏭  Skipped ${slug} (unchanged)`);
-      continue;
+    if (fs.existsSync(jsonPath)) {
+      const jsonStat = fs.statSync(jsonPath);
+      if (jsonStat.mtimeMs > mdStat.mtimeMs) {
+        console.log(`⏭  Skipped ${slug} (unchanged)`);
+        continue;
+      }
+    }
+
+    const content = fs.readFileSync(mdPath, 'utf-8');
+
+    try {
+      const summary = await generateSummary(slug, content);
+      fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
+      console.log(`✓  Generated summary for ${slug}`);
+    } catch (err) {
+      console.error(`✗  Failed ${slug}:`, err);
     }
   }
 
-  const content = fs.readFileSync(mdPath, 'utf-8');
+  const projectFiles = fs.readdirSync(PROJECTS_DIR).filter(f => f.endsWith('.md')).sort();
 
-  try {
-    const summary = await generateSummary(slug, content);
-    fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
-    console.log(`✓  Generated summary for ${slug}`);
-  } catch (err) {
-    console.error(`✗  Failed ${slug}:`, err);
-  }
-}
+  for (const file of projectFiles) {
+    const slug = file.replace('.md', '');
+    const mdPath = path.join(PROJECTS_DIR, file);
+    const jsonPath = path.join(PROJECT_SUMMARIES_DIR, `${slug}.json`);
 
-const projectFiles = fs.readdirSync(PROJECTS_DIR).filter(f => f.endsWith('.md')).sort();
+    const mdStat = fs.statSync(mdPath);
 
-for (const file of projectFiles) {
-  const slug = file.replace('.md', '');
-  const mdPath = path.join(PROJECTS_DIR, file);
-  const jsonPath = path.join(PROJECT_SUMMARIES_DIR, `${slug}.json`);
+    if (fs.existsSync(jsonPath)) {
+      const jsonStat = fs.statSync(jsonPath);
+      if (jsonStat.mtimeMs > mdStat.mtimeMs) {
+        console.log(`⏭  Skipped project ${slug} (unchanged)`);
+        continue;
+      }
+    }
 
-  const mdStat = fs.statSync(mdPath);
+    const content = fs.readFileSync(mdPath, 'utf-8');
 
-  if (fs.existsSync(jsonPath)) {
-    const jsonStat = fs.statSync(jsonPath);
-    if (jsonStat.mtimeMs > mdStat.mtimeMs) {
-      console.log(`⏭  Skipped project ${slug} (unchanged)`);
-      continue;
+    try {
+      const summary = await generateProjectSummary(slug, content);
+      fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
+      console.log(`✓  Generated summary for project ${slug}`);
+    } catch (err) {
+      console.error(`✗  Failed project ${slug}:`, err);
     }
   }
-
-  const content = fs.readFileSync(mdPath, 'utf-8');
-
-  try {
-    const summary = await generateProjectSummary(slug, content);
-    fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
-    console.log(`✓  Generated summary for project ${slug}`);
-  } catch (err) {
-    console.error(`✗  Failed project ${slug}:`, err);
-  }
+} catch (err) {
+  console.warn('[generate-summaries] Anthropic API error — skipping summary generation for this build.');
+  console.warn(err instanceof Error ? err.message : String(err));
+  process.exit(0);
 }

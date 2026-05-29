@@ -1,0 +1,11 @@
+{
+  "ratelimit": [
+    {
+      "path": "/api/search",
+      "windowType": "sliding",
+      "windowSize": 60,
+      "maxRequests": 20,
+      "byRegion": false
+    }
+  ]
+}

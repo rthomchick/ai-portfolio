@@ -155,5 +155,11 @@ async function processDirectory(
   }
 }
 
-await processDirectory(JOURNAL_DIR, QUESTIONS_JOURNAL_DIR, 'journal');
-await processDirectory(PROJECTS_DIR, QUESTIONS_PROJECTS_DIR, 'project');
+try {
+  await processDirectory(JOURNAL_DIR, QUESTIONS_JOURNAL_DIR, 'journal');
+  await processDirectory(PROJECTS_DIR, QUESTIONS_PROJECTS_DIR, 'project');
+} catch (err) {
+  console.warn('[generate-questions] Anthropic API error — skipping question generation for this build.');
+  console.warn(err instanceof Error ? err.message : String(err));
+  process.exit(0);
+}
