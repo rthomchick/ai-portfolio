@@ -211,16 +211,16 @@ const currentPath = Astro.url.pathname;
       showIcons(next);
     }
 
+    const btn = document.getElementById('theme-toggle');
+    const btnMobile = document.getElementById('theme-toggle-mobile');
+
     showIcons(getState());
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
       if (getState() === 'system') applyTheme('system');
     });
 
-    const btn = document.getElementById('theme-toggle');
     if (btn) btn.addEventListener('click', handleToggle);
-
-    const btnMobile = document.getElementById('theme-toggle-mobile');
     if (btnMobile) btnMobile.addEventListener('click', handleToggle);
 
     const menuToggle = document.getElementById('mobile-menu-toggle');
