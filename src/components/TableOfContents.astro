@@ -5,81 +5,38 @@ interface Heading {
   text: string;
 }
 
-interface TocItem {
-  depth: 2 | 3;
-  slug: string;
-  text: string;
-  children: TocItem[];
-}
-
 interface Props {
   headings: Heading[];
 }
 
 const { headings } = Astro.props;
-
-const tocItems: TocItem[] = [];
-let currentH2: TocItem | null = null;
-
-for (const h of headings) {
-  if (h.depth === 2) {
-    currentH2 = { depth: 2, slug: h.slug, text: h.text, children: [] };
-    tocItems.push(currentH2);
-  } else if (h.depth === 3 && currentH2) {
-    currentH2.children.push({ depth: 3, slug: h.slug, text: h.text, children: [] });
-  }
-}
+const h2s = headings.filter(h => h.depth === 2);
 ---
 
-{tocItems.length > 0 && (
+{h2s.length > 0 && (
   <div class="toc-wrapper">
     <!-- Inline TOC: visible <1088px, appears above prose via order:-1 -->
     <div class="toc-inline">
       <button class="toc-inline-header" aria-expanded="false" aria-controls="toc-inline-body">
         <span>
-          <i class="ti ti-list" aria-hidden="true"></i> On this page
+          <i class="ti ti-list" aria-hidden="true"></i> In this entry
         </span>
         <i class="ti ti-chevron-down toc-inline-chevron" aria-hidden="true"></i>
       </button>
       <nav class="toc-inline-body hidden" id="toc-inline-body" aria-label="Table of contents">
-        {tocItems.map(h2 => (
-          <Fragment>
-            <a class="toc-inline-link" href={`#${h2.slug}`}>
-              <i class="ti ti-arrow-right" aria-hidden="true"></i> {h2.text}
-            </a>
-            {h2.children.map(h3 => (
-              <a class="toc-inline-link toc-inline-link-h3" href={`#${h3.slug}`}>
-                <i class="ti ti-corner-down-right" aria-hidden="true"></i> {h3.text}
-              </a>
-            ))}
-          </Fragment>
+        {h2s.map(h => (
+          <a class="toc-inline-link" href={`#${h.slug}`}>
+            <i class="ti ti-arrow-right" aria-hidden="true"></i> {h.text}
+          </a>
         ))}
       </nav>
     </div>
 
     <!-- Sidebar TOC: visible ≥1088px, sticky alongside prose -->
     <nav class="toc-sidebar" aria-label="Table of contents">
-      <div class="toc-sidebar-label">On this page</div>
-      {tocItems.map(h2 => (
-        <div class="toc-group">
-          <a
-            class="toc-item"
-            href={`#${h2.slug}`}
-            data-heading-slug={h2.slug}
-          >{h2.text}</a>
-          {h2.children.length > 0 && (
-            <div class="toc-children">
-              {h2.children.map(h3 => (
-                <a
-                  class="toc-item toc-item-h3"
-                  href={`#${h3.slug}`}
-                  data-heading-slug={h3.slug}
-                  data-parent-slug={h2.slug}
-                >{h3.text}</a>
-              ))}
-            </div>
-          )}
-        </div>
+      <div class="toc-sidebar-label">In this entry</div>
+      {h2s.map(h => (
+        <a class="toc-item" href={`#${h.slug}`}>{h.text}</a>
       ))}
     </nav>
   </div>
@@ -131,15 +88,15 @@ for (const h of headings) {
   color: #f5f5f4;
 }
 
-/* ── H2 TOC items ── */
 .toc-item {
   display: block;
   font-size: 13px;
   line-height: 1.4;
   color: #78716c;
   text-decoration: none;
-  padding: 5px 0;
-  transition: color 120ms;
+  padding: 5px 0 5px 10px;
+  border-left: 2px solid transparent;
+  transition: color 120ms, border-color 120ms;
   font-family: 'DM Sans', sans-serif;
 }
 
@@ -157,52 +114,12 @@ for (const h of headings) {
 
 .toc-item.active {
   color: #0f766e;
+  border-left-color: #0f766e;
 }
 
 :global(.dark) .toc-item.active {
   color: #2dd4bf;
-}
-
-/* Parent H2 when a child H3 is active */
-.toc-item.parent-active {
-  color: #0f766e;
-  opacity: 0.75;
-}
-
-:global(.dark) .toc-item.parent-active {
-  color: #2dd4bf;
-  opacity: 0.75;
-}
-
-/* ── H3 TOC items ── */
-.toc-children {
-  padding-left: 12px;
-}
-
-.toc-item-h3 {
-  font-size: 12px;
-  color: #a8a29e;
-  padding: 3px 0;
-}
-
-:global(.dark) .toc-item-h3 {
-  color: #78716c;
-}
-
-.toc-item-h3:hover {
-  color: #57534e;
-}
-
-:global(.dark) .toc-item-h3:hover {
-  color: #d6d3d1;
-}
-
-.toc-item-h3.active {
-  color: #44403c;
-}
-
-:global(.dark) .toc-item-h3.active {
-  color: #d6d3d1;
+  border-left-color: #2dd4bf;
 }
 
 /* ── Inline TOC (mobile) ── */
@@ -299,26 +216,6 @@ for (const h of headings) {
 :global(.dark) .toc-inline-link:hover {
   color: #f5f5f4;
 }
-
-/* H3 inline links */
-.toc-inline-link-h3 {
-  font-size: 12px;
-  padding-left: 12px;
-  color: #a8a29e;
-}
-
-:global(.dark) .toc-inline-link-h3 {
-  color: #78716c;
-}
-
-.toc-inline-link-h3 i {
-  font-size: 10px;
-  color: #a8a29e;
-}
-
-:global(.dark) .toc-inline-link-h3 i {
-  color: #78716c;
-}
 </style>
 
 <script>
@@ -347,26 +244,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Sidebar active-section tracking (desktop only) ──
   if (!window.matchMedia('(min-width: 1088px)').matches) return;
 
-  function setActiveFromSlug(slug: string) {
-    document.querySelectorAll('.toc-item').forEach(item => {
-      item.classList.remove('active', 'parent-active');
-    });
-
-    if (!slug) return;
-
-    const activeItem = document.querySelector(`.toc-item[data-heading-slug="${CSS.escape(slug)}"]`) as HTMLElement | null;
-    if (activeItem) {
-      activeItem.classList.add('active');
-      const parentSlug = activeItem.dataset.parentSlug;
-      if (parentSlug) {
-        const parentItem = document.querySelector(`.toc-item[data-heading-slug="${CSS.escape(parentSlug)}"]`);
-        parentItem?.classList.add('parent-active');
-      }
-    }
-  }
-
   function setActiveFromHash() {
-    setActiveFromSlug(window.location.hash.slice(1));
+    const hash = window.location.hash.slice(1);
+    document.querySelectorAll('.toc-item').forEach(item => {
+      const itemHash = item.getAttribute('href')?.slice(1);
+      item.classList.toggle('active', itemHash === hash);
+    });
   }
 
   // Activate on hash change (TOC click, back/forward, direct URL)
@@ -375,12 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set initial state on load
   setActiveFromHash();
 
-  // Update hash on scroll to keep it in sync (track both H2 and H3)
-  const proseHeadings = Array.from(document.querySelectorAll('.prose h2, .prose h3'));
+  // Update hash on scroll to keep it in sync
+  const proseHeadings = Array.from(document.querySelectorAll('.prose h2'));
 
   function updateHashOnScroll() {
     const threshold = window.innerHeight * 0.30;
-    let current: Element | null = null;
+    let current = null;
     for (const h of proseHeadings) {
       if (h.getBoundingClientRect().top <= threshold) {
         current = h;
