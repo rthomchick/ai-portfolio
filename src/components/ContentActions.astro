@@ -1377,8 +1377,10 @@ const hasQuestions = questions !== null;
     function injectGithubButtons(container: HTMLElement, githubUrls: string[]) {
       if (githubUrls.length === 0) return;
       const url = githubUrls[0];
-      container.querySelectorAll<HTMLElement>('.code-actions').forEach(actions => {
-        if (actions.querySelector('.github-btn')) return;
+      const sourceFile = url.split('/blob/main/')[1] || null;
+      container.querySelectorAll<HTMLElement>('.code-block').forEach(block => {
+        const actions = block.querySelector<HTMLElement>('.code-actions');
+        if (!actions || actions.querySelector('.github-btn')) return;
         const btn = document.createElement('a');
         btn.className = 'code-btn github-btn';
         btn.href = url;
@@ -1386,6 +1388,12 @@ const hasQuestions = questions !== null;
         btn.rel = 'noopener noreferrer';
         btn.innerHTML = '<i class="ti ti-brand-github"></i> View on GitHub';
         actions.appendChild(btn);
+        if (sourceFile) {
+          const filenameEl = block.querySelector<HTMLElement>('.code-filename');
+          if (filenameEl) {
+            filenameEl.innerHTML = `<i class="ti ti-file-code"></i> ${escHtml(sourceFile)}`;
+          }
+        }
       });
     }
 
