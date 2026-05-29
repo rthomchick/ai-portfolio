@@ -75,7 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
           // Query scoped to this page's slug
           const pineconeResult = await index.query({
             vector: queryEmbedding,
-            topK: 6,
+            topK: context === 'project' ? 8 : 6,
             includeMetadata: true,
             filter: { slug: { '$eq': slug } },
           });
@@ -89,6 +89,7 @@ export const POST: APIRoute = async ({ request }) => {
               type: 'section',
               heading_text: m.metadata!.section as string,
               heading_id: toHeadingId(m.metadata!.section as string),
+              githubUrl: m.metadata?.githubUrl as string | undefined ?? null,
             }))
             // Dedupe by heading_id
             .filter((s, i, arr) => arr.findIndex(x => x.heading_id === s.heading_id) === i)
@@ -118,6 +119,11 @@ export const POST: APIRoute = async ({ request }) => {
           const contextBlocks = matches
             .filter(m => m.metadata?.text)
             .map((m, i) => {
+              if (context === 'project' && m.metadata?.chunkType === 'code') {
+                const lang = m.metadata?.language || 'text';
+                const section = m.metadata?.section || 'General';
+                return `[Code: ${section} - ${lang}]\n${m.metadata!.text}`;
+              }
               const section = m.metadata?.section ? ` — ${m.metadata.section}` : '';
               return `[Source ${i + 1}${section}]\n${m.metadata!.text}`;
             })
@@ -135,7 +141,7 @@ export const POST: APIRoute = async ({ request }) => {
           const claudeStream = anthropic.messages.stream({
             model: 'claude-sonnet-4-6',
             max_tokens: 800,
-            system: `You are an AI assistant embedded in Richard Thomchick's portfolio. Answer questions about this specific ${entityLabel} (slug: ${slug}) using only the provided context. Be concise and direct — 1-3 short paragraphs max. Write in first person as Richard. If the context doesn't contain enough to answer well, say so briefly. Never invent facts.`,
+            system: `You are an AI assistant embedded in Richard Thomchick's portfolio. Answer questions about this specific ${entityLabel} (slug: ${slug}) using only the provided context. Be concise and direct — 1-3 short paragraphs max. Write in first person as Richard. If the context doesn't contain enough to answer well, say so briefly. Never invent facts. When your answer includes a code block, introduce it first with 1-2 sentences explaining what the code does and where it lives in the project. Show the block. Then follow with a single sentence identifying the most important line or pattern. Never open an answer directly with a heading or a code block — always lead with prose. When your context includes [Code: ...] blocks, reproduce relevant code in your answer using fenced code blocks with the appropriate language tag. Keep code excerpts concise — show the most relevant portion rather than the full block.`,
             messages: [
               ...historyMessages,
               {
