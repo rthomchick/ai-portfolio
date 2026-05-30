@@ -318,20 +318,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Activate on hash change (TOC click, back/forward, direct URL)
-  window.addEventListener('hashchange', setActiveFromHash);
+  // After a TOC click the browser fires scroll events before hashchange, so
+  // the scroll handler overrides the clicked item before we can suppress it.
+  // Fix: intercept clicks directly, suppress scroll updates immediately, and
+  // set the active item from the link's own href rather than waiting for the
+  // hash to update. Keep hashchange for back/forward navigation.
+  let suppressScrollUntil = 0;
+
+  document.querySelectorAll('.toc-item').forEach(link => {
+    link.addEventListener('click', () => {
+      suppressScrollUntil = Date.now() + 1000;
+      document.querySelectorAll('.toc-item').forEach(el => el.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  window.addEventListener('hashchange', () => {
+    suppressScrollUntil = Date.now() + 1000;
+    setActiveFromHash();
+  });
 
   // Set initial state on load
   setActiveFromHash();
 
-  // Update hash on scroll to keep it in sync
+  // Update hash on scroll to keep it in sync.
+  // Threshold is pinned to just below the sticky nav (~100px) rather than
+  // 30% of viewport height. The large 30% threshold caused short sections
+  // (e.g. Supabase Persistence, only ~4 lines) to immediately "lose" to the
+  // next heading because both were above the generous threshold simultaneously.
   const proseHeadings = Array.from(document.querySelectorAll('.prose h2, .prose h3'));
+  const SCROLL_THRESHOLD = 100; // px — just past the sticky nav
 
   function updateHashOnScroll() {
-    const threshold = window.innerHeight * 0.30;
+    if (Date.now() < suppressScrollUntil) return;
     let current = null;
     for (const h of proseHeadings) {
-      if (h.getBoundingClientRect().top <= threshold) {
+      if (h.getBoundingClientRect().top <= SCROLL_THRESHOLD) {
         current = h;
       }
     }
