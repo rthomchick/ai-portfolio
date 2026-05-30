@@ -27,7 +27,7 @@ I started off the week building a simple calculator tool and worked my way up to
 
 ## What I Built
 
-### Day 1: Calculator Tool
+### Calculator Tool
 
 On Monday, Claude walked me through the creation of a tool to get local weather. Then I dipped my toes in by creating a simple calculator tool. This helped me understand the anatomy of a tool, the tool use "loop", and how to:
 
@@ -35,9 +35,11 @@ On Monday, Claude walked me through the creation of a tool to get local weather.
 - Handle Claude's tool use requests
 - Return results back to Claude
 
-I also started to see how the costs add up more quickly (and how important it is to manage the context window) because each tool use cycle requires a minimum of 2 API calls.
+I also started to see how the costs add up more quickly (and how important it is to manage the context window) because each tool use cycle requires a minimum of 2 API calls. 
 
-### Day 2: Real-World Tools
+NGL, I'm struggling to understand why I would want a non-deterministic calculator.
+
+### Web Scraper, File Utility, Query Tool
 
 Tuesday's task was to get hands-on and start building practical tools. I worked on:
 
@@ -47,7 +49,7 @@ Tuesday's task was to get hands-on and start building practical tools. I worked 
 
 After that, I created a combined toolkit that let Claude chain multiple tools together. "Fetch the content from https://example.com and save it to example_content.txt" became two autonomous tool calls across three API round trips. It was pretty cool to see how tool chaining created an autonomous workflow. I didn't write IF/THEN logic. I didn't create a workflow engine. I just gave Claude the tools, and it figured out the sequence.
 
-### Day 3: ServiceNow Mock Tools, Cross-Domain Tool Chaining
+### ServiceNow Mock Tools, Cross-Domain Tool Chaining
 
 The previous days' experiments were informative, but felt abstract. On Wednesday, I worked on something more familiar that felt more like actual PM work: find a critical incident in ITSM, fetch documentation about the error from the web, and create a resolution file.
 
@@ -65,7 +67,7 @@ Next, I combined the mock tool with the web scraper and file utility I created t
 
 The result was an autonomous multi-step workflow spanning three domains: ServiceNow + Web + Files. Claude decided which tools to use, when to use them, what parameters to pass, and how to combine results across tools. I wrote NO workflow logic. Claude just kind of figured it out.
 
-### Day 4: Autonomous Research Agent
+### Autonomous Research Agent
 
 On Thursday, I made the leap from tools to agents. My assignment was to build a "research agent" that investigates a topic and creates a report. The goal was to make my agent as autonomous as possible. I gave it a topic, a task, a token budget, and that's it — I left it up to the agent to decide how deep to research, when it has enough info, and how to structure outputs.
 
@@ -89,7 +91,7 @@ But this is where things broke in instructive ways. Claude hallucinated URLs for
 
 Claude kept "assuring" me that Day 5's lesson would teach me how to prevent all these issues. It felt like a cruel joke. But I worked through the issues, got the agent to work, and I now have a visceral sense of how AI agents can fail — and why.
 
-### Day 5: Production-Ready Resiliency and Robustness
+### Production-Ready Resiliency and Robustness
 
 On Days 1–4, I encountered 404s, hanging API calls, large contexts causing slow processing, and syntax errors breaking tool definitions. On Day 5, I learned how to fix (or prevent) all of this systematically by building a robust tool execution framework with:
 

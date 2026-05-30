@@ -38,13 +38,13 @@ status: published
 
 Last month, Anthropic released the [advisor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool) that lets a faster, lower-cost **executor model** consult a higher-intelligence **advisor model** mid-generation for strategic guidance. Basically, a way for Sonnet to consult Opus mid-generation without a full model swap. My SAFe Feature Spec System seemed like a natural candidate, so I started there and built outward into the infrastructure work the system needed to go production on Streamlit Cloud.
 
-### 1. Advisor Tool Integration
+### Advisor Tool Integration
 
 First, I added Anthropic's `advisor_20260301` beta tool to the Reviewer and Improver stages of my SAFe Feature Spec System. Sonnet executes the task end-to-end; when it hits a decision it can't confidently resolve, it consults Opus. Built `llm_call_with_advisor()` as a parallel function to the existing `llm_call()` wrapper — handles mixed response content blocks (text, server_tool_use, advisor_tool_result), records executor and advisor tokens separately, and degrades gracefully when Opus is overloaded. Controlled via a sidebar checkbox in Streamlit and a `--advisor` CLI flag on the eval runner, defaulting to OFF.
 
 ![Just a manual checkbox for now…](/images/journal/week-11-advisor-checkbox.png)
 
-### 2. Governance Wiring
+### Governance Wiring
 
 The AuditTrail, CostGuard, and TokenTracker modules existed since Weeks 9–10, but weren't connected to the production pipeline. So I wired all three into `app.py`. Every agent call is token-tracked, every stage transition logs an audit event, every expensive call checks cost limits before proceeding. A "Run Details" expander on the final stage shows per-agent token breakdown, total cost, and a timestamped event trace. I also added a `_tracker_flushed` guard to prevent duplicate database inserts on Streamlit reruns.
 
@@ -52,17 +52,17 @@ The AuditTrail, CostGuard, and TokenTracker modules existed since Weeks 9–10, 
 
 ![Timestamped audit trail in the Run Details expander](/images/journal/week-11-governance-audit.png)
 
-### 3. PostgreSQL Migration
+### PostgreSQL Migration
 
 Next, I replaced SQLite with PostgreSQL (Supabase) across the entire evaluation infrastructure so I could deploy the app to Streamlit Cloud. I used a dual-mode connection logic: PostgreSQL via `DATABASE_URL` environment variable, SQLite fallback when unset. Six tables: `prompts`, `eval_runs`, `token_usage`, `audit_trail`, `prompt_promotions`, `feature_requests`. Production uses PostgreSQL, local dev and smoke tests use SQLite.
 
-### 4. Connector Interface and Request Queue
+### Connector Interface and Request Queue
 
 After that, I built a `ConnectorInterface` abstract base class with a `FeatureRequest` dataclass that represents the standardized format all connectors produce. PostgreSQL is the first implementation. Notion, Jira, and Asana are stubs showing the pattern for future connectors. New "Request Queue" Streamlit page with create, process, and completed-request views. The pipeline stages are untouched. The queue is an alternative entry point that feeds into the same pipeline. The UX so far is just OK. I'd need to make significant improvements in order for an average tech marketing manager to use it successfully.
 
 ![This will be replaced with a conversational interface next week….](/images/journal/week-11-request-queue.png)
 
-### 5. Streamlit Cloud Deployment
+### Streamlit Cloud Deployment
 
 After building everything out, I deployed the full v3 system to Streamlit Cloud. End-to-end verification on the live URL: created a request in the queue, processed it through the pipeline with boost inputs, confirmed governance data in Run Details (cost, tokens, audit trail), verified write-back to PostgreSQL. Score: 76 → 85 with boost inputs, $0.72 total cost, 27 LLM calls across 5 agents.
 

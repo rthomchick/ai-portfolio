@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You mentioned that 80% of your production code ended up being resilience logic rather than core functionality—did that surprise you, and how does that change how you think about building agents?",
-    "When Claude hallucinated URLs on Day 4 and confidently assured you that Day 5 would fix everything, what went through your head, and did that experience change how you think about trusting AI outputs?",
-    "You built four progressively more complex agents (calculator → web → ServiceNow → research), but which one taught you the most about how Claude actually decides what to do, and why?"
+    "When you were building the research agent and Claude started hallucinating URLs, what made you keep pushing through instead of pivoting to a different approach?",
+    "You mentioned that tool descriptions are essentially prompt engineering — did you find yourself rewriting them multiple times, or did you get it right pretty quickly once you understood that principle?",
+    "By the end of the week, 80% of your code was resilience infrastructure. Did that feel like wasted effort, or did watching the agent fail on Days 1-4 make you genuinely grateful for all that scaffolding?"
   ]
 }

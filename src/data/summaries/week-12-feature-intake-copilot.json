@@ -1,16 +1,16 @@
 {
-  "overview": "I built a conversational Feature Intake Copilot replacing PM request forms. Using Claude Sonnet/Opus with a two-gate architecture, it achieved 94% ground truth extraction accuracy across 3 personas, averaging 6 conversation turns and a 21.3/24 readiness score.",
+  "overview": "I built a conversational intake copilot replacing feature request forms with an adaptive AI interview, feeding a PM review queue.",
   "keyPoints": [
     {
       "title": "94% ground truth extraction accuracy across 3 personas",
-      "headingId": "6-ground-truth-quality-measurements"
+      "headingId": "ground-truth-quality-measurements"
     },
     {
-      "title": "Two-gate design: copilot extracts, PM decides quality",
-      "headingId": "3-two-gate-architecture"
+      "title": "Two-gate design splits stakeholder UX from PM quality control",
+      "headingId": "two-gate-architecture"
     },
     {
-      "title": "Two-call split fixed model skipping natural language responses",
+      "title": "Two-call split fixed model skipping natural language for tool calls",
       "headingId": "the-two-call-split-separate-what-the-model-says-from-what-it-knows"
     },
     {

@@ -1,25 +1,25 @@
 {
-  "overview": "I converted my Feature Spec Generator CLI into a Streamlit web app, deployed it to Streamlit Cloud, wired MS Teams webhook notifications, and rolled it out to my PM team in 5 days. By end of Day 5, I had 12 completed specs and a full backlog of user feedback.",
+  "overview": "I converted my Feature Spec Generator CLI into a Streamlit web app, deployed it to Streamlit Cloud, and wired MS Teams webhooks for visibility — all in 5 days. 12 specs generated on rollout day. Shipped v1, not v4, and got real feedback that's now shaping v3.",
   "keyPoints": [
     {
-      "title": "App deployed live with public URL in under 10 minutes",
-      "headingId": "day-2-3-testing-and-github-prep"
+      "title": "Deployed to Streamlit Cloud in under 10 minutes",
+      "headingId": "testing-and-github-prep"
     },
     {
-      "title": "Shipped v1 over v2 — user feedback now drives v3",
-      "headingId": "sometimes-done-is-better-than-perfect"
-    },
-    {
-      "title": "Teams webhook took 10 minutes, generated 12 spec notifications Day 5",
+      "title": "Teams webhook answered 'Is anyone using this?' in 10 minutes",
       "headingId": "teams-webhooks-as-minimal-viable-observability"
     },
     {
-      "title": "Session state and st.rerun() are the core of Streamlit flow",
-      "headingId": "the-streamlit-framework"
+      "title": "Claude silently shipped v1 instead of v4 multi-agent build",
+      "headingId": "sometimes-done-is-better-than-perfect"
     },
     {
-      "title": "Secrets management and repo wiring were the hardest parts",
-      "headingId": "week-5-wrap"
+      "title": "12 specs generated on first rollout day",
+      "headingId": "team-rollout"
+    },
+    {
+      "title": "Session state and rerun are Streamlit's core mechanics",
+      "headingId": "the-streamlit-framework"
     }
   ]
 }

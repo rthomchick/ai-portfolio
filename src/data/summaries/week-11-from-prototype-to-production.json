@@ -1,25 +1,25 @@
 {
-  "overview": "I tested Anthropic's advisor tool on my SAFe Feature Spec System, ran a full golden set, and found it averaged -2.2 points at 4.3× cost ($4.98 vs $1.17). Rest of week: PostgreSQL migration, governance wiring, connector abstraction, and Streamlit Cloud deploy.",
+  "overview": "I tested Anthropic's advisor tool on my SAFe Feature Spec System, deployed v3 to Streamlit Cloud with PostgreSQL and governance wiring. The advisor averaged -2.2 points at 4.3× cost ($4.98 vs $1.17) — the data said no.",
   "keyPoints": [
     {
-      "title": "Advisor tool scored -2.2 pts avg at 4.3× cost",
+      "title": "Advisor tool averaged -2.2 pts at 4.3× the cost",
       "headingId": "verdict-on-advisor-tool-the-data-said-no-at-least-for-my-use-cases"
     },
     {
-      "title": "Governance modules were built but unconnected until now",
+      "title": "Governance modules were built but disconnected until now",
       "headingId": "building-guardrails-is-half-the-work"
     },
     {
-      "title": "Connector abstraction replaced fragile single-tool Notion dependency",
+      "title": "Connector abstraction replaced a brittle single-tool Notion integration",
       "headingId": "dont-build-for-one-integration"
     },
     {
       "title": "PostgreSQL migration unlocked Streamlit Cloud deployment",
-      "headingId": "infrastructure-work-is-invisible-and-essential"
+      "headingId": "postgresql-migration"
     },
     {
-      "title": "Live deploy scored 76→85, $0.72, 27 calls across 5 agents",
-      "headingId": "5-streamlit-cloud-deployment"
+      "title": "Live run scored 76→85, $0.72, 27 calls across 5 agents",
+      "headingId": "streamlit-cloud-deployment"
     }
   ]
 }

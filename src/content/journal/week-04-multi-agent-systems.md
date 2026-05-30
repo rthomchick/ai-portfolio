@@ -38,7 +38,7 @@ status: published
 
 This is a long post. It was a long week. But it was well worth the effort to go deeper on agents, tool use, and resilience by revisiting (and up-leveling) some of the products I built in weeks 1-3.
 
-### Day 1: Multi-Agent Feature Spec Generator
+### Multi-Agent Feature Spec Generator
 
 I started the week learning about multi-agent architecture patterns (Sequential, Parallel, Hierarchical, Reflexive etc.) and took a stab at redesigning my Feature Spec Generator as a multi-agent system. My first attempt was a hierarchical pattern with a Supervisor agent. It looked ok at first, but then I ran the numbers. My envisioned 5-agent Feature Spec Generator would cost $0.15 per run. The original one with the "McKinsey-style" semantic anchor from Week 2? $0.05.
 
@@ -59,7 +59,7 @@ But the multi-agent version:
 
 The $52/year cost is meaningless compared to even one avoided engineering mistake or one executive presentation that goes smoothly. But for a high-volume chatbot running 10,000 queries/day, that 3x premium becomes $365,000/year. Definitely harder to justify at scale.
 
-### Day 2: Multi-Agent Conversation Manager
+### Multi-Agent Conversation Manager
 
 The goal for Tuesday was to understand **how agents coordinate**. To do this, I rebuilt my Conversation Manager tool from Week 2 as a multi-agent system. At first, I tried a rather naive approach: pass everything as parameters.
 
@@ -85,7 +85,7 @@ Each agent maintains its own conversation history (focused context) but can read
 
 This pattern enabled the Research Assistant, where the Researcher agent runs **multiple times** (once per question) while maintaining independent contexts for each research task but accumulating results in shared state.
 
-### Day 3: Multi-Agent ROI Analyzer
+### Multi-Agent ROI Analyzer
 
 Wednesday's lesson was a deep dive on tool use and function calling. My lab assignment was to gather my tools into a shareable library file, connect a simple agent to the library, and then build a multi-agent ROI Analyzer system that makes use of the tool library.
 
@@ -151,7 +151,7 @@ On the first run, I encountered what I thought was a hallucination (it produced 
 
 To be honest, this build was kind of grueling. Not the typical "I built this perfect thing in 45 minutes!" story I see on LinkedIn. But with a bit of prompt engineering, it was good enough to avoid getting laughed out of the room!
 
-### Day 4: Failure Mode Tests and Resilience Library
+### Failure Mode Tests and Resilience Library
 
 Day 4 was about making systems that can "survive" production. So I grabbed my ROI Analyzer from Day 3 and systematically broke it to observe various scenarios. For example, what if the API times out? What if a tool returns null? What if you hit rate limits or context window fills mid-task?
 
@@ -173,7 +173,7 @@ After I broke my poor little ROI Analyzer, Claude helped me build it back up int
 
 The resulting output quality was undeniably better. But it was a ton of work and a lot of additional overhead. For example, the retry logic = 2-3x more API calls on failures. Which begs the question: **when is resilience overhead worth it?**
 
-### Day 5: Cost Control and Performance Optimization
+### Cost Control and Performance Optimization
 
 My ROI Analyzer works, but it's expensive ($0.15 per analysis). So now it was time to learn where the costs were coming from, and make things 2-3x cheaper without sacrificing quality.
 
@@ -194,7 +194,7 @@ I spent Day 5 learning optimization techniques that save $1-5/year on my current
 - I have reusable libraries (Smart Model Router, Token Profiler)
 - When the time comes to build high-volume products, I'll be ready
 
-### Day 6: Capstone Projects
+### Capstone Projects
 
 Day 6 was the integration exam. By this point I had the Resilience Library (Day 4), the Smart Model Router (Day 5), the Multi-Agent Conversation Manager (Day 2), the Tool Library (Day 3), and the Token Profiler (Day 5) all ready to go. Day 6 was about putting them together into apps that a teammate might actually use.
 

@@ -36,7 +36,7 @@ status: published
 
 An evaluation pipeline, a prompt versioning system, a golden set, a five-tab Streamlit dashboard, and an AI-powered improvement suggester. Together, they form a closed loop: run tests automatically, store results in SQLite, compare prompt versions with real data, visualize trends, and get Claude's suggestions for what to fix next.
 
-### Day 1: SQLite Foundations + Token Instrumentation
+### SQLite Foundations + Token Instrumentation
 
 Monday was all plumbing. Claude Code built four modules in `safe-feature-system/evaluation/`:
 
@@ -48,7 +48,7 @@ Monday was all plumbing. Claude Code built four modules in `safe-feature-system/
 
 In the evening block, I wired `llm_call()` into all six SAFe agents (Router, Clarifier, Generator, Reviewer, Improver, Polisher). Every agent now records its token usage, but the instrumentation is invisible unless you pass a tracker. Backward compatible by default.
 
-### Day 2: Eval Runner + Golden Set + Baseline
+### Eval Runner + Golden Set + Baseline
 
 The golden set was the hardest part of the week. Not technically, but in terms of the discipline required to write good test cases. Six cases covering all three feature types (CAPABILITY, EXPERIENCE, WEBPAGE), each in two variants:
 
@@ -74,7 +74,7 @@ That bare/boosted pairing turned out to be one of the most useful design decisio
 
 Two things jumped out immediately. First, both EXPERIENCE cases routed to CAPABILITY. This was the intermittent routing bug from Week 8, now visible in data instead of hidden behind a single manual test. Second, the bare→boosted spread was massive and consistent: +14 (CAP), +25 (WEB), +15 (EXP).
 
-### Day 3: Router A/B Test
+### Router A/B Test
 
 The EXPERIENCE misclassification gave me a clear target for my first A/B test. Claude Code built a v2 Router prompt with explicit signal words per feature type ("form component" + "Arc Design System" → EXPERIENCE) and removed a subtle CAPABILITY fallback bias from v1. I also got a lightweight routing-only A/B test script (`ab_test_router.py`) that runs all 6 classifications against both prompts: 12 Haiku calls, total cost about half a cent.
 
@@ -87,7 +87,7 @@ I ran a full pipeline evaluation with Router v2. All 6 cases passed, all routing
 
 Router v2 promoted. My first data-driven prompt change.
 
-### Day 4: Dashboard
+### Dashboard
 
 Thursday was light. I built a dashboard with five tabs via Claude Code in a single session:
 
@@ -101,7 +101,7 @@ Thursday was light. I built a dashboard with five tabs via Claude Code in a sing
 
 **Tab 5: Suggest Improvements** was a placeholder for Day 5.
 
-### Day 5: Improvement Suggester
+### Improvement Suggester
 
 As many a manager has said, "Come to me with solutions, not just problems." The Improvement Suggester does just that. It loads all stored runs for a golden set case, aggregates section scores and reviewer feedback, identifies the weakest sections, and calls Claude Sonnet at temperature 0.2 to analyze the patterns and propose specific prompt edits. Each suggestion includes: a quote from the current prompt, a diagnosis, a suggested edit, and a rationale.
 

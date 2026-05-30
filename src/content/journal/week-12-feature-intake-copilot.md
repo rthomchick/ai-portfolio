@@ -39,7 +39,7 @@ Many times, the person filling out the form will just type something like "IDK" 
 
 This week, I replaced that whole mess with a conversational interface, the **Intake Copilot**, that acts as the front door to my SAFe Feature Spec System, meeting stakeholders where they are and dealing with ambiguity to put something actionable in the PM's queue.
 
-### 1. Conversational Intake Engine
+### Conversational Intake Engine
 
 The core build this week: an AI copilot that greets stakeholders in plain language, asks adaptive follow-up questions, and produces a structured intake record for the PM. No SAFe terminology, no feature type classifications, no required fields. The stakeholder describes what they need in their own words, the copilot identifies information gaps, asks a few questions, summarizes the feature request, and submits it PM for initial review with a go/no-go recommendation.
 
@@ -53,7 +53,7 @@ While these helped me shape the conversation, the copilot actually adapts its qu
 
 ![Intake Copilot conversational interface showing adaptive follow-up questions with a stakeholder](/images/journal/week-12-intake-copilot-conversation.png)
 
-### 2. PM Review Interface with Request Queue
+### PM Review Interface with Request Queue
 
 This part was fairly routine. PM review page displays pending intake requests in a queue (list). Each request shows the feature name, readiness score, copilot's classification guess, and submission timestamp. The PM clicks into a request and sees the full structured record, the recommendation, and the conversation transcript.
 
@@ -67,7 +67,7 @@ The PM must confirm the feature type before the Accept button activates. On acce
 
 ![Generator input preview assembled from accepted intake record before triggering the spec pipeline](/images/journal/week-12-generator-input-preview.png)
 
-### 3. Two-Gate Architecture
+### Two-Gate Architecture
 
 Most of the tools I've built so far have been pipelines: structured input in, structured output out. This week's design problem was fundamentally different: how to transform unstructured input into "good-enough" structured output. What I envisioned was an intake process with two gates:
 
@@ -76,17 +76,17 @@ Most of the tools I've built so far have been pipelines: structured input in, st
 
 Assuming the request passes through both gates, the system will then generate a feature spec.
 
-### 4. Supabase Persistence
+### Supabase Persistence
 
 With the addition of the intake code, I realized the original session-state approach would break immediately on Streamlit Cloud because the stakeholder and PM sessions are separate. So, I added an `intake_requests` table in the Supabase PostgreSQL database I set up last week. The stakeholder completes a conversation, the copilot writes a row with status `submitted`, the stakeholder gets a reference ID.
 
-### 5. Advisor Tool Integration (Take Two)
+### Advisor Tool Integration (Take Two)
 
 Last week the advisor tool didn't add value for structured rubric scoring. This week I brought it back for the intake copilot, where the decision-making is genuinely ambiguous. Sonnet drives the conversation and consults Opus when it's unsure about feature type classification or when the copilot's recommendation is borderline. The advisor tool is wired into the conversation call via the `advisor_20260301` beta, with `max_uses: 2` per conversation. It fires when the model decides it needs help, not when I hard-code a confidence threshold.
 
 To be honest, I'm still not sure how much value the Advisor tool adds, relative to the cost.
 
-### 6. "Ground Truth" Quality Measurements
+### "Ground Truth" Quality Measurements
 
 As part of this week's project, I suggested to Claude that we measure how many fields the copilot extracted correctly compared to a hand-written case input ("ground truth") representing what a skilled PM would produce from the same request. Here are the results:
 

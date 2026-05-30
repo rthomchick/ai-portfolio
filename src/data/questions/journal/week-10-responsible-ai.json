@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You mention that the Reviewer agent consuming 80% of input tokens was a detail you 'hadn't noticed' until you built the Infrastructure Auditor—what made you decide to audit token consumption in the first place, and how did that finding change your priorities for the week?",
-    "When you were designing the CostGuard, you initially specified two caps but Claude Code flagged that you needed a way to select between them at call time. How did you feel realizing the AI caught something your own design missed, and did that change how you approach collaboration with it?",
-    "You set the grounding check threshold at 90%+ for a PASS, but I'm curious—how did you land on those specific numbers (90%, 75%, and the zero-contradiction rule)? Did you test different thresholds, or did you reason your way there?"
+    "You mention that the Responsible AI Checker only passed 12 of 25 checks (48% coverage) — what surprised you most about which categories had the biggest gaps, and did that change how you prioritized what to build next?",
+    "When Claude Code proactively added the `mode` parameter to CostGuard that you hadn't originally designed for, did that shift how you think about collaborating with AI on technical design, or was this just a helpful catch?",
+    "You drew a distinction between 'extrapolation' (acceptable) and 'invention' (problematic) in the grounding checker — how did you decide where that line should be, and did any of your test cases make you want to move it?"
   ]
 }

@@ -1,25 +1,25 @@
 {
-  "overview": "I rebuilt and stress-tested multi-agent versions of my Week 1-3 tools, discovering that 3x cost premiums are trivial at low volume but become $365K/year at scale. I added resilience patterns, profiling, and optimization to cut my ROI Analyzer from $0.15 to $0.05 per run.",
+  "overview": "I rebuilt my Week 1-3 tools as multi-agent systems, discovering that a 3x cost premium ($0.05 vs $0.15/run) is trivial for low-volume use but $365K/year at scale. I added resilience patterns, a token profiler, and cut my ROI Analyzer cost 70% via prompt optimization.",
   "keyPoints": [
     {
-      "title": "Multi-agent Feature Spec Generator costs 3x more ($0.15 vs $0.05)",
-      "headingId": "day-1-multi-agent-feature-spec-generator"
+      "title": "Multi-agent Feature Spec costs 3x more: $0.15 vs $0.05",
+      "headingId": "multi-agent-feature-spec-generator"
     },
     {
-      "title": "Shared state context beats parameter-passing for agent coordination",
-      "headingId": "day-2-multi-agent-conversation-manager"
+      "title": "Shared state beats parameter passing for agent coordination",
+      "headingId": "multi-agent-conversation-manager"
     },
     {
-      "title": "Tool-enabled agents give correct answers; toolless agents hallucinate ROI",
-      "headingId": "day-3-multi-agent-roi-analyzer"
+      "title": "Tools gave correct ROI; guessing gave -98% vs $10K actual",
+      "headingId": "multi-agent-roi-analyzer"
     },
     {
-      "title": "5 failure patterns map to 5 resilience strategies in production",
-      "headingId": "the-80-20-rules-of-failure-and-resilience"
+      "title": "5 failure patterns mapped to 5 resilience strategies",
+      "headingId": "failure-mode-tests-and-resilience-library"
     },
     {
-      "title": "Optimization cut ROI Analyzer cost 67%: $0.15 to $0.05 per run",
-      "headingId": "day-5-cost-control-and-performance-optimization"
+      "title": "Token profiler cut ROI Analyzer cost 70%: 5 calls to 1",
+      "headingId": "cost-control-and-performance-optimization"
     }
   ]
 }

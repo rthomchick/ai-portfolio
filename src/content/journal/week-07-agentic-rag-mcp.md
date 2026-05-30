@@ -47,7 +47,7 @@ Week 6 introduced me to RAG. This week, I added agents and tools to the RAG pipe
 | Agent pattern | None (fixed code pipeline) | **MCP-style** (tools as a menu Claude reasons over) |
 | Deployment | Streamlit Cloud | Same (no need to change) |
 
-### Days 1-2: Pinecone Migration
+### Pinecone Migration
 
 ChromaDB was perfect for Week 6 learning. Here's where I saw it break down in production:
 
@@ -87,7 +87,7 @@ Next, I upgraded the Knowledge Assistant Streamlit app from ChromaDB (`knowledge
 
 ![Knowledge Assistant v2 Streamlit app showing Pinecone-backed vector store with live vector count in sidebar](/images/journal/week-07-knowledge-assistant-v2.png)
 
-### Day 3: Agentic RAG
+### Agentic RAG
 
 On Wednesday, I added an agent to the mix. The RAG pipeline I built in Week 6 was non-agentic: embed the query, retrieve top-K chunks, send them to Claude, generate an answer. (I'll call this "standard RAG" from here on.) The same steps run regardless of whether the question is simple or complex.
 
@@ -114,7 +114,7 @@ I ran a head-to-head comparison using the same three test questions through both
 
 The results were more nuanced than I expected. Agentic RAG's quality edge was small (0.3 points average), and the complex strategic question, where I most expected multi-search to shine, was a tie. The agentic agent made 5 searches on that question and consumed nearly 3x the tokens, but the judge scored both answers the same. The structural advantage of adaptive retrieval is real, but on this test set, the quality payoff doesn't seem to justify the cost difference. The real payoff likely requires the full multi-agent decomposition pattern (Planner → Workers → Synthesizer) built later in the week, not just a single agent with more search autonomy.
 
-### Day 4: MCP-Pattern Tool Server
+### MCP-Pattern Tool Server
 
 MCP (Model Context Protocol) seems to be a hot topic lately, and it seemed like a natural progression from the shared tool library I built in Week 4. In practice, this meant refactoring my tools into a single `mcp_tools.py` file with:
 
@@ -123,7 +123,7 @@ MCP (Model Context Protocol) seems to be a hot topic lately, and it seemed like 
 
 Then I built `mcp_agent.py`, which imports those two exports and runs an agent loop. The agent is generic; the tools are specific. If I want to add a new tool next week, I add it in `mcp_tools.py` and every agent that imports the module gets it automatically. Define once, use everywhere. I also connected Notion, Google Calendar, and Gmail as MCP servers in Claude.ai this week, which made the concept tangible.
 
-### Day 5: Strategy Assistant v3
+### Strategy Assistant v3
 
 My Personalization Strategy Assistant from Week 4 had a hard-coded data flow and used mock data. Today, I rebuilt it with:
 
@@ -136,7 +136,7 @@ The Strategy Assistant is the most architecturally complex thing I've deployed s
 
 ![Strategy Assistant v3 showing multi-agent Planner → Workers → Synthesizer architecture with real-time status expander](/images/journal/week-07-strategy-assistant-v3.png)
 
-### Day 6: Streamlit Deployment + Golden Set Evaluation
+### Streamlit Deployment + Golden Set Evaluation
 
 Instead of deploying the Day 5 Strategy Assistant as a separate app, I combined it with my Knowledge Assistant from earlier in the week into a single Streamlit app with multiple tabs.
 

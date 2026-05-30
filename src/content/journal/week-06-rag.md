@@ -35,7 +35,7 @@ I am a big geek about information retrieval and I've been eagerly awaiting this 
 
 Oh, and I also made my first golden set to define baseline metrics for my Feature Spec Generator.
 
-### Day 1: Embeddings
+### Embeddings
 
 The first step was to turn meaning into math. Wait. Sigh.
 
@@ -55,7 +55,7 @@ The cosine similarity results for A vs B were nearly 3x higher than A vs C:
 
 The system made a semantic match with zero keyword overlap. My library science colleagues would salivate if they saw this.
 
-### Day 2: Vector Store
+### Vector Store
 
 Oh, crap. Another database technology. Here we go. Vectors, chunks, embeddings. It was a lot to digest (ingest?). Yet somehow intuitive.
 
@@ -86,7 +86,7 @@ Answer questions based ONLY on the provided context documents.
 
 Without that system prompt guardrail, Claude would have happily invented an answer to my Salesforce question.
 
-### Day 3: RAG Pipeline
+### RAG Pipeline
 
 Yesterday showed me how retrieval works and that my guardrails kept Claude from hallucinating. Today was the day the whole week clicked. I connected ChromaDB retrieval to Claude generation and built the full RAG retrieve → generate pipeline in `rag_assistant.py`.
 
@@ -102,13 +102,13 @@ These are the kinds of documents a PM might need to sift through page by page fo
 
 The architecture was straightforward: embed the question, pull the top 3 chunks from ChromaDB, inject them as context, let Claude generate. Same five grounding rules from Day 2, same belt-and-suspenders constraint in the user prompt. Then I ran four tests to answer the question of the week: does RAG actually improve output quality?
 
-##### **Grounding Test**
+##### Grounding Test
 
 I asked "What was our conversion lift from personalization?" twice: once with the RAG pipeline, once with the same model and prompt but no retrieved context. With RAG, Claude cited the specific 2.3% from our Q3 data. Without RAG, it gave me generic industry benchmarks about personalization typically driving 5-15% lift. Same model. Same prompt. Completely different answers. One is useful to my team. The other is a Google search.
 
 ![RAG grounding test comparison showing specific Q3 data from RAG pipeline versus generic industry benchmarks without retrieval](/images/journal/week-06-rag-grounding-test.jpg)
 
-##### **Cross-Document Synthesis Test**
+##### Cross-Document Synthesis Test
 
 I asked "what's working in our personalization program?"… Claude pulled from both the quarterly metric and the signal definitions, connected the behavioral targeting 3:1 ratio to the signal-first architecture in our scoring framework, and drew a novel insight: "the behavioral signal-first approach is validated by the data." I didn't tell it to connect those documents. The retrieval surfaced relevant chunks from both, and Claude reasoned across the evidence on its own.
 
@@ -118,19 +118,19 @@ I asked about our Salesforce integration strategy, which isn't in any of the doc
 
 ![Out-of-context behavior showing Claude acknowledging missing Salesforce information and listing what it does have context for](/images/journal/week-06-out-of-context-behavior.png)
 
-### Day 4: RAG Quality Deep Dive
+### RAG Quality Deep Dive
 
 Thursday was a full deep dive into three retrieval quality techniques: hybrid search, re-ranking, and metadata filtering. The pipeline works. The grounding test proved it. But "it finds the right documents" is a low bar. The goal for today was to see if I could make retrieval "smarter": returning better chunks, filtering out noise, and handling queries where the top results by distance score aren't actually the most relevant.
 
-##### **Hybrid Search**
+##### Hybrid Search
 
 This one was a letdown. It was supposed to combine semantic search (meaning) with keyword search (exact terms) for better recall. But keyword matching never fired. ChromaDB's `$contains` filter is case-sensitive and only matches exact substrings. Semantic search still found the right docs, just without the boost layer. Claude explained later Chrome DB is not good at this. A real implementation needs a dedicated keyword engine like Elasticsearch alongside the vector store. Which is obviously overkill for a five-document collection.
 
-##### **Re-Ranking (With Claude Haiku)**
+##### Re-Ranking (With Claude Haiku)
 
 This one quietly did real work. The idea: after ChromaDB returns the top chunks by distance score, send them to Claude Haiku for a second pass. Haiku reads each chunk and scores its actual relevance to the query, not just its vector proximity. This technique caught things that distance scores alone couldn't. Claude correctly pruned irrelevant chunks. It dropped Adobe Target config from a user persona query, but kept it for an integration query. Same chunk, different queries, correct judgment both times. This seems like the technique that would matter most at scale with hundreds of documents that contain a mix of relevance and noise.
 
-##### **Metadata filtering**
+##### Metadata filtering
 
 This technique is a no-brainer. Each chunk carries metadata tags from ingestion (source file, category). Filtering by category before the similarity search narrows the result set to the right domain. I tested with a performance-related query: the `performance` filter returned Q3 results at distance 0.662, while the `technical` filter returned signal definitions at 0.590. The distance scores alone would have preferred the wrong document. The filter fixed it. This maps directly to my real work: strategy docs shouldn't surface for technical queries and vice versa.
 
@@ -161,7 +161,7 @@ I looked at the specs. The acceptance criteria were there. So were the technical
 
 ## What I Learned
 
-### **Embeddings Are Inexpensive**
+### Embeddings Are Inexpensive
 
 AI economics have become a much more central topic than I anticipated at the outset of this learning path. What I learned this week is that embeddings have completely different economics than LLM calls:
 
@@ -177,7 +177,7 @@ The architectural implication is about where to invest optimization effort. If R
 
 If I wanted to reduce LLM costs for a RAG application as the PM, I would probably focus on things like caching frequent queries (same question = same answer, skip the LLM call entirely), routing simple queries to cheaper models, or truncating retrieved context to only what's needed. I would not worry about reducing embeddings, since there's almost nothing to save there.
 
-### Turning Meaning Into Math
+### Vectors Turn Meaning Into Math
 
 I drank from the firehose this week to understand the nuances between vectors, embeddings, chunks, and dimensions, especially in relation to tokens. It was a lot to take in, but I feel like I can "see" the matrix of embeddings, almost like a social graph or the stick-and-ball molecular models I used to construct in Chemistry class, but with thousands of dimensions instead of 2-3.
 

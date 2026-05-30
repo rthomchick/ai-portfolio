@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You went from a 3x cost increase to saying it was 'well worth the effort'—what actually changed your mind about the multi-agent approach, or were you always planning to build it anyway?",
-    "When you discovered that passing everything as parameters became unmaintainable chaos, how did you catch that before it got worse? Was there a specific moment where you realized shared state was the better move?",
-    "That 6,150% ROI result—you called it a data issue, but how did you actually debug it? What steps did you add to catch those 'potentially unrealistic scenarios' you mention?"
+    "You discovered that the 3x cost difference between single-agent and multi-agent versions only mattered at certain scales—what made you decide to build the expensive version anyway if you're only using it 10 times a week?",
+    "When you first tried passing everything as parameters in the Conversation Manager, how did you recognize it was becoming unmaintainable before it actually broke in production?",
+    "The tool-enabled agent gave you a completely different (and correct) answer than the one without tools—did this change how you think about whether agents are actually 'reasoning' or just executing?"
   ]
 }

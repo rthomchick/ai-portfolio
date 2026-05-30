@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You mentioned that agentic RAG only gave a 0.3 point quality improvement on average but used 66% more tokens — what made you decide it was still worth implementing instead of sticking with standard RAG?",
-    "When you ran that head-to-head comparison and the complex strategic question tied despite the agent doing 5 searches instead of 1, did that result change how you're thinking about when agentic RAG is actually the right choice?",
-    "You called ChromaDB 'SQLite' and Pinecone 'Postgres' — what specific problem from Week 6 made you realize you'd outgrown a local solution, and how did you know it was time to migrate rather than optimize ChromaDB further?"
+    "You mention that agentic RAG only improved quality by 0.3 points on average but cost 66% more in tokens — why did you decide to keep building with agents instead of sticking with standard RAG?",
+    "You note that the complex strategic question (where you expected agents to shine most) ended up being a tie despite 5 searches. What do you think the agent was actually searching for on those extra 4 searches, and does that change how you think about the architecture?",
+    "You compare ChromaDB to SQLite and Pinecone to Postgres, but then joke about whether Anthropic gets a kickback from recommending Pinecone — did Claude's recommendation influence your choice, or would you have picked Pinecone anyway based on your own evaluation?"
   ]
 }

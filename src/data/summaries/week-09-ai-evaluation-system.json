@@ -1,25 +1,25 @@
 {
-  "overview": "I built a full AI eval pipeline this week: SQLite storage, a 6-case golden set, A/B prompt testing, a 5-tab Streamlit dashboard, and a Claude-powered improvement suggester. Key findings: LLM-as-judge varies ±7pts at temp 0.",
+  "overview": "I built a full AI eval pipeline: SQLite storage, token instrumentation across 6 SAFe agents, a 6-case golden set, a 5-tab Streamlit dashboard, and a Claude Sonnet improvement suggester. Key find: LLM-as-judge variance is ±7pts even at temp 0.0.",
   "keyPoints": [
     {
-      "title": "LLM judge varies ±7pts even at temperature 0.0",
+      "title": "LLM judge scores vary ±7pts even at temperature 0.0",
       "headingId": "llm-as-judge-variance-is-real-even-at-temperature-00"
     },
     {
-      "title": "PM context boosts scores +13–25pts across all feature types",
+      "title": "Bare→boosted PM input drives +13 to +25 score gains",
       "headingId": "the-bareboosted-spread-quantifies-the-value-of-pm-input"
     },
     {
-      "title": "Router v2 fixed intermittent EXPERIENCE misclassification via A/B test",
-      "headingId": "day-3-router-ab-test"
+      "title": "Router v2 fixed intermittent EXPERIENCE misclassification with A/B data",
+      "headingId": "router-ab-test"
     },
     {
-      "title": "5/6 baseline cases passed at $1.56 total in 20 minutes",
+      "title": "V1 baseline: 5/6 passed, $1.56 total, 20-min runtime",
       "headingId": "v1-baseline-results"
     },
     {
       "title": "Improvement Suggester proposes edits; I decide whether to apply",
-      "headingId": "day-5-improvement-suggester"
+      "headingId": "improvement-suggester"
     }
   ]
 }

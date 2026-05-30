@@ -44,7 +44,7 @@ I've spent a good deal of time reading up on responsible AI. But I wanted to und
 
 Together, we created 9 new evaluation modules, a 4-section Responsible AI dashboard, and a reusable governance template that I can apply to other tools. The general process I followed was to audit what I had, fill the gaps, validate with data, generalize the patterns.
 
-### Day 1: Responsible AI Foundations
+### Responsible AI Foundations
 
 While I had a framework for evaluating whether my SAFe Feature System was producing good scores, I had no structured way to see if it was behaving responsibly (or mitigate bad behavior). So, I built a couple of auditing scripts to start poking at my product.
 
@@ -63,7 +63,7 @@ When I ran it against my SAFe Feature System, it passed 12 of 25 checks. The gap
 
 The second deliverable was `infrastructure_audit.py`, which queries the eval database and produces a structured report. The audit surfaced a detail I hadn't noticed: the Reviewer agent consumes roughly 80% of total pipeline input tokens. Not the Generator, even though it produces the longest output. I realized the reason is because Reviewer gets the longest input: the full spec plus the full rubric plus the system prompt.
 
-### Day 2: Cost Guardrails + Audit Trails
+### Cost Guardrails + Audit Trails
 
 After that token "reveal" on Monday, cost governance went to the top of Tuesday's agenda. Claude taught me how to implement basic cost guardrails via a `CostGuard` "enforcer" (sounds ominous, like something out of TRON) with four configurable limits.
 
@@ -99,7 +99,7 @@ Not to be overlooked, I also worked on an audit trail script, `audit_trail.py`, 
 
 The CLI trace viewer (`--run-id`) was more useful than I expected during Days 3 and 4, when I needed to debug grounding checker behavior. Being able to run see the full decision trace in the terminal saved real time. Three observability objects now thread through pipeline: TokenTracker, CostGuard, AuditTrail. All optional, all backward-compatible.
 
-### Day 3: Grounding Checks + Content Safety
+### Grounding Checks + Content Safety
 
 Wednesday was the most technically interesting day of the week. First, I created a Grounding Checker (bullshit detector?) to verify whether the Generator output traces back to the original human input. It works by classifying Generator "claims" into one of 4 categories:
 
@@ -148,7 +148,7 @@ No LLM calls.
 
 All nine smoke test assertions passed, including a deliberate edge case where `≤500ms` should be caught but a PM-provided `200ms` target should be allowed through.
 
-### Day 4: Bias Detection + Responsible AI Dashboard
+### Bias Detection + Responsible AI Dashboard
 
 Thursday's focus was on looking at patterns in the data I'd been generating for two weeks. I worked on a `bias_detector.py` script that groups eval runs by feature type, computes per-category statistics, and flags gaps exceeding a configurable threshold (default: 10 points). Section-level analysis goes deeper, flagging any section where a given feature type scores more than 15% below the cross-type average.
 
@@ -163,7 +163,7 @@ To cap off the day, I created a Responsible AI dashboard with four sections:
 3. Content Safety (static reference to the full golden set grounding run: 6/6 PASS, 0 contradictions)
 4. Cost Governance (daily and all-time spend, agent cost breakdown, infrastructure audit checklist)
 
-### Day 5: Prompt Governance + Responsible AI Template
+### Prompt Governance + Responsible AI Template
 
 Friday tied together the week's infrastructure into something reusable.
 

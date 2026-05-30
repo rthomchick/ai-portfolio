@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You mention that the bare→boosted score spread was 'massive and consistent' — what made you decide that this pattern was important enough to design the golden set around, rather than just aiming for strong scores on fully-specified inputs?",
-    "The Router v2 only improved downstream scores by a few points even though it fixed the misclassification — why did you decide to promote it anyway instead of waiting to see if other changes would move the needle more?",
-    "You built the Improvement Suggester to feed Claude's analysis back into the loop, but the entry cuts off before showing what it actually suggested — what did Claude recommend, and has any of it changed how you're thinking about the next week?"
+    "You mentioned being skeptical about content-addressed hashing at first—what specifically made the idempotency argument win you over versus just deduplicating with a simple counter?",
+    "The bare→boosted score spreads were massive (+14 to +25 points). Did those gaps surprise you, or did you expect that kind of delta based on how the system was designed?",
+    "You said the Router v2 fix was your 'first data-driven prompt change'—what would have happened to your iteration speed if you'd only run the golden set once instead of catching that intermittent 5/6 pattern?"
   ]
 }

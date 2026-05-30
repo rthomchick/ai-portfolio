@@ -1,21 +1,21 @@
 {
-  "overview": "I built 7 tools across 3 domains and 4 agents in ~1,500 lines of Python, progressing from a calculator to an autonomous research agent.",
+  "overview": "I built 7 tools across 3 domains and 4 agents this week, from a calculator to an autonomous research agent. I learned that tool descriptions are prompt engineering, autonomy costs 2-3x API calls, and 80% of production code is resilience, not features.",
   "keyPoints": [
     {
-      "title": "Tool descriptions drive Claude's decisions, not just usage",
+      "title": "Tool descriptions are mini-prompts, not documentation",
       "headingId": "tool-descriptions-are-prompt-engineering-not-documentation"
     },
     {
-      "title": "Each tool cycle costs 2–3× a basic conversation in API calls",
+      "title": "Tool use costs 2-3x more API calls than conversation",
       "headingId": "autonomy-comes-at-a-cost"
     },
     {
-      "title": "Research agent: 4 successful fetches out of 20 due to hallucinated URLs",
-      "headingId": "day-4-autonomous-research-agent"
+      "title": "Research agent hallucinated URLs, got 4 of 20 fetches",
+      "headingId": "autonomous-research-agent"
     },
     {
-      "title": "80% of production code is resilience, only 20% is functionality",
-      "headingId": "day-5-production-ready-resiliency-and-robustness"
+      "title": "80% of production code is resilience, 20% is functionality",
+      "headingId": "production-ready-resiliency-and-robustness"
     },
     {
       "title": "Claude chains tools autonomously — no workflow logic written",
