@@ -4,11 +4,22 @@ import type { APIRoute } from 'astro';
 import OpenAI from 'openai';
 import { Pinecone } from '@pinecone-database/pinecone';
 import Anthropic from '@anthropic-ai/sdk';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
 const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
 const pc = new Pinecone({ apiKey: import.meta.env.PINECONE_API_KEY });
 const index = pc.index('portfolio-search');
 const anthropic = new Anthropic({ apiKey: import.meta.env.ANTHROPIC_API_KEY });
+
+const ratelimit = new Ratelimit({
+  redis: new Redis({
+    url: import.meta.env.UPSTASH_REDIS_REST_URL,
+    token: import.meta.env.UPSTASH_REDIS_REST_TOKEN,
+  }),
+  limiter: Ratelimit.slidingWindow(20, '60 s'),
+  prefix: 'portfolio:ratelimit',
+});
 
 function sseEvent(event: string, data: string): string {
   return `event: ${event}\ndata: ${data}\n\n`;
@@ -46,6 +57,24 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'Query is required' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Rate limiting — 20 requests per 60 seconds per IP
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    request.headers.get('x-real-ip') ??
+    '127.0.0.1';
+
+  const { success } = await ratelimit.limit(ip);
+
+  if (!success) {
+    return new Response(JSON.stringify({ error: 'Too many requests. Please wait a moment.' }), {
+      status: 429,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': '60',
+      },
     });
   }
 
