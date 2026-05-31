@@ -24,6 +24,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# VS Code editor config
+.vscode/
+
 # Obsidian editor config
 .obsidian/
 
