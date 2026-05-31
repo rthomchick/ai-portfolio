@@ -104,7 +104,7 @@ export const POST: APIRoute = async ({ request }) => {
           // Query scoped to this page's slug
           const pineconeResult = await index.query({
             vector: queryEmbedding,
-            topK: context === 'project' ? 8 : 6,
+            topK: context === 'project' ? 12 : 10,
             includeMetadata: true,
             filter: { slug: { '$eq': slug } },
           });

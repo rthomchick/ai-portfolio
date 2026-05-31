@@ -1,0 +1,169 @@
+{
+  "entries": [
+    {
+      "id": "w09-skeptical",
+      "question": "Was Richard skeptical about content-addressed hashing?",
+      "slug": "week-09-ai-evaluation-system",
+      "expectedFact": "skeptical at first",
+      "type": "buried",
+      "expectedChunkId": "week-09-ai-evaluation-system#0",
+      "baselineRank": 9,
+      "baselineScore": 0.1863,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w09-generator-cost",
+      "question": "What percentage of total pipeline cost does the Generator consume?",
+      "slug": "week-09-ai-evaluation-system",
+      "expectedFact": "67%",
+      "type": "buried",
+      "expectedChunkId": "week-09-ai-evaluation-system#8",
+      "baselineRank": 0,
+      "baselineScore": 0.6273,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w09-variance",
+      "question": "What score variance appeared even at temperature 0.0?",
+      "slug": "week-09-ai-evaluation-system",
+      "expectedFact": "±7",
+      "type": "buried",
+      "expectedChunkId": "week-09-ai-evaluation-system#10",
+      "baselineRank": 0,
+      "baselineScore": 0.2778,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w13-personality",
+      "question": "Who is Dino's personality modeled after?",
+      "slug": "week-13-meet-dino",
+      "expectedFact": "Dean Martin",
+      "type": "headline",
+      "expectedChunkId": "week-13-meet-dino#0",
+      "baselineRank": 1,
+      "baselineScore": 0.4364,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w13-booking",
+      "question": "What can Dino do that the Cosmopolitan's concierge chatbot cannot?",
+      "slug": "week-13-meet-dino",
+      "expectedFact": "book",
+      "type": "buried",
+      "expectedChunkId": "week-13-meet-dino#0",
+      "baselineRank": 0,
+      "baselineScore": 0.6363,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "safe-agents",
+      "question": "How many agents are in the SAFe pipeline?",
+      "slug": "safe-feature-spec-system",
+      "expectedFact": "six",
+      "type": "headline",
+      "expectedChunkId": "safe-feature-spec-system#0",
+      "baselineRank": 1,
+      "baselineScore": 0.5498,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "safe-reassemble",
+      "question": "What pattern prevents structural corruption in the spec output?",
+      "slug": "safe-feature-spec-system",
+      "expectedFact": "Reassemble",
+      "type": "buried",
+      "expectedChunkId": "safe-feature-spec-system#2",
+      "baselineRank": 0,
+      "baselineScore": 0.4744,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w08-append",
+      "question": "Why is append-only output important in the SAFe system?",
+      "slug": "week-08-safe-system",
+      "expectedFact": "corruption",
+      "type": "buried",
+      "expectedChunkId": "week-08-safe-system#4",
+      "baselineRank": 2,
+      "baselineScore": 0.3371,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w06-zero-keyword",
+      "question": "What does the semantic match with zero keyword overlap demonstrate?",
+      "slug": "week-06-rag",
+      "expectedFact": "zero-keyword overlap",
+      "type": "buried",
+      "expectedChunkId": "week-06-rag#9",
+      "baselineRank": 0,
+      "baselineScore": 0.397,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w07-pinecone",
+      "question": "Why migrate from ChromaDB to Pinecone?",
+      "slug": "week-07-agentic-rag-mcp",
+      "expectedFact": "persist",
+      "type": "buried",
+      "expectedChunkId": "week-07-agentic-rag-mcp#1",
+      "baselineRank": 0,
+      "baselineScore": 0.5801,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "ka-rerank",
+      "question": "What model is used for re-ranking in the Knowledge Assistant?",
+      "slug": "knowledge-assistant",
+      "expectedFact": "Haiku",
+      "type": "buried",
+      "expectedChunkId": "knowledge-assistant#1",
+      "baselineRank": 0,
+      "baselineScore": 0.5971,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "ep-tracker",
+      "question": "What does the token tracker record on each API call?",
+      "slug": "evaluation-pipeline",
+      "expectedFact": "token counts",
+      "type": "buried",
+      "expectedChunkId": "evaluation-pipeline#0",
+      "baselineRank": 11,
+      "baselineScore": 0.3092,
+      "withinProductionTopK": false
+    },
+    {
+      "id": "w12-twocall",
+      "question": "What is the two-call architecture in the intake copilot?",
+      "slug": "week-12-feature-intake-copilot",
+      "expectedFact": "two-call",
+      "type": "buried",
+      "expectedChunkId": "week-12-feature-intake-copilot#3",
+      "baselineRank": 1,
+      "baselineScore": 0.4019,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w10-cost-limits",
+      "question": "What are the per-run and per-day cost limits in the responsible AI governance configuration?",
+      "slug": "week-10-responsible-ai",
+      "expectedFact": "$0.50/run",
+      "type": "buried",
+      "expectedChunkId": "week-10-responsible-ai#10",
+      "baselineRank": 0,
+      "baselineScore": 0.6634,
+      "withinProductionTopK": true
+    },
+    {
+      "id": "w05-first-deploy",
+      "question": "What was the first tool deployed to Streamlit Cloud?",
+      "slug": "week-05-from-builder-to-shipper",
+      "expectedFact": "Feature Spec Generator",
+      "type": "headline",
+      "expectedChunkId": "week-05-from-builder-to-shipper#5",
+      "baselineRank": 0,
+      "baselineScore": 0.489,
+      "withinProductionTopK": true
+    }
+  ]
+}

@@ -155,14 +155,14 @@ async function upsertBatch(vectors) {
 }
 
 async function indexProjectSourceCode(projectConfig) {
-  const { slug, repoPath, githubRepo, title } = projectConfig;
+  const { slug, repoPath, githubRepo, title, subPath, subPaths, excludeSubPaths } = projectConfig;
   const fs = await import('fs');
   const pathModule = await import('path');
 
   console.log(`\nIndexing source code for ${slug} from ${repoPath}...`);
 
   // Walk the repo and collect qualifying source files
-  function walkDir(dir, fileList = []) {
+  function walkDir(dir, fileList = [], excludeSubs = []) {
     const excludeDirs = ['node_modules', '__pycache__', '.venv', 'venv', '.git', 'dist', 'build'];
     let entries;
     try {
@@ -171,12 +171,14 @@ async function indexProjectSourceCode(projectConfig) {
       return fileList;
     }
     for (const entry of entries) {
-      if (excludeDirs.some(ex => entry === ex || entry.startsWith('venv'))) continue;
+      // Skip venv directories regardless of prefix/suffix naming convention
+      if (excludeDirs.some(ex => entry === ex) || entry.includes('venv') || entry.startsWith('venv')) continue;
+      if (excludeSubs.includes(entry)) continue;
       const fullPath = pathModule.join(dir, entry);
       let stat;
       try { stat = fs.statSync(fullPath); } catch { continue; }
       if (stat.isDirectory()) {
-        walkDir(fullPath, fileList);
+        walkDir(fullPath, fileList, excludeSubs);
       } else if (stat.isFile()) {
         const ext = pathModule.extname(entry);
         if (!['.py', '.ts', '.js', '.mjs'].includes(ext)) continue;
@@ -188,7 +190,26 @@ async function indexProjectSourceCode(projectConfig) {
     return fileList;
   }
 
-  const sourceFiles = walkDir(repoPath);
+  // Determine which directories to walk
+  let rootsToWalk;
+  if (subPath) {
+    rootsToWalk = [pathModule.join(repoPath, subPath)];
+  } else if (subPaths) {
+    rootsToWalk = subPaths.map(p => pathModule.join(repoPath, p));
+  } else {
+    rootsToWalk = [repoPath];
+  }
+
+  // Walk each root, collecting all source files
+  const sourceFiles = [];
+  for (const root of rootsToWalk) {
+    if (fs.existsSync(root)) {
+      walkDir(root, sourceFiles, excludeSubPaths || []);
+    } else {
+      console.warn(`  ⚠️  Path not found, skipping: ${root}`);
+    }
+  }
+
   console.log(`  Found ${sourceFiles.length} source files`);
 
   const allChunks = [];
@@ -380,13 +401,70 @@ async function main() {
     });
   }
 
-  // Source code indexing — Dino POC
+  // Source code indexing
   const sourceProjects = [
+    // ── Already indexed ────────────────────────────────────────────────
     {
       slug: 'dino',
       repoPath: join(process.env.HOME, 'Dropbox/ai-projects/dino'),
       githubRepo: 'rthomchick/dino',
       title: 'Dino',
+    },
+
+    // ── SAFe system — scoped by subdirectory ──────────────────────────
+    {
+      slug: 'safe-feature-spec-system',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/safe-feature-system'),
+      githubRepo: 'rthomchick/safe-feature-system',
+      title: 'SAFe Feature Spec System',
+      excludeSubPaths: ['evaluation', 'intake_copilot', 'pages'],
+    },
+    {
+      slug: 'evaluation-pipeline',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/safe-feature-system'),
+      githubRepo: 'rthomchick/safe-feature-system',
+      title: 'Evaluation Pipeline',
+      subPath: 'evaluation',
+    },
+    {
+      slug: 'responsible-ai-dashboard',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/safe-feature-system'),
+      githubRepo: 'rthomchick/safe-feature-system',
+      title: 'Responsible AI Dashboard',
+      subPaths: ['evaluation', 'pages'],
+    },
+    {
+      slug: 'intake-copilot',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/safe-feature-system'),
+      githubRepo: 'rthomchick/safe-feature-system',
+      title: 'Intake Copilot',
+      subPath: 'intake_copilot',
+    },
+
+    // ── Standalone repos ───────────────────────────────────────────────
+    {
+      slug: 'knowledge-assistant',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/knowledge-assistant'),
+      githubRepo: 'rthomchick/knowledge-assistant',
+      title: 'Knowledge Assistant',
+    },
+    {
+      slug: 'signal-definition-app',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/signal-definition-app'),
+      githubRepo: 'rthomchick/signal-definition-app',
+      title: 'Signal Definition App',
+    },
+    {
+      slug: 'roi-analyzer',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/roi-analyzer'),
+      githubRepo: 'rthomchick/roi-analyzer',
+      title: 'ROI Analyzer',
+    },
+    {
+      slug: 'feature-spec-generator',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/feature-spec-generator'),
+      githubRepo: 'rthomchick/feature-spec-generator',
+      title: 'Feature Spec Generator',
     },
   ];
 
