@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mention that 'guessing wrong is worse than not guessing' when it comes to confidence tiers—can you walk through a specific example of what happens when the system falls back to generic content instead of personalizing?",
+    "Why did you decide to make the data model a specification that downstream systems derive from, rather than having the application import it directly at runtime?",
+    "You built this whole system around a synthetic company and dataset—how much do you think the architecture would need to change if you were working with real enterprise data, and what was the biggest gap you had to paper over?"
+  ]
+}

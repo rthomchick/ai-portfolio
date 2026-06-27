@@ -1,0 +1,25 @@
+{
+  "overview": "I built the information architecture for a buying group personalization advisor: a canonical data model covering 5 roles, 20 signals, decay windows, confidence tiers, and consent gates, plus a 9-document corpus structured for both human practitioners and AI retrieval.",
+  "keyPoints": [
+    {
+      "title": "Data model spans 7 entities across one decision chain",
+      "headingId": "the-data-model"
+    },
+    {
+      "title": "9 documents split operational vs. specification for dual audiences",
+      "headingId": "the-nine-document-corpus"
+    },
+    {
+      "title": "Spec-only model enables single-source governance over runtime",
+      "headingId": "a-spec-that-isnt-the-runtime-is-a-feature-not-a-limitation"
+    },
+    {
+      "title": "Distributed definitions fragment retrieval — centralize every concept",
+      "headingId": "distributed-definitions-are-the-enemy-of-retrieval"
+    },
+    {
+      "title": "Privacy earns its own document for legal and InfoSec review",
+      "headingId": "privacy-architecture-earns-its-own-document"
+    }
+  ]
+}
