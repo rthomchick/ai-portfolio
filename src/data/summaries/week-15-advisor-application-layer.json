@@ -1,0 +1,25 @@
+{
+  "overview": "I built four application modules for the Buying Group Personalization Advisor: Reference Mode, Advisory Mode, Guided Workflow Mode, and a Website Experience Simulator. Key lessons came from empirical RAG threshold tuning (0.75→0.",
+  "keyPoints": [
+    {
+      "title": "Similarity threshold dropped from 0.75 to 0.38 empirically",
+      "headingId": "rag-and-retrieval-engineering"
+    },
+    {
+      "title": "Two retrieval indexes required: vector prose, structured tabular",
+      "headingId": "reference-mode"
+    },
+    {
+      "title": "FLAG/HOLD interrupt system enforces two distinct step-blocking states",
+      "headingId": "guided-workflow-mode"
+    },
+    {
+      "title": "UX critique surfaced 4 findings: jargon, grouping, missing orientation layer",
+      "headingId": "llm-product-design"
+    },
+    {
+      "title": "Decisioning trace panel shows every rule firing per visitor state",
+      "headingId": "website-experience-simulator"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned that your pre-index similarity threshold of 0.75 was 'a guess set before the index existed' — what would you do differently now if you were writing that developer brief again, knowing what you know about empirical retrieval tuning?",
+    "Why did you decide to build separate vector and structured indexes instead of trying to make a single vector store work for both prose and tabular data?",
+    "The FLAG/HOLD interrupt system seems like it solves a real problem, but how did you arrive at the specific distinction between 'non-bypassable' and 'must acknowledge'? Did you consider other interrupt models before landing on these two?"
+  ]
+}
