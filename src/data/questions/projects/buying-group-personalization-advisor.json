@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "Walk me through how you calibrated the 0.38 similarity threshold for Pinecone. What were the score distributions you observed, and how did you identify that your initial 0.75 guess was wrong?",
+    "In Build 2, you mention the decisioning engine's Step 7 was missing a trace entry on its fall-through path. What does the trace system do, and how did writing the test suite surface this bug when your test runs were claiming success before the tests existed?",
+    "Explain the distinction between classification confidence and diagnostic confidence in Advisory Mode. How are these two types surfaced differently in the system prompt, and what do the differential_insufficient and pending_solution_fallback states represent?"
+  ]
+}

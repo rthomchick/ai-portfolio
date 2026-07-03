@@ -1,0 +1,25 @@
+{
+  "overview": "A four-module AI advisor for buying group personalization that combines retrieval-augmented reference answers, diagnostic reasoning across strategic frameworks, guided workflows, and a website experience simulator with decisioning traces.",
+  "keyPoints": [
+    {
+      "title": "Dual retrieval stores optimize prose vs. tabular data",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Empirically calibrated similarity threshold from real queries",
+      "headingId": "what-i-learned"
+    },
+    {
+      "title": "Two confidence types surfaced explicitly in reasoning",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "FLAG/HOLD interrupt system prevents workflow collisions",
+      "headingId": "architecture-decisions"
+    },
+    {
+      "title": "Architectural correctness doesn't guarantee first-time usability",
+      "headingId": "what-i-learned"
+    }
+  ]
+}
