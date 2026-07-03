@@ -9,7 +9,7 @@
 
 html {
   font-family: 'DM Sans', sans-serif;
-  background-color: #FFFFFF;
+  background-color: #FAFAF9;
   color: #1C1917;
   scroll-behavior: smooth;
 }
@@ -42,6 +42,7 @@ html.theme-transition *::after {
 
 .dark {
   color-scheme: dark;
+  background-color: #0c0a09;
 }
 
 /* ── Mobile overflow prevention ── */
