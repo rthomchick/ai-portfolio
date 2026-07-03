@@ -466,6 +466,12 @@ async function main() {
       githubRepo: 'rthomchick/feature-spec-generator',
       title: 'Feature Spec Generator',
     },
+    {
+      slug: 'buying-group-personalization-advisor',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/buying-group-personalization-advisor'),
+      githubRepo: 'rthomchick/buying-group-personalization-advisor',
+      title: 'Buying Group Personalization Advisor',
+    },
   ];
 
   let totalSourceChunks = 0;
