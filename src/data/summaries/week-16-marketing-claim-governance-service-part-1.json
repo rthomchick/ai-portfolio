@@ -1,5 +1,5 @@
 {
-  "overview": "I built the capability surface for Claims Desk: 4 MCP tools, 2 Agent Skills, and a 12-claim Supabase registry deployed on Railway. I verified cross-client reads between Claude Code and claude.",
+  "overview": "I built the capability surface for Claims Desk, a marketing claim governance service: 4 MCP tools, 2 Agent Skills, a Supabase-backed registry with 12 seed claims, deployed to Railway. Cross-client verification confirmed Claude Code and claude.ai share one live registry.",
   "keyPoints": [
     {
       "title": "4 MCP tools, 2 Skills, 12 seed claims deployed",
@@ -7,18 +7,18 @@
     },
     {
       "title": "5 architectural decisions captured in first ADR",
-      "headingId": "all-about-adrs-architectural-decision-records"
+      "headingId": "architectural-decisions"
     },
     {
-      "title": "Stateless Streamable HTTP shipped live to Railway",
-      "headingId": "building-and-deploying-an-mcp-server"
+      "title": "2 of 12 seeds correctly flagged Prohibited by classify_claim",
+      "headingId": "seed-claims-for-testing"
     },
     {
-      "title": "Skills split: procedural vs. reference, not tools",
+      "title": "Skills: procedural vs. reference, progressive disclosure verified",
       "headingId": "authoring-agent-skills"
     },
     {
-      "title": "Claude Code and claude.ai share one live registry",
+      "title": "Claude Code and claude.ai confirmed sharing one live registry",
       "headingId": "verifying-cross-client-behavior"
     }
   ]

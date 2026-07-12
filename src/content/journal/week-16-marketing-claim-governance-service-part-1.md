@@ -15,7 +15,7 @@ tags:
   - llm
 keyInsights:
   - "The ADR format is simple and straightforward, but a light bulb moment for me nonetheless, and a documentation practice I'll carry forward in every subsequent project."
-  - "Before this week I understood MCP conceptually; now I've implemented the actual tool-registration pattern, chosen a transport, and shipped it to a public host — I now know what the SDK actually asks of you versus what the docs describe in the abstract."
+  - "Before this week I understood MCP conceptually; now I've implemented the actual tool-registration pattern, chosen a transport, and deployed it to a public host. I now know what the SDK actually asks of you versus what the docs describe in the abstract."
   - "I hadn't built anything against the Agent Skills primitive before this week; now I have a working mental model for when something belongs in a skill vs. a tool."
   - "Designing a test specifically to prove shared state, and having a fallback plan for a known platform quirk, is a level-up for me."
   - "Question confidently stated LLM output — or at the very least, compare the outputs across multiple LLMs."
@@ -106,7 +106,7 @@ As someone who cares deeply about architecture, I considered ADRs to be a major 
 
 ### Building and Deploying an MCP Server
 
-Before this week I understood MCP conceptually; now I've implemented the actual tool-registration pattern, chosen a transport (stateless Streamable HTTP), and shipped it to a public host. That's a different kind of knowledge than reading the spec — I now know what the SDK actually asks of you versus what the docs describe in the abstract.
+Before this week I understood MCP conceptually; now I've implemented the actual tool-registration pattern, chosen a transport (stateless Streamable HTTP), and deployed it to a public host. That's a different kind of knowledge than reading the spec. I now know what the SDK actually asks of you versus what the docs describe in the abstract.
 
 ### Authoring Agent Skills
 
@@ -118,11 +118,11 @@ Appending state from one Claude surface and reading it back from another isn't s
 
 ## Challenges
 
-### A Regulatory Rabbit Hole, and a Correction
+### Regulatory Rabbit Hole
 
 Building the claim taxonomy meant grounding it in something real, not invented evidence standards. FTC substantiation doctrine was the obvious anchor. The 1984 Policy Statement is still current, and its "reasonable basis" standard scales with how strongly a claim is worded, which turned out to be a genuinely useful design principle (a claim that says "tests prove" needs a different evidence tier than the same fact phrased as "up to X%").
 
-Given the nature of my invented B2B software vendor, Kalder, I wondered if I should account for EU regulations, which I hypothesized might be stricter than the FTC doctrine. I chased that thread for a while in Claude before switching to Perplexity to get more grounded information. At the end of the day, I decided to descope international regulations regarding marketing claims, but the exercise was a reminder to question confidently stated LLM output (or at the very least, to compare the outputs across multiple LLMs).
+Given the nature of my invented B2B software vendor, Kalder, I wondered if I should account for EU regulations, which I hypothesized might be stricter than the FTC doctrine. I chased that thread for a while in Claude before switching to Perplexity to get more detailed, grounded information. Perplexity identified several regulations that Claude missed, but at the end of the day, none of them were relevant or significant enough to warrant architectural modifications. I decided to descope international regulations regarding marketing claims, but the exercise was a reminder to question confidently stated LLM output (or at the very least, to compare the outputs across multiple LLMs).
 
 ### Suspected Prompt Injections
 
