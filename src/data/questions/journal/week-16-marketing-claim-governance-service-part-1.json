@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mentioned getting stressed about the MCP spec finalizing while you were building — what made you decide to learn it as it landed rather than wait for stability, and did that choice actually pay off?",
+    "Walk me through why you put the risk classification tool on MCP instead of Skills, when so much of the other judgment work landed in Skills — what does 'three different callers must all agree' actually mean in practice?",
+    "You seeded two deliberately broken claims to 'give next week's adversary something concrete to attack' — was that the main reason, or are you also testing that your own evaluation catches them before the adversarial agent even gets a turn?"
+  ]
+}
