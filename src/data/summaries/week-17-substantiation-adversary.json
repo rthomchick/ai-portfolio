@@ -1,0 +1,25 @@
+{
+  "overview": "I built a multi-agent adversarial workflow to pressure-test marketing claims. Evidence agents gather supporting data in parallel, then Opus-powered adversary and Haiku defender loop until a convergence guard exits. Every test claim returned Not Substantiated — correctly.",
+  "keyPoints": [
+    {
+      "title": "12 evidence agents, 3 selected per claim type",
+      "headingId": "evidence-gathering-agents"
+    },
+    {
+      "title": "Adversarial loop: Opus attacks, Haiku rebuts each round",
+      "headingId": "the-adversarial-loop-adversary-defender-convergence-guard"
+    },
+    {
+      "title": "~360k tokens, ~$4.38 per run at API rates",
+      "headingId": "what-i-built"
+    },
+    {
+      "title": "Hygiene checks passed; adversary still caught fake evidence",
+      "headingId": "final-build-and-testing"
+    },
+    {
+      "title": "Convergence guard exits only when no new critical attacks emerge",
+      "headingId": "exiting-the-adversarial-loop"
+    }
+  ]
+}
