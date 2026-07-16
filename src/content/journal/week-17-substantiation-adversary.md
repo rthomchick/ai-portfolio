@@ -159,7 +159,7 @@ The real-world Salesforce FedRAMP run solved this cleanly, but only by stepping 
 
 ## Next Up: Part 3 — Claims Review Agent
 
-Week 18 is the Claims Review Agent: it takes a verdict and *rules* on it, remembering past rulings across sessions via Dreaming, Managed Agents' cross-session memory primitive. I've been on the waitlist since Week 16. If access hasn't landed, the fallback is Outcomes and base memory, with Dreaming's absence noted honestly.
+Next week, I'll be adding a Claims Review Agent: it takes a verdict as input and issues an official organizational ruling: Approved for Use, Rejected, or Approved With Conditions. While the adversary I built this week answers, "is this evidence sufficient?", the review agent answers "given that finding, what does the organization do with this claim?" Under the hood, I'll try out a new feature called Dreaming (currently available as a limited research preview), a cross-session memory primitive for Managed Agents.
 
 ---
 

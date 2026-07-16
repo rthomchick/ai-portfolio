@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You mentioned wincing at the $4.38 cost per run with 360k tokens—what made you decide that was acceptable to move forward with, versus trying to optimize the workflow first?",
-    "Why did you choose to run the adversary and defender as separate agents instead of having a single agent play both roles and switch perspectives?",
-    "You picked that standing desk claim specifically because it was 'arguable' to ensure the loop would run multiple rounds—how did you know in advance whether a claim would spark enough debate, and does that matter for real claims from your registry?"
+    "You chose to hardcode the initial test to a single claim type instead of connecting to your registry right away — what made you decide to take that step backward in complexity first, and did it change how you think about building the full system?",
+    "The adversary's activity *increased* rather than decreased across rounds, which you flagged as a positive sign of genuine work — but how did you decide when to actually stop the loop, and did the convergence guard ever feel too aggressive or too lenient in practice?",
+    "You're wincing at $4.38 per run with 360k tokens, but you haven't mentioned optimizing for cost yet — is that a problem you're planning to solve in Parts 3 or 4, or does the current expense feel acceptable for a pressure-testing tool?"
   ]
 }
