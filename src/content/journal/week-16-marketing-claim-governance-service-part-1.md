@@ -2,7 +2,7 @@
 title: "Week 16 Journal: Marketing Claim Governance Service, Part 1 — Claim Registry and MCP Server"
 headline: "Week 16 Journal: Marketing Claim Governance Service, Part 1 — Claim Registry and MCP Server"
 week: 16
-date: 2026-06-15
+date: 2026-07-06
 summary: Built the capability surface for Claims Desk — a 4-tool MCP server, Supabase-backed registry seeded with 12 test claims, and two Agent Skills, verified end-to-end across Claude Code and claude.ai.
 goal: Establish foundation for an AI-native "Claims Desk" service that ensures compliance and reduces risk by checking marketing claims against a database registry of substantiated facts.
 tags:

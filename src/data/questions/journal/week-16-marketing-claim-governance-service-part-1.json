@@ -1,7 +1,7 @@
 {
   "questions": [
-    "You mentioned getting stressed about the MCP RC spec finalizing at the same time you needed to build—walk me through how that pressure actually changed your decisions, or did it turn out not to matter once you picked Supabase?",
-    "The two deliberately unsubstantiated seed claims feel like a deliberate choice for next week's adversary to attack. Why plant failure cases now instead of discovering them naturally when the adversarial agent runs?",
-    "You split capabilities between MCP tools and Agent Skills pretty deliberately—what would have gone wrong if you'd put the procedural review knowledge into an MCP tool instead of a Skill?"
+    "You mentioned getting stressed when the MCP spec was finalizing around the same time you needed to build—what made you decide to learn the RC spec as it landed rather than wait for stable, and did that bet pay off?",
+    "Walk me through why you put risk classification on MCP but kept the procedural know-how of 'how to conduct a claim review' as a Skill instead—what would go wrong if you flipped those?",
+    "You deliberately seeded two unsubstantiated claims to give next week's adversary something to attack—why leave yourself vulnerable in Part 1 instead of making all twelve claims defensible?"
   ]
 }
