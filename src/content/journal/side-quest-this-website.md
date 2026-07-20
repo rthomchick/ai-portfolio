@@ -1,6 +1,6 @@
 ---
-title: "Side Quest: This Website"
-headline: "Side Quest: This Website"
+title: "Side Quest: Building This Website"
+headline: "Side Quest: Building This Website"
 date: 2026-06-19
 summary: "A retrospective on building richardthomchick.com from a static MVP through a four-phase evolution spanning unified search, AI-powered content interactions, visual animations, and evaluation infrastructure."
 goal: "build a website and content workflow to publish information about the projects I've worked on as part of my 6-month AI PM learning plan. Try new stuff."
