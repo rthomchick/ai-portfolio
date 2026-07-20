@@ -9,7 +9,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
 const allJournalEntries = await getCollection('journal', ({ data }) => data.status === 'published');
-const sortedEntries = allJournalEntries.sort((a, b) => b.data.week - a.data.week);
+const sortedEntries = allJournalEntries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const featured = sortedEntries[0];
 const recentEntries = sortedEntries.slice(1, 4);

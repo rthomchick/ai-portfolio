@@ -6,7 +6,7 @@ import JournalCard from '../../components/JournalCard.astro';
 import { getCollection } from 'astro:content';
 
 const allEntries = await getCollection('journal', ({ data }) => data.status === 'published');
-const sorted = allEntries.sort((a, b) => b.data.week - a.data.week);
+const sorted = allEntries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 function calcReadingTime(body: string | undefined): number {
   if (!body) return 0;

@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mention deliberately designing this as an 'AI-native' website from the start—what specific architectural decisions did you make differently because of that intention, versus if you'd built a traditional portfolio site first?",
+    "You built in a constraint to prevent Claude from rewriting your prose during the publishing workflow. What happened the first time it tried to 'improve' your writing, and why was that important enough to make it a hard rule?",
+    "Phase 2 adds three simultaneous search methods, but you could've stopped at keyword search and shipped faster. What made semantic search and the RAG 'Ask AI' mode worth building before other features?"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "overview": "I built richardthomchick.com in 4 phases: an Astro 5 + Tailwind CSS 4 static MVP, then added 3-tier search (Pagefind + Pinecone + Claude RAG), per-page AI actions (Summarize, Listen, Ask AI), and finally visual polish with evaluation infrastructure.",
+  "keyPoints": [
+    {
+      "title": "Astro 5 ships zero JS; React enables future dynamic features",
+      "headingId": "phase-1-initial-mvp-build"
+    },
+    {
+      "title": "Claude Code skill cut publishing from ~1 hour to one command",
+      "headingId": "deployment"
+    },
+    {
+      "title": "3-tier search: Pagefind, OpenAI+Pinecone, and Claude RAG simultaneously",
+      "headingId": "phase-2-unified-search"
+    },
+    {
+      "title": "Summarize uses build-time Anthropic API calls with deep-linked takeaways",
+      "headingId": "phase-3-interactivity-summarize-listen-ask-ai"
+    },
+    {
+      "title": "Listen uses browser-native TTS with word-count scrubbing (~150 wpm)",
+      "headingId": "phase-3-interactivity-summarize-listen-ask-ai"
+    }
+  ]
+}

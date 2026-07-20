@@ -235,7 +235,7 @@ async function indexProjectSourceCode(projectConfig) {
     if (lines.length <= 100) {
       chunks = [content];
     } else if (language === 'python') {
-      const regex = /^(async def |def |class )/gm;
+      const regex = /^[ \t]{0,8}(async def |def |class )/gm;
       const indices = [];
       let match;
       while ((match = regex.exec(content)) !== null) indices.push(match.index);
@@ -281,7 +281,7 @@ async function indexProjectSourceCode(projectConfig) {
       // Extract section name from first line
       const firstLine = chunkContent.split('\n')[0];
       let section = filename;
-      const pyMatch = firstLine.match(/^(?:async )?def (\w+)|^class (\w+)/);
+      const pyMatch = firstLine.match(/^[ \t]*(?:async )?def (\w+)|^[ \t]*class (\w+)/);
       const jsMatch = firstLine.match(/^(?:export (?:default |async )?)?(?:function|class) (\w+)|^(?:export )?const (\w+)/);
       if (pyMatch) section = pyMatch[1] || pyMatch[2];
       else if (jsMatch) section = jsMatch[1] || jsMatch[2];
@@ -367,7 +367,7 @@ async function main() {
         section: chunk.heading || '',
         type: entry.type,
         chunkType: 'prose',
-        week: entry.week ?? null,
+        ...(entry.week != null ? { week: entry.week } : {}),
         slug: entry.slug,
         url: entry.url,
         text: chunk.text.substring(0, 1000),

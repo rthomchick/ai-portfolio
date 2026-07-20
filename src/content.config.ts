@@ -6,7 +6,7 @@ const journal = defineCollection({
   schema: z.object({
     title: z.string(),
     headline: z.string(),
-    week: z.number(),
+    week: z.number().optional(),
     date: z.coerce.date(),
     summary: z.string(),
     goal: z.string().optional(),

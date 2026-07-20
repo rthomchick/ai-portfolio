@@ -43,6 +43,8 @@ See [TECHNICAL_OVERVIEW.md](TECHNICAL_OVERVIEW.md) for a full architecture refer
 
 **Pinecone index.** `portfolio-search`, 1536-dim, cosine similarity, `text-embedding-3-small` embeddings.
 
+**Rate limiting.** `/api/search` uses `@upstash/ratelimit` backed by an Upstash Redis database (`portfolio-ratelimit`), gating requests by IP. Runtime env vars required: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`.
+
 ---
 
 ## Mermaid diagram conventions
