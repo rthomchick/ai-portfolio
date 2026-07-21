@@ -234,7 +234,7 @@ Light mode background system overhauled. Two major changes from v4:
 **Also removed:** weighted edge distribution (70/30 formula). Nodes now distribute uniformly across the full canvas via pure `Math.random()`.
 
 <video controls style="max-width: 100%; border-radius: 6px; margin: 1rem 0;">
-  <source src="/videos/journal/side-quest-filament-flash.mov">
+  <source src="/videos/journal/side-quest-filament-flash-2.mov">
 </video>
 
 The Starry Night dark mode background is now the official name (parity with Filament Flash). Together they form the ambient background system.
