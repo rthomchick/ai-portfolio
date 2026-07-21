@@ -215,9 +215,7 @@ The motion system is a set of five CSS utility classes plus one JS observer, all
 
 Dark mode got an ambient upgrade: a canvas-based starfield that renders 220 twinkling stars with randomized shooting stars every 8-18 seconds. The starfield responds to theme changes in real-time via a `MutationObserver` on the HTML element's class list. Toggle from Light to Dark, and the stars fade in over one second. The entire animation runs in a single `<canvas>` element; no DOM elements, no injected stylesheets, no performance overhead in Light mode (the `requestAnimationFrame` loop idles when the canvas opacity is 0).
 
-<video controls style="max-width: 100%; border-radius: 6px; margin: 1rem 0;">
-  <source src="/videos/journal/side-quest-starry-night.mov">
-</video>
+![Starry Night dark mode starfield animation with twinkling stars and shooting stars](/images/journal/side-quest-starry-night.gif)
 
 Light mode background system overhauled. Two major changes from v4:
 
@@ -233,9 +231,7 @@ Light mode background system overhauled. Two major changes from v4:
 
 **Also removed:** weighted edge distribution (70/30 formula). Nodes now distribute uniformly across the full canvas via pure `Math.random()`.
 
-<video controls style="max-width: 100%; border-radius: 6px; margin: 1rem 0;">
-  <source src="/videos/journal/side-quest-filament-flash-2.mov">
-</video>
+![Neural Field light mode animation showing directional impulse vectors traveling across a node canvas](/images/journal/side-quest-neural-field.gif)
 
 The Starry Night dark mode background is now the official name (parity with Filament Flash). Together they form the ambient background system.
 
