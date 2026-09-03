@@ -2,7 +2,7 @@
   "manifest_version": "1.0",
   "base_url": "https://www.richardthomchick.com",
   "page": "/projects/claims-desk/demo",
-  "generated_at": "2026-09-03T22:58:19Z",
+  "generated_at": "2026-09-03T23:42:19Z",
   "registry": {
     "api_base": "https://claims-desk-production-8424.up.railway.app",
     "mcp_endpoint": "https://claims-desk-production-8424.up.railway.app/mcp"
@@ -23,24 +23,10 @@
       "provenance": {
         "instrument": "substantiation-adversary/v1",
         "ruled_at": "2026-09-03 08:50:10.606751+00:00",
-        "convergence": "stable_verdict",
+        "convergence": "round_cap",
         "rounds": 3
       },
       "substantiation_url": "https://claims-desk-production-8424.up.railway.app/claims/kalder_resolve-performance-01.json"
-    },
-    {
-      "claim_slug": "kalder_resolve-performance-06",
-      "claim_text": "DoD verification insert for Week 18 d2",
-      "claim_type": "performance",
-      "risk_class": null,
-      "page_anchor": "#claim-kalder_resolve-performance-06",
-      "subject": {
-        "name": "Kalder Resolve",
-        "is_synthetic": true,
-        "note": "Fictional company used for demonstration"
-      },
-      "verification": "unreviewed",
-      "substantiation_url": "https://claims-desk-production-8424.up.railway.app/claims/kalder_resolve-performance-06.json"
     },
     {
       "claim_slug": "kalder_resolve-comparative-01",
@@ -90,7 +76,7 @@
       "provenance": {
         "instrument": "substantiation-adversary/v1",
         "ruled_at": "2026-09-03 20:00:31.275055+00:00",
-        "convergence": "stable_verdict",
+        "convergence": "round_cap",
         "rounds": 3
       },
       "substantiation_url": "https://claims-desk-production-8424.up.railway.app/claims/salesforce_govcloud-compliance-01.json"

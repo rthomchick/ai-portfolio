@@ -30,7 +30,6 @@ const OUT_PATH = resolve(
 
 const CLAIM_SLUGS = [
   'kalder_resolve-performance-01',
-  'kalder_resolve-performance-06',
   'kalder_resolve-comparative-01',
   'kalder_vendor-compliance-01',
   'salesforce_govcloud-compliance-01',
@@ -69,29 +68,31 @@ function subjectFor(claim) {
   return subject;
 }
 
+const VALID_CONVERGENCE = new Set(['attack_exhaustion', 'round_cap']);
+
 /**
- * The registry's claim JSON does not expose the adversarial loop's convergence
- * mode or round count as structured fields — the ruling record carries only
- * ruling_id, verdict, rationale, reviewed_by, created_at. Both facts are stated
- * in the ruling's own prose, so we read them from there rather than hardcoding
- * a number that could silently drift out of sync with the registry.
+ * convergence and rounds are enforced structured fields on review_rulings (a
+ * CHECK constraint pins convergence to exactly attack_exhaustion or
+ * round_cap). Read them directly from latest_ruling rather than parsing the
+ * rationale prose, which does not reliably reflect the row.
  */
-function convergenceFrom(rationale) {
-  if (/attack[_ ]exhaustion/i.test(rationale)) return 'attack_exhaustion';
-  if (/stable[_ ]verdict|held .* in all three|held .* across all/i.test(rationale)) {
-    return 'stable_verdict';
+function convergenceFrom(ruling, slug) {
+  const { convergence } = ruling;
+  if (!VALID_CONVERGENCE.has(convergence)) {
+    throw new Error(
+      `Invalid convergence "${convergence}" for claim ${slug}: expected one of ` +
+        `${[...VALID_CONVERGENCE].join(', ')}`
+    );
   }
-  return 'stable_verdict';
+  return convergence;
 }
 
-function roundsFrom(rationale) {
-  const ordinal = rationale.match(/round[- ](\d+)/gi) ?? [];
-  const numeric = ordinal.map((m) => parseInt(m.match(/\d+/)[0], 10));
-  if (/all three rounds|in all three|three rounds/i.test(rationale)) {
-    numeric.push(3);
+function roundsFrom(ruling, slug) {
+  const { rounds } = ruling;
+  if (!Number.isInteger(rounds) || rounds < 1) {
+    throw new Error(`Invalid rounds "${rounds}" for claim ${slug}: expected a positive integer`);
   }
-  if (numeric.length === 0) return null;
-  return Math.max(...numeric);
+  return rounds;
 }
 
 async function fetchClaim(slug) {
@@ -141,8 +142,8 @@ function toManifestEntry(payload) {
     entry.provenance = {
       instrument: ruling.reviewed_by,
       ruled_at: ruling.created_at,
-      convergence: convergenceFrom(ruling.rationale ?? ''),
-      rounds: roundsFrom(ruling.rationale ?? ''),
+      convergence: convergenceFrom(ruling, claim.claim_slug),
+      rounds: roundsFrom(ruling, claim.claim_slug),
     };
   }
 
