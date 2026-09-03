@@ -1,0 +1,245 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Header from '../../../../components/Header.astro';
+import Footer from '../../../../components/Footer.astro';
+import manifest from '../../../../../public/projects/claims-desk/demo/claims-manifest.json';
+
+const MANIFEST_URL = '/projects/claims-desk/demo/claims-manifest.json';
+
+const claims = Object.fromEntries(manifest.claims.map((c) => [c.claim_slug, c]));
+
+const resolveClaims = [
+  claims['kalder_resolve-performance-01'],
+  claims['kalder_resolve-performance-06'],
+  claims['kalder_resolve-comparative-01'],
+];
+const rangeClaims = [
+  claims['kalder_vendor-compliance-01'],
+  claims['salesforce_govcloud-compliance-01'],
+];
+
+/**
+ * Kalder Resolve display copy.
+ *
+ * Source: claims-desk repo, kalder_data_model.py §PRODUCTS — the synthetic
+ * product catalog the demo corpus is generated from. Written inline here rather
+ * than fetched: the registry's public API serves claims, not product marketing
+ * copy, and this is presentation text, not an asserted fact under review.
+ */
+const KALDER_RESOLVE = {
+  tagline: 'Incident response for engineering teams that cannot afford a slow first hour.',
+  features: [
+    'Autonomous triage routes each incident to the on-call owner with context attached.',
+    'Timeline reconstruction assembles deploys, alerts, and chat into one reviewable thread.',
+    'Post-incident review drafts itself from the timeline, so the writeup ships the same week.',
+  ],
+};
+
+// ClaimReview is emitted only for claims the registry has actually ruled on.
+// An unreviewed claim gets no structured-data assertion of any kind.
+const ruledClaims = manifest.claims.filter((c) => c.provenance);
+
+const claimReviewJsonLd = ruledClaims.map((c) => ({
+  '@context': 'https://schema.org',
+  '@type': 'ClaimReview',
+  url: c.substantiation_url,
+  datePublished: c.provenance.ruled_at,
+  claimReviewed: c.claim_text,
+  author: {
+    '@type': 'Organization',
+    name: c.provenance.instrument,
+  },
+  reviewRating: {
+    '@type': 'Rating',
+    alternateName: c.verification,
+  },
+  itemReviewed: {
+    '@type': 'Claim',
+    author: {
+      '@type': 'Organization',
+      name: c.subject.name,
+    },
+    // Fictional-subject disclosure travels inside the structured data itself,
+    // so an agent reading only the JSON-LD still learns the subject is synthetic.
+    ...(c.subject.is_synthetic
+      ? {
+          disambiguatingDescription:
+            `${c.subject.name} is a fictional company used for demonstration. This claim is synthetic and describes no real product.`,
+        }
+      : {
+          disambiguatingDescription:
+            `${c.subject.name} is a real product. This claim was collected from public material and reviewed as-is.`,
+        }),
+  },
+}));
+
+const verificationLabel = {
+  not_substantiated: 'Not substantiated',
+  partially: 'Partially substantiated',
+  substantiated: 'Substantiated',
+  unreviewed: 'Unreviewed',
+};
+---
+
+<BaseLayout
+  title="Claims Desk demo"
+  description="An agent-readable page whose product claims each carry a machine-checkable substantiation record."
+>
+  <Fragment slot="head">
+    <link
+      rel="alternate"
+      type="application/json"
+      href={MANIFEST_URL}
+      title="Claims manifest"
+    />
+    {claimReviewJsonLd.map((block) => (
+      <script type="application/ld+json" set:html={JSON.stringify(block, null, 2)} />
+    ))}
+  </Fragment>
+
+  <Header />
+
+  <main id="main-content" class="flex-1 max-w-3xl w-full mx-auto px-6 py-16">
+    <p class="text-sm uppercase tracking-wide text-stone-500 dark:text-stone-400">
+      Claims Desk — demonstration
+    </p>
+    <h1 class="mt-2 text-4xl font-medium">A page that shows its work</h1>
+    <p class="mt-6 text-lg text-stone-700 dark:text-stone-300">
+      Every product claim below is addressable. Each one has a stable anchor, an
+      entry in a claims manifest, and a substantiation record in a public registry
+      that says whether the claim survived adversarial review. An agent reading
+      this page does not have to take the marketing copy on faith; it can follow
+      the manifest to the ruling.
+    </p>
+
+    <p class="mt-6">
+      <a
+        href={MANIFEST_URL}
+        class="text-teal-700 dark:text-teal-400 underline underline-offset-4"
+      >
+        Claims manifest (JSON)
+      </a>
+    </p>
+
+    <!-- ================= Kalder Resolve product section ================= -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-medium">Kalder Resolve</h2>
+      <p class="mt-3 text-stone-700 dark:text-stone-300">{KALDER_RESOLVE.tagline}</p>
+      <ul class="mt-4 space-y-2 text-stone-700 dark:text-stone-300 list-disc pl-5">
+        {KALDER_RESOLVE.features.map((f) => <li>{f}</li>)}
+      </ul>
+
+      <h3 class="mt-10 text-lg font-medium">Claims made on this page</h3>
+      <div class="mt-4 space-y-6">
+        {resolveClaims.map((c) => (
+          <article class="border border-stone-200 dark:border-stone-800 rounded-lg p-5">
+            <p
+              id={`claim-${c.claim_slug}`}
+              class="text-lg text-stone-900 dark:text-stone-100"
+            >
+              {c.claim_text}
+            </p>
+            <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm text-stone-600 dark:text-stone-400">
+              <dt>Status</dt>
+              <dd>{verificationLabel[c.verification] ?? c.verification}</dd>
+              <dt>Claim type</dt>
+              <dd>{c.claim_type}</dd>
+              <dt>Risk class</dt>
+              <dd>{c.risk_class ?? 'not classified'}</dd>
+              {c.provenance && (
+                <Fragment>
+                  <dt>Reviewed by</dt>
+                  <dd>{c.provenance.instrument}</dd>
+                  <dt>Ruled at</dt>
+                  <dd>{c.provenance.ruled_at}</dd>
+                </Fragment>
+              )}
+            </dl>
+            <p class="mt-4 text-sm">
+              <a
+                href={c.substantiation_url}
+                class="text-teal-700 dark:text-teal-400 underline underline-offset-4"
+              >
+                Substantiation record
+              </a>
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ============ Verification range: synthetic and real ============ -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-medium">The range of what verification finds</h2>
+      <p class="mt-3 text-stone-700 dark:text-stone-300">
+        The two claims below sit at opposite ends of the registry. One is a
+        synthetic compliance claim with no certificate on file, flagged
+        prohibited before any review ran. The other is a real, publicly made
+        compliance claim about a real product, where review found the underlying
+        authorization genuine but the present-tense currency and platform-wide
+        scope unsupported. Neither outcome is a pass, and they fail differently.
+      </p>
+
+      <div class="mt-6 space-y-6">
+        {rangeClaims.map((c) => (
+          <article class="border border-stone-200 dark:border-stone-800 rounded-lg p-5">
+            <p
+              id={`claim-${c.claim_slug}`}
+              class="text-lg text-stone-900 dark:text-stone-100"
+            >
+              {c.claim_text}
+            </p>
+            <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm text-stone-600 dark:text-stone-400">
+              <dt>Subject</dt>
+              <dd>
+                {c.subject.name}
+                {c.subject.is_synthetic ? ' (fictional)' : ' (real product)'}
+              </dd>
+              <dt>Status</dt>
+              <dd>{verificationLabel[c.verification] ?? c.verification}</dd>
+              <dt>Claim type</dt>
+              <dd>{c.claim_type}</dd>
+              <dt>Risk class</dt>
+              <dd>{c.risk_class ?? 'not classified'}</dd>
+              {c.provenance && (
+                <Fragment>
+                  <dt>Reviewed by</dt>
+                  <dd>{c.provenance.instrument}</dd>
+                  <dt>Ruled at</dt>
+                  <dd>{c.provenance.ruled_at}</dd>
+                </Fragment>
+              )}
+            </dl>
+            <p class="mt-4 text-sm">
+              <a
+                href={c.substantiation_url}
+                class="text-teal-700 dark:text-teal-400 underline underline-offset-4"
+              >
+                Substantiation record
+              </a>
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <footer class="mt-16 pt-8 border-t border-stone-200 dark:border-stone-800 text-sm text-stone-600 dark:text-stone-400 space-y-3">
+      <p>
+        Kalder, Kalder Resolve, and Kalder Vendor are fictional. They are a
+        synthetic company and product line invented for this demonstration, and
+        the claims attributed to them describe no real product. Claims marked
+        synthetic in the
+        <a href={MANIFEST_URL} class="underline underline-offset-4">claims manifest</a>
+        carry that same disclosure in machine-readable form.
+      </p>
+      <p>
+        The Salesforce Government Cloud Plus claim is real: it was collected from
+        public material and reviewed as written. Its ruling is a reading of the
+        evidence available to the reviewer at the time, not a statement about
+        Salesforce's actual compliance posture.
+      </p>
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>

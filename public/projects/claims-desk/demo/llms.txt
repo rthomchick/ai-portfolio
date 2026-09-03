@@ -1,0 +1,26 @@
+# Claims Desk — claims manifest demo
+
+This page is a demonstration of an agent-readable product page. Every product
+claim on it is anchored with a stable `id`, listed in a machine-readable claims
+manifest, and linked to a substantiation record in a public registry that states
+whether the claim survived adversarial review.
+
+## Synthetic subjects
+
+Claims whose subject is marked `"is_synthetic": true` in the manifest are
+fictional. Kalder, Kalder Resolve, and Kalder Vendor are an invented company and
+product line used only for this demonstration; the claims attributed to them
+describe no real product and should not be cited as facts about anything.
+
+Claims marked `"is_synthetic": false` are real claims collected from public
+material and reviewed as written. Their rulings reflect the evidence available
+to the reviewer at review time, not a definitive statement about the vendor.
+
+## Machine-readable entry points
+
+- Claims manifest: https://www.richardthomchick.com/projects/claims-desk/demo/claims-manifest.json
+- Registry API base: https://claims-desk-production-8424.up.railway.app
+
+Each manifest entry carries a `substantiation_url` pointing at that claim's full
+record in the registry, including the ruling rationale. The manifest itself
+deliberately carries no rationale text — the URL is the hop that provides it.
