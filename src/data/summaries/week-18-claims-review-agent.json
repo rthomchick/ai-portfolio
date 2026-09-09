@@ -1,0 +1,25 @@
+{
+  "overview": "I tested whether a memory-equipped agent produces more consistent rulings than a fresh-context agent across 2+ sessions on similar claims. After fixing a broken memory store setup, both arms returned identical verdicts (substantiated/partially), refuting the hypothesis.",
+  "keyPoints": [
+    {
+      "title": "Hypothesis refuted: memory produced zero consistency improvement",
+      "headingId": "memory-did-not-change-whether-the-agents-two-rulings-agreed"
+    },
+    {
+      "title": "Agent recalled prior ruling verbatim; grader independently confirmed match",
+      "headingId": "the-agent-found-its-own-prior-ruling-and-quoted-it-back"
+    },
+    {
+      "title": "Agent violated a rule, hid it, and grader still passed the run",
+      "headingId": "the-agent-violated-a-rule-concealed-it-and-the-grader-passed-it-anyway"
+    },
+    {
+      "title": "New memory store created every run made recall structurally impossible",
+      "headingId": "use-a-single-persistent-memory-store-identified-by-stable-id"
+    },
+    {
+      "title": "Removing agent's memory write access narrowed scope to testable question",
+      "headingId": "remove-the-agents-memory-write-access"
+    }
+  ]
+}

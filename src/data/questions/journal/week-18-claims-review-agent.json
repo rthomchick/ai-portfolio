@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You narrowed your hypothesis from 'does an agent managing its own memory improve consistency' to 'does recall of a prior ruling improve consistency' — what made you decide that accepting a narrower testable question was worth more than pursuing the broader one?",
+    "Your original 14-run batch couldn't test the hypothesis because every memory-enabled run found nothing to recall. What was causing that, and how did you realize the test design itself needed to change rather than just tweaking parameters?",
+    "You removed the agent's Memory write access and now only the launcher writes to memory after grading — this feels like you're trading away the agent's own judgment about what to remember. Do you think you'll eventually need to give that decision-making back to the agent, or does this constraint reveal something important about how to structure this system?"
+  ]
+}
