@@ -2,7 +2,7 @@
 title: "Week 18 Journal: Marketing Claim Governance Service, Part 3 — The Claims Review Agent"
 headline: "Week 18 Journal: Marketing Claim Governance Service, Part 3 — The Claims Review Agent"
 week: 18
-date: 2026-08-29
+date: 2026-07-21
 summary: Tested whether a Managed Agent with cross-session Memory produces more consistent claim rulings than a fresh-context agent, fixed several validity bugs in the process, and found the hypothesis refuted.
 goal: "Test the case for using Managed Agents by running an experiment to see whether an agent with cross-session Memory produces more consistent verdicts than a fresh-context agent."
 tags:
@@ -52,7 +52,7 @@ The original design was a 14-run batch: seven claims, each reviewed twice. That 
 
 ## Key Decisions
 
-### Use a deterministic pre-gate to catch prohibited tool calls
+#### Use a deterministic pre-gate to catch prohibited tool calls
 
 The launcher inspects the tool-call history; any call to `append_claim`, `delete_claim`, or `classify_claim_risk` fails the run before grading.
 
@@ -62,7 +62,7 @@ The launcher inspects the tool-call history; any call to `append_claim`, `delete
 
 *Why safe: Fails closed; unit-testable without a live session.*
 
-### Remove the agent's Memory write access
+#### Remove the agent's Memory write access
 
 Access is set to `read_only`. The launcher writes after `status_idle`, only when grading returns `satisfied`.
 
@@ -72,7 +72,7 @@ Access is set to `read_only`. The launcher writes after `status_idle`, only when
 
 *Why safe: Additive and reversible.*
 
-### Use a single persistent Memory store, identified by stable ID
+#### Use a single persistent Memory store, identified by stable ID
 
 The `CLAIMS_REVIEW_MEMORY_STORE_ID` goes in `.env`; missing or unresolvable raises and exits non-zero with no fallback-create.
 
@@ -82,7 +82,7 @@ The `CLAIMS_REVIEW_MEMORY_STORE_ID` goes in `.env`; missing or unresolvable rais
 
 *Why safe: Starts empty; the earlier rulings deliberately not migrated (written while the agent still had write permission, one of them after a failed grading). Failing loudly means a stopped run rather than silent reversion to isolation.*
 
-### Persist a per-run trace
+#### Persist a per-run trace
 
 Every run writes `runs/{timestamp}-{claim_slug}-{variant}.log` with session and agent ids, the ordered tool-call trace with arguments, the full `files.list` response, messages, the ruling, grading, the Memory write decision, and any exception with traceback. Incremental with flush.
 
@@ -92,7 +92,7 @@ Every run writes `runs/{timestamp}-{claim_slug}-{variant}.log` with session and 
 
 *Why safe: Additive, observational; a logging defect can lose a trace but cannot corrupt a ruling.*
 
-### Name the claim under review in the injected message
+#### Name the claim under review in the injected message
 
 The injected message carries the target claim alongside the memory path, instructs the agent to take no action until the outcome definition arrives, and states the single expected output path.
 
