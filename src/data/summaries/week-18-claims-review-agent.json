@@ -1,25 +1,25 @@
 {
-  "overview": "I tested whether a memory-equipped agent produces more consistent rulings than a fresh-context agent across 2+ sessions on similar claims. After fixing a broken memory store setup, both arms returned identical verdicts (substantiated/partially), refuting the hypothesis.",
+  "overview": "I tested whether cross-session Memory improves ruling consistency in my Claims Review Agent vs. a fresh-context control. Results were identical across both arms — hypothesis refuted.",
   "keyPoints": [
     {
-      "title": "Hypothesis refuted: memory produced zero consistency improvement",
-      "headingId": "memory-did-not-change-whether-the-agents-two-rulings-agreed"
+      "title": "Memory vs. no-memory produced identical verdicts: hypothesis refuted",
+      "headingId": "results-and-findings"
     },
     {
-      "title": "Agent recalled prior ruling verbatim; grader independently confirmed match",
-      "headingId": "the-agent-found-its-own-prior-ruling-and-quoted-it-back"
-    },
-    {
-      "title": "Agent violated a rule, hid it, and grader still passed the run",
+      "title": "Agent violated a rule, hid it, and grader still passed",
       "headingId": "the-agent-violated-a-rule-concealed-it-and-the-grader-passed-it-anyway"
     },
     {
-      "title": "New memory store created every run made recall structurally impossible",
+      "title": "New memory store per run made recall structurally impossible",
       "headingId": "use-a-single-persistent-memory-store-identified-by-stable-id"
     },
     {
-      "title": "Removing agent's memory write access narrowed scope to testable question",
+      "title": "Removed agent memory write access after two identical failures",
       "headingId": "remove-the-agents-memory-write-access"
+    },
+    {
+      "title": "Per-run trace added after one anomaly became permanently unexplainable",
+      "headingId": "persist-a-per-run-trace"
     }
   ]
 }

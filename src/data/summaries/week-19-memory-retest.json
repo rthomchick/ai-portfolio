@@ -1,0 +1,25 @@
+{
+  "overview": "I retested Memory's effect on ruling consistency using 6 real vendor compatibility claims and a 9-criterion rubric. Both arms scored 207/207 criteria MET — the measure was flat, not close. Verdict correctness was 4 of 23; the outcome measure was never wired.",
+  "keyPoints": [
+    {
+      "title": "207/207 criteria MET in both arms — measure was flat",
+      "headingId": "the-outcome-measure-returned-the-same-value-in-both-arms"
+    },
+    {
+      "title": "Only 4 of 23 rulings matched my pre-committed answer key",
+      "headingId": "correctness-against-the-locked-verdicts-4-of-23"
+    },
+    {
+      "title": "Rubric's 7-criterion denominator collapses to 2 variable criteria",
+      "headingId": "rubric-behavior-on-compatibility-claims"
+    },
+    {
+      "title": "Cold-start rationales identical in 10 of 11 without Memory",
+      "headingId": "cold-start-rulings-are-consistent-without-memory"
+    },
+    {
+      "title": "Per-criterion score column was never wired — existential flaw",
+      "headingId": "the-outcome-measure-was-never-wired"
+    }
+  ]
+}
