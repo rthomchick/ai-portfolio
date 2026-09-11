@@ -1,0 +1,25 @@
+{
+  "overview": "I built a front door for agent discovery: a public claims page, a machine-readable manifest, and a path from any claim to its ruling. Three agent classes completed page → manifest → substantiation status against one live artifact.",
+  "keyPoints": [
+    {
+      "title": "All 3 agent classes verified claims end-to-end unprompted",
+      "headingId": "three-agent-classes-traversed-one-live-artifact"
+    },
+    {
+      "title": "Retrievable evidence produced 3 distinct failure modes",
+      "headingId": "retrievable-evidence-changes-the-shape-of-the-reasoning-not-just-the-verdict"
+    },
+    {
+      "title": "Manifest published a verdict outside its own enum vocabulary",
+      "headingId": "the-manifest-published-a-value-outside-its-own-enum"
+    },
+    {
+      "title": "8 fixture rows deleted from production with guarded script",
+      "headingId": "fixture-rulings-get-deleted-rather-than-superseded"
+    },
+    {
+      "title": "Week 17 adversary chosen: Week 18 agent got 19/23 wrong",
+      "headingId": "rulings-come-from-the-week-17-adversary"
+    }
+  ]
+}

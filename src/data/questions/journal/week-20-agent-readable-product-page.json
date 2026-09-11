@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mention that one of your premises turned out false—that you cited a verdict three times as confirming it, but it had no artifact anywhere in the system. How did you discover this, and what made you decide to keep the append-only decision anyway?",
+    "You chose to use the Week 17 adversary instead of the Week 18 review agent for rulings because it was stronger on evidence, but you knew this meant the manifest would likely be 'all-red.' Why was that tradeoff worth accepting rather than trying to improve the review agent?",
+    "When you deleted the eight fixture rows that had landed in production, you broke your own append-only discipline deliberately. What would it have cost you to keep them instead, and why did deliberate deletion feel like the right solution?"
+  ]
+}
