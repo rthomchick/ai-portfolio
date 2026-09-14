@@ -31,7 +31,7 @@ status: published
 
 ## Motivation
 
-By now, I had a claims registry behind an [MCP server](https://www.richardthomchick.com/journal/week-16-marketing-claim-governance-service-part-1) and an [adversarial agent loop](https://www.richardthomchick.com/journal/week-17-substantiation-adversary) that attacks a claim's evidence and renders a verdict. A later review agent hedged too much to trust, so the loop stayed the instrument. All of it worked, but none of it was discoverable: the registry answered a program speaking MCP, and only if that program already held a claim's internal ID.
+By now, I had a claims registry behind a [MCP server](https://www.richardthomchick.com/journal/week-16-marketing-claim-governance-service-part-1) and an [adversarial agent loop](https://www.richardthomchick.com/journal/week-17-substantiation-adversary) that attacks a claim's evidence and renders a verdict. A later review agent hedged too much to trust, so the loop stayed the instrument. All of it worked, but none of it was discoverable: the registry answered a program speaking MCP, and only if that program already held a claim's internal ID.
 
 I also wanted to make a website's own claims more legible to an agent reading it. A marketing claim published as prose is unverifiable by a machine: an agent cannot tell a claim backed by reviewed evidence from one backed by nothing. So this week, I built a front door for agent discovery: a webpage, a machine-readable manifest, and a path from any claim on the page to the record of whether it survived review.
 
@@ -153,6 +153,6 @@ What I would change: verify the identity of anything I specify by name before bu
 
 ---
 
-*The registry has a front door now, built to let agents check the claims they encounter. Next week I'll measure how reliably an agent can identify false premises in these claims.*
+*The registry has a front door now, built to let agents check the claims they encounter. Project complete.*
 </content>
 </invoke>

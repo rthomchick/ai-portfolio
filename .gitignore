@@ -32,3 +32,4 @@ pnpm-debug.log*
 
 # Claude Code worktrees
 .claude/worktrees/
+.claude/commands/update-log.md
