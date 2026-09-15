@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "index": "node --env-file=.env scripts/index-content.mjs",
+    "smoke-test": "node scripts/smoke-test-ask-ai.mjs",
     "generate-summaries": "npx tsx scripts/generate-summaries.ts",
     "generate-questions": "npx tsx scripts/generate-questions.ts",
     "prebuild": "npm run generate-summaries && npx tsx scripts/generate-questions.ts"
