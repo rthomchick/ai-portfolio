@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 660" width="800" height="660" role="img" aria-labelledby="dtitle ddesc">
+  <title id="dtitle">Claims Desk: complete architecture</title>
+  <desc id="ddesc">A four-part system over one shared registry: a week 16 capability surface of four MCP tools, two Agent Skills, a Supabase registry and twelve seed claims; a week 17 substantiation adversary; a claims review agent built in week 18 and retested in week 19; and a week 20 agent-readable product page.</desc>
+
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa5b1"/>
+    </marker>
+    <style>
+      .ttl   { font: 600 19px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #1f3864; }
+      .sub   { font: 400 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #4a6491; }
+      .shd   { font: 600 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      .body  { font: 400 12.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      .chip  { font: 400 12.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #34495e; }
+      .wk    { font: 500 11px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; opacity: .72; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="798" height="658" rx="14" fill="#ffffff" stroke="#c7d7ea" stroke-width="1.5"/>
+
+  <text class="ttl" x="400" y="46" text-anchor="middle">Claims Desk</text>
+  <text class="sub" x="400" y="68" text-anchor="middle">Four-part system, one shared registry</text>
+
+  <!-- Capability surface -->
+  <rect x="36" y="94" width="728" height="122" rx="14" fill="#e4f2ea"/>
+  <text class="shd" x="400" y="124" text-anchor="middle" fill="#1f6b4a">Capability surface</text>
+  <text class="wk"  x="744" y="118" text-anchor="end" fill="#1f6b4a">Week 16</text>
+  <rect x="60" y="144" width="158" height="48" rx="9" fill="#ffffff" stroke="#cfe3d8"/>
+  <text class="chip" x="139" y="173" text-anchor="middle">4 MCP tools</text>
+  <rect x="234" y="144" width="158" height="48" rx="9" fill="#ffffff" stroke="#cfe3d8"/>
+  <text class="chip" x="313" y="173" text-anchor="middle">2 Agent Skills</text>
+  <rect x="408" y="144" width="158" height="48" rx="9" fill="#ffffff" stroke="#cfe3d8"/>
+  <text class="chip" x="487" y="173" text-anchor="middle">Supabase registry</text>
+  <rect x="582" y="144" width="158" height="48" rx="9" fill="#ffffff" stroke="#cfe3d8"/>
+  <text class="chip" x="661" y="173" text-anchor="middle">12 seed claims</text>
+
+  <line x1="400" y1="216" x2="400" y2="246" stroke="#9aa5b1" stroke-width="1.5" marker-end="url(#arw)"/>
+
+  <!-- Substantiation adversary -->
+  <rect x="36" y="248" width="728" height="112" rx="14" fill="#e8e8f8"/>
+  <text class="shd" x="400" y="278" text-anchor="middle" fill="#3b3b8f">Substantiation adversary</text>
+  <text class="wk"  x="744" y="272" text-anchor="end" fill="#3b3b8f">Week 17</text>
+  <text class="body" x="400" y="305" text-anchor="middle" fill="#4a4a9e">Script-orchestrated workflow · parallel evidence agents against an adversarial attacker</text>
+  <text class="body" x="400" y="329" text-anchor="middle" fill="#4a4a9e">Calls check_substantiation and classify_claim_risk against every claim</text>
+
+  <line x1="400" y1="360" x2="400" y2="390" stroke="#9aa5b1" stroke-width="1.5" marker-end="url(#arw)"/>
+
+  <!-- Claims review agent -->
+  <rect x="36" y="392" width="728" height="112" rx="14" fill="#fdeee2"/>
+  <text class="shd" x="400" y="422" text-anchor="middle" fill="#8a4b1f">Claims review agent</text>
+  <text class="wk"  x="744" y="416" text-anchor="end" fill="#8a4b1f">Weeks 18–19</text>
+  <text class="body" x="400" y="449" text-anchor="middle" fill="#9a5a2a">Managed Agents · cross-session memory + nine-criterion Outcomes rubric</text>
+  <text class="body" x="400" y="473" text-anchor="middle" fill="#9a5a2a">Reaches the MCP server remotely over HTTPS, same shared registry</text>
+
+  <line x1="400" y1="504" x2="400" y2="534" stroke="#9aa5b1" stroke-width="1.5" marker-end="url(#arw)"/>
+
+  <!-- Product page -->
+  <rect x="36" y="536" width="728" height="100" rx="14" fill="#fbe8ee"/>
+  <text class="shd" x="400" y="566" text-anchor="middle" fill="#8f2b4a">Agent-readable product page</text>
+  <text class="wk"  x="744" y="560" text-anchor="end" fill="#8f2b4a">Week 20</text>
+  <text class="body" x="400" y="593" text-anchor="middle" fill="#a03c59">Public claims page · manifest links each claim to its substantiation record</text>
+  <text class="body" x="400" y="617" text-anchor="middle" fill="#a03c59">Read over the public HTTP route by agents that do not speak MCP</text>
+</svg>

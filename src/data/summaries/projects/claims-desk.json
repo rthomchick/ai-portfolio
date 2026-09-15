@@ -1,0 +1,25 @@
+{
+  "overview": "Claims Desk is a deployed governance service that separates deterministic claim validation from adversarial substantiation judgment. A registry handles hygiene checks via MCP tools while a script-orchestrated adversary argues evidence sufficiency, reducing coordination costs 2.",
+  "keyPoints": [
+    {
+      "title": "Deterministic checks separated from judgment verdicts",
+      "headingId": "solution-approach"
+    },
+    {
+      "title": "Script orchestration halves coordination token costs",
+      "headingId": "plan-in-script-incurs-zero-coordination-model-tokens-while-plan-in-context-incurs-roughly-445k-for-the-same-two-round-adversarial-task-a-23-total-cost-difference"
+    },
+    {
+      "title": "Hygiene checks insufficient for substantiation verdicts",
+      "headingId": "a-claim-can-pass-every-hygiene-check-and-still-receive-a-not_substantiated-verdict-from-the-adversary"
+    },
+    {
+      "title": "Append-only rulings with derived-on-read state",
+      "headingId": "architecture"
+    },
+    {
+      "title": "Test suite corrupted production data irreversibly",
+      "headingId": "eight-fixture-rulings-with-canned-one-line-rationales-appeared-in-the-production-review_rulings-table"
+    }
+  ]
+}

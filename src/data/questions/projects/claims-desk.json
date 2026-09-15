@@ -1,0 +1,7 @@
+{
+  "questions": [
+    "You mention that rulings are stored in an append-only table and verification state is computed on read rather than stored. Walk me through how you handle the case where a ruling needs to be superseded—what does that implementation look like, and how do you prevent stale state from being returned during the read-side computation?",
+    "The cost analysis shows plan-in-script reduced coordination tokens from ~445K to 0 compared to plan-in-context. Can you explain the architectural difference that eliminates those coordination tokens, and why holding the orchestration plan in a model context incurs linear overhead in rounds?",
+    "You describe filtering reputational and credibility attacks at the prompt level while letting the adversary attack only claim evidence. How do you operationalize that boundary in the prompt—what specific patterns or attack classes do you exclude, and how did you validate you weren't accidentally filtering out legitimate substantiation challenges?"
+  ]
+}

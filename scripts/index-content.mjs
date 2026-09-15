@@ -472,6 +472,17 @@ async function main() {
       githubRepo: 'rthomchick/buying-group-personalization-advisor',
       title: 'Buying Group Personalization Advisor',
     },
+
+    // ── Claims Desk — registry server and adversary workflow ──────────
+    // Scoped to the two dirs holding shippable source; runs/ is log output
+    // and docs/ carries no indexable extensions.
+    {
+      slug: 'claims-desk',
+      repoPath: join(process.env.HOME, 'Dropbox/ai-projects/claims-desk'),
+      githubRepo: 'rthomchick/claims-desk',
+      title: 'Claims Desk',
+      subPaths: ['server', 'week17'],
+    },
   ];
 
   let totalSourceChunks = 0;
