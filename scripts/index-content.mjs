@@ -23,9 +23,34 @@ const OVERLAP_CHARS = 100;
 const CODE_EMBED_MAX_CHARS = 3000;
 const CODE_META_MAX_CHARS = 8000;
 const CODE_MIN_CHARS = 50;
+const PINECONE_METADATA_MAX_BYTES = 40960; // hard per-record limit
 
 function stripCodeBlocks(text) {
   return text.replace(CODE_BLOCK_RE, '').trim();
+}
+
+// The retrieval path builds its prompt exclusively from metadata.text, so
+// anything dropped here is invisible to the model even when the chunk ranks
+// first. Both failure modes below are silent — Pinecone accepts a truncated
+// record, and an oversized one is rejected per-record while the batch still
+// reports success — so they have to be assertions, not warnings.
+function assertMetadataIsComplete(id, metadata, { expectFullText } = {}) {
+  if (expectFullText != null && metadata.text.length !== expectFullText.length) {
+    throw new Error(
+      `[index-content] ${id}: stored ${metadata.text.length} of ${expectFullText.length} chars. ` +
+      `A metadata cap is dropping content the embedding covers — the chunk will retrieve ` +
+      `and then reach the model incomplete.`
+    );
+  }
+
+  const bytes = Buffer.byteLength(JSON.stringify(metadata), 'utf8');
+  if (bytes > PINECONE_METADATA_MAX_BYTES) {
+    throw new Error(
+      `[index-content] ${id}: metadata is ${bytes} bytes, over Pinecone's ` +
+      `${PINECONE_METADATA_MAX_BYTES}-byte limit. Pinecone rejects the record but the ` +
+      `batch still reports success, so this would drop the chunk silently.`
+    );
+  }
 }
 
 function chunkByHeadings(body, title, type) {
@@ -288,22 +313,29 @@ async function indexProjectSourceCode(projectConfig) {
 
       const embeddingText = `${title} — ${section}\nFile: ${relativeFilePath}\nLanguage: ${language}\n\n${chunkContent.slice(0, 3000)}`;
 
+      const sourceId = `${slug}#src-${fileIndex}-${chunkIndex}`;
+      // Unlike prose, CODE_META_MAX_CHARS is a deliberate cap: only the first
+      // 3000 chars are embedded, so 8000 stored is already generous. Check the
+      // byte ceiling only — a length-equality check would fire on every long file.
+      const sourceMetadata = {
+        title,
+        section,
+        type: 'project',
+        chunkType: 'code',
+        language,
+        slug,
+        url: `/projects/${slug}`,
+        sourceFile: relativeFilePath,
+        githubUrl,
+        text: chunkContent.slice(0, CODE_META_MAX_CHARS),
+        charCount: chunkContent.length,
+      };
+      assertMetadataIsComplete(sourceId, sourceMetadata);
+
       allChunks.push({
-        id: `${slug}#src-${fileIndex}-${chunkIndex}`,
+        id: sourceId,
         embeddingText,
-        metadata: {
-          title,
-          section,
-          type: 'project',
-          chunkType: 'code',
-          language,
-          slug,
-          url: `/projects/${slug}`,
-          sourceFile: relativeFilePath,
-          githubUrl,
-          text: chunkContent.slice(0, 8000),
-          charCount: chunkContent.length,
-        },
+        metadata: sourceMetadata,
       });
     }
   }
@@ -359,20 +391,27 @@ async function main() {
     process.stdout.write(`\rGenerating embeddings... ${++embeddingCount}/${totalChunks}`);
     const embedding = await embed(textToEmbed);
 
+    const proseId = `${entry.slug}#${idx}`;
+    // Store the whole chunk: chunkByHeadings already caps it at MAX_CHUNK_CHARS,
+    // so that is the real bound. A second, smaller cap here only amputates the
+    // tail of every long section after it has already been embedded and ranked.
+    const proseMetadata = {
+      title: entry.title,
+      section: chunk.heading || '',
+      type: entry.type,
+      chunkType: 'prose',
+      ...(entry.week != null ? { week: entry.week } : {}),
+      slug: entry.slug,
+      url: entry.url,
+      text: chunk.text.substring(0, MAX_CHUNK_CHARS),
+      charCount: chunk.text.length,
+    };
+    assertMetadataIsComplete(proseId, proseMetadata, { expectFullText: chunk.text });
+
     vectors.push({
-      id: `${entry.slug}#${idx}`,
+      id: proseId,
       values: embedding,
-      metadata: {
-        title: entry.title,
-        section: chunk.heading || '',
-        type: entry.type,
-        chunkType: 'prose',
-        ...(entry.week != null ? { week: entry.week } : {}),
-        slug: entry.slug,
-        url: entry.url,
-        text: chunk.text.substring(0, 1000),
-        charCount: chunk.text.length,
-      },
+      metadata: proseMetadata,
     });
   }
 
@@ -384,20 +423,26 @@ async function main() {
     process.stdout.write(`\rGenerating embeddings... ${++embeddingCount}/${totalChunks}`);
     const embedding = await embed(textToEmbed);
 
+    const codeId = `${entry.slug}#code-${idx}`;
+    // Byte ceiling only, for the same reason as the source-code chunks above:
+    // CODE_META_MAX_CHARS is an intentional cap, not an accidental one.
+    const codeMetadata = {
+      title: entry.title,
+      section: chunk.section,
+      type: 'project',
+      chunkType: 'code',
+      language: chunk.language,
+      slug: entry.slug,
+      url: entry.url,
+      text: chunk.code.slice(0, CODE_META_MAX_CHARS),
+      charCount: chunk.code.length,
+    };
+    assertMetadataIsComplete(codeId, codeMetadata);
+
     vectors.push({
-      id: `${entry.slug}#code-${idx}`,
+      id: codeId,
       values: embedding,
-      metadata: {
-        title: entry.title,
-        section: chunk.section,
-        type: 'project',
-        chunkType: 'code',
-        language: chunk.language,
-        slug: entry.slug,
-        url: entry.url,
-        text: chunk.code.slice(0, CODE_META_MAX_CHARS),
-        charCount: chunk.code.length,
-      },
+      metadata: codeMetadata,
     });
   }
 
